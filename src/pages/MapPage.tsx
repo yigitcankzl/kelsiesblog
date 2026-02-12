@@ -1,14 +1,13 @@
 import { useState, useCallback, useMemo } from 'react';
 import { MapContainer, TileLayer, GeoJSON, useMap } from 'react-leaflet';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MapPin, Globe, ArrowLeft, Settings } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { MapPin } from 'lucide-react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { useBlogStore } from '../store/store';
 import { countryBounds } from '../data/countryBounds';
 import CountryView from '../components/map/CountryView';
-import BlogPanel from '../components/blog/BlogPanel';
+import ContentArea from '../components/content/ContentArea';
 import countriesGeoJson from '../data/countries.geo.json';
 
 // Fix Leaflet icon issue
@@ -35,8 +34,7 @@ function FlyToCountry({ country }: { country: string | null }) {
 }
 
 export default function MapPage() {
-    const navigate = useNavigate();
-    const { selectedCountry, setSelectedCountry, selectedPost, setSelectedPost, getCountriesWithPosts } = useBlogStore();
+    const { selectedCountry, setSelectedCountry, setSelectedPost, getCountriesWithPosts } = useBlogStore();
     const countriesWithPosts = getCountriesWithPosts();
     const [hoveredCountry, setHoveredCountry] = useState<string | null>(null);
 
@@ -68,116 +66,67 @@ export default function MapPage() {
             mouseout: () => setHoveredCountry(null),
             click: () => {
                 if (hasPosts) {
+                    setSelectedPost(null);
                     setSelectedCountry(countryName);
                 }
             },
         });
-    }, [countriesWithPosts, setSelectedCountry]);
+    }, [countriesWithPosts, setSelectedCountry, setSelectedPost]);
 
     const geoJsonKey = useMemo(() => `${hoveredCountry}-${countriesWithPosts.join(',')}`, [hoveredCountry, countriesWithPosts]);
 
     return (
-        <div className="relative w-full h-full">
-            {/* Header */}
-            <motion.header
-                initial={{ y: -100, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ duration: 0.6, ease: 'easeOut' }}
-                className="absolute top-0 left-0 right-0 z-[1000] pointer-events-none"
-            >
-                <div className="flex items-center justify-between px-6 py-4">
-                    <div className="pointer-events-auto">
+        <div className="flex flex-col flex-1 overflow-hidden">
+            {/* Map hero — 55vh */}
+            <div className="relative h-[55vh] min-h-[320px] flex-shrink-0 border-b border-gray-200">
+                {/* Country indicator overlay */}
+                <AnimatePresence>
+                    {selectedCountry && (
                         <motion.div
-                            className="flex items-center gap-3 bg-white/90 backdrop-blur-xl px-5 py-3 rounded-2xl shadow-lg border border-white/20 cursor-pointer"
-                            whileHover={{ scale: 1.02 }}
-                            onClick={() => { setSelectedCountry(null); setSelectedPost(null); }}
+                            initial={{ opacity: 0, y: 12 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: 12 }}
+                            className="absolute bottom-4 left-4 z-[1000] flex items-center gap-2.5 bg-white/90 backdrop-blur-xl px-4 py-2.5 rounded-xl shadow-lg"
                         >
-                            <Globe className="w-5 h-5 text-[#2d6a4f]" />
+                            <MapPin className="w-4 h-4 text-[#2d6a4f]" />
                             <div>
-                                <h1 className="text-lg font-semibold tracking-tight" style={{ fontFamily: 'Playfair Display, serif' }}>
-                                    Kelsie Sharp
-                                </h1>
-                                <p className="text-[11px] text-gray-500 uppercase tracking-[0.2em] font-medium">Travel Journal</p>
+                                <p className="text-[10px] text-gray-400 uppercase tracking-[0.15em] font-semibold">Exploring</p>
+                                <p className="text-base font-semibold leading-tight" style={{ fontFamily: 'Playfair Display, serif' }}>
+                                    {selectedCountry}
+                                </p>
                             </div>
                         </motion.div>
-                    </div>
+                    )}
+                </AnimatePresence>
 
-                    <div className="flex items-center gap-3 pointer-events-auto">
-                        {selectedCountry && (
-                            <motion.button
-                                initial={{ opacity: 0, x: 20 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                exit={{ opacity: 0, x: 20 }}
-                                onClick={() => { setSelectedCountry(null); setSelectedPost(null); }}
-                                className="flex items-center gap-2 bg-white/90 backdrop-blur-xl px-4 py-2.5 rounded-xl shadow-lg text-sm font-medium hover:bg-white transition-colors cursor-pointer"
-                            >
-                                <ArrowLeft className="w-4 h-4" />
-                                World View
-                            </motion.button>
-                        )}
-                        <motion.button
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                            onClick={() => navigate('/admin')}
-                            className="flex items-center gap-2 bg-[#1a472a]/90 backdrop-blur-xl text-white px-4 py-2.5 rounded-xl shadow-lg text-sm font-medium hover:bg-[#1a472a] transition-colors cursor-pointer"
-                        >
-                            <Settings className="w-4 h-4" />
-                            Admin
-                        </motion.button>
-                    </div>
-                </div>
-            </motion.header>
+                <MapContainer
+                    center={[20, 0]}
+                    zoom={2}
+                    minZoom={2}
+                    maxZoom={18}
+                    zoomControl={true}
+                    scrollWheelZoom={true}
+                    style={{ width: '100%', height: '100%' }}
+                    maxBounds={[[-85, -180], [85, 180]]}
+                    maxBoundsViscosity={1.0}
+                >
+                    <TileLayer
+                        attribution='&copy; <a href="https://carto.com/">CARTO</a>'
+                        url="https://{s}.basemaps.cartocdn.com/voyager_nolabels/{z}/{x}/{y}{r}.png"
+                    />
+                    <GeoJSON
+                        key={geoJsonKey}
+                        data={countriesGeoJson as any}
+                        style={geoJsonStyle}
+                        onEachFeature={onEachCountry}
+                    />
+                    <FlyToCountry country={selectedCountry} />
+                    {selectedCountry && <CountryView country={selectedCountry} />}
+                </MapContainer>
+            </div>
 
-            {/* Country indicator */}
-            <AnimatePresence>
-                {selectedCountry && (
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: 20 }}
-                        className="absolute bottom-6 left-6 z-[1000] flex items-center gap-3 bg-white/90 backdrop-blur-xl px-5 py-3 rounded-2xl shadow-lg"
-                    >
-                        <MapPin className="w-5 h-5 text-[#2d6a4f]" />
-                        <div>
-                            <p className="text-xs text-gray-500 uppercase tracking-[0.15em] font-medium">Exploring</p>
-                            <p className="text-lg font-semibold" style={{ fontFamily: 'Playfair Display, serif' }}>
-                                {selectedCountry}
-                            </p>
-                        </div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
-
-            {/* Map */}
-            <MapContainer
-                center={[20, 0]}
-                zoom={2}
-                minZoom={2}
-                maxZoom={18}
-                zoomControl={true}
-                scrollWheelZoom={true}
-                style={{ width: '100%', height: '100%' }}
-                maxBounds={[[-85, -180], [85, 180]]}
-                maxBoundsViscosity={1.0}
-            >
-                <TileLayer
-                    attribution='&copy; <a href="https://carto.com/">CARTO</a>'
-                    url="https://{s}.basemaps.cartocdn.com/voyager_nolabels/{z}/{x}/{y}{r}.png"
-                />
-                <GeoJSON
-                    key={geoJsonKey}
-                    data={countriesGeoJson as any}
-                    style={geoJsonStyle}
-                    onEachFeature={onEachCountry}
-                />
-                <FlyToCountry country={selectedCountry} />
-                {selectedCountry && <CountryView country={selectedCountry} />}
-            </MapContainer>
-
-            {/* Blog Panel */}
-            <AnimatePresence>
-                {selectedPost && <BlogPanel />}
-            </AnimatePresence>
+            {/* Content area — scrollable */}
+            <ContentArea />
         </div>
     );
 }
