@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useRef } from 'react';
 import { MapContainer, TileLayer, GeoJSON, useMap } from 'react-leaflet';
 import { AnimatePresence, motion } from 'framer-motion';
 import { MapPin } from 'lucide-react';
@@ -31,35 +31,50 @@ function FlyToCountry({ country }: { country: string | null }) {
 export default function MapPage() {
     const { selectedCountry, setSelectedCountry, setSelectedPost, getCountriesWithPosts } = useBlogStore();
     const countriesWithPosts = getCountriesWithPosts();
-    const [hoveredCountry, setHoveredCountry] = useState<string | null>(null);
+    const hoveredLayerRef = useRef<L.Layer | null>(null);
 
-    const geoJsonStyle = useCallback((feature: any) => {
-        const name = feature?.properties?.ADMIN || feature?.properties?.name || '';
+    const getBaseStyle = useCallback((name: string) => {
         const has = countriesWithPosts.includes(name);
-        const hov = hoveredCountry === name;
         return {
-            fillColor: has ? (hov ? '#22c55e' : '#2d6a4f') : (hov ? '#e5e7eb' : '#d1d5db'),
+            fillColor: has ? '#2d6a4f' : '#d1d5db',
             weight: has ? 2 : 1,
             opacity: 1,
             color: has ? '#1a472a' : '#b0b0b0',
-            fillOpacity: has ? (hov ? 0.8 : 0.65) : (hov ? 0.5 : 0.35),
+            fillOpacity: has ? 0.65 : 0.35,
         };
-    }, [countriesWithPosts, hoveredCountry]);
+    }, [countriesWithPosts]);
+
+    const geoJsonStyle = useCallback((feature: any) => {
+        const name = feature?.properties?.ADMIN || feature?.properties?.name || '';
+        return getBaseStyle(name);
+    }, [getBaseStyle]);
 
     const onEachCountry = useCallback((feature: any, layer: L.Layer) => {
         const name = feature?.properties?.ADMIN || feature?.properties?.name || '';
         const has = countriesWithPosts.includes(name);
         layer.bindTooltip(name, { sticky: true, direction: 'auto' });
         layer.on({
-            mouseover: () => setHoveredCountry(name),
-            mouseout: () => setHoveredCountry(null),
-            click: () => { if (has) { setSelectedPost(null); setSelectedCountry(name); } },
+            mouseover: () => {
+                hoveredLayerRef.current = layer;
+                (layer as any).setStyle({
+                    fillColor: has ? '#22c55e' : '#e5e7eb',
+                    fillOpacity: has ? 0.8 : 0.5,
+                });
+            },
+            mouseout: () => {
+                hoveredLayerRef.current = null;
+                (layer as any).setStyle(getBaseStyle(name));
+            },
+            click: () => {
+                if (has) { setSelectedPost(null); setSelectedCountry(name); }
+            },
         });
-    }, [countriesWithPosts, setSelectedCountry, setSelectedPost]);
+    }, [countriesWithPosts, setSelectedCountry, setSelectedPost, getBaseStyle]);
 
+    // Only re-render GeoJSON when the list of countries with posts changes
     const geoJsonKey = useMemo(
-        () => `${hoveredCountry}-${countriesWithPosts.join(',')}`,
-        [hoveredCountry, countriesWithPosts]
+        () => countriesWithPosts.join(','),
+        [countriesWithPosts]
     );
 
     return (

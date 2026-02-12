@@ -35,7 +35,7 @@ export default function WelcomeView() {
                 >
                     Latest Adventures
                 </h2>
-                <p className="text-muted-foreground max-w-lg mx-auto text-sm sm:text-base leading-relaxed">
+                <p className="text-muted-foreground max-w-lg mx-auto text-center text-sm sm:text-base leading-relaxed">
                     Click a green country on the map to explore, or dive into a story below.
                 </p>
             </motion.div>

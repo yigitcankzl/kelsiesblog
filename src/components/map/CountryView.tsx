@@ -43,7 +43,8 @@ interface CountryViewProps {
 
 export default function CountryView({ country }: CountryViewProps) {
     const { getCitiesForCountry, getPostsForCity, setSelectedPost } = useBlogStore();
-    const cities = getCitiesForCountry(country);
+    // Only show cities that have blog posts
+    const cities = getCitiesForCountry(country).filter(c => c.hasPosts);
 
     const markers = useMemo(() => {
         return cities.map((cityData) => {
