@@ -1,5 +1,5 @@
-@import "tailwindcss";
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap');
+@import "tailwindcss";
 
 @theme {
   --color-primary: #1a472a;
@@ -30,7 +30,9 @@
   box-sizing: border-box;
 }
 
-html, body, #root {
+html,
+body,
+#root {
   height: 100%;
   width: 100%;
   font-family: var(--font-sans);
@@ -49,13 +51,13 @@ html, body, #root {
 
 .leaflet-control-zoom {
   border: none !important;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.12) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12) !important;
   border-radius: 12px !important;
   overflow: hidden !important;
 }
 
 .leaflet-control-zoom a {
-  background: rgba(255,255,255,0.95) !important;
+  background: rgba(255, 255, 255, 0.95) !important;
   color: var(--color-text-primary) !important;
   border: none !important;
   width: 36px !important;
@@ -72,9 +74,20 @@ html, body, #root {
 
 /* Custom marker pulse */
 @keyframes marker-pulse {
-  0% { transform: scale(1); opacity: 1; }
-  50% { transform: scale(1.4); opacity: 0.5; }
-  100% { transform: scale(1); opacity: 1; }
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  50% {
+    transform: scale(1.4);
+    opacity: 0.5;
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 .marker-pulse {
@@ -109,7 +122,7 @@ html, body, #root {
   font-family: var(--font-sans) !important;
   font-size: 13px !important;
   font-weight: 500 !important;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.2) !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2) !important;
   backdrop-filter: blur(8px);
 }
 
