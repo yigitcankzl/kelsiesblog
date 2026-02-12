@@ -5,15 +5,12 @@ import AdminPage from './pages/AdminPage';
 
 function AppContent() {
   return (
-    <div className="min-h-screen bg-[#0a0a0a]">
-      {/* Centered content column */}
-      <div className="max-w-[1200px] mx-auto bg-background shadow-2xl min-h-screen">
-        <Navbar />
-        <Routes>
-          <Route path="/" element={<MapPage />} />
-          <Route path="/admin" element={<AdminPage />} />
-        </Routes>
-      </div>
+    <div className="min-h-screen bg-background">
+      <Navbar />
+      <Routes>
+        <Route path="/" element={<MapPage />} />
+        <Route path="/admin" element={<AdminPage />} />
+      </Routes>
     </div>
   );
 }
