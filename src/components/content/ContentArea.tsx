@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import { useBlogStore } from '../../store/store';
+import { useBlogStore } from '@/store/store';
 import WelcomeView from './WelcomeView';
 import CountryPostsView from './CountryPostsView';
 import PostReader from './PostReader';
@@ -8,7 +8,7 @@ export default function ContentArea() {
     const { selectedCountry, selectedPost } = useBlogStore();
 
     return (
-        <div className="flex-1 overflow-y-auto bg-[#faf8f5]">
+        <div className="bg-background">
             <AnimatePresence mode="wait">
                 {selectedPost ? (
                     <motion.div

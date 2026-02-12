@@ -1,6 +1,8 @@
 import { motion } from 'framer-motion';
 import { MapPin, Compass } from 'lucide-react';
-import { useBlogStore } from '../../store/store';
+import { useBlogStore } from '@/store/store';
+import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 
 export default function WelcomeView() {
     const { posts, setSelectedCountry, setSelectedPost } = useBlogStore();
@@ -18,10 +20,11 @@ export default function WelcomeView() {
                     initial={{ opacity: 0, y: 12 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.1 }}
-                    className="inline-flex items-center gap-2 bg-[#f0fdf4] text-[#2d6a4f] px-4 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wider mb-4"
                 >
-                    <Compass className="w-3.5 h-3.5" />
-                    Explore the World
+                    <Badge variant="secondary" className="gap-2 mb-4 text-[#2d6a4f] bg-emerald-50 border-emerald-200">
+                        <Compass className="w-3.5 h-3.5" />
+                        Explore the World
+                    </Badge>
                 </motion.div>
                 <motion.h2
                     initial={{ opacity: 0, y: 12 }}
@@ -36,7 +39,7 @@ export default function WelcomeView() {
                     initial={{ opacity: 0, y: 12 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.2 }}
-                    className="text-gray-500 max-w-xl mx-auto leading-relaxed"
+                    className="text-muted-foreground max-w-xl mx-auto leading-relaxed"
                 >
                     Click any green country on the map above to explore, or browse the latest stories below.
                 </motion.p>
@@ -44,51 +47,57 @@ export default function WelcomeView() {
 
             {/* Latest posts header */}
             <div className="flex items-center gap-3 mb-6">
-                <div className="h-px flex-1 bg-gradient-to-r from-transparent via-gray-200 to-transparent" />
-                <span className="text-xs font-semibold uppercase tracking-wider text-gray-400">Latest Stories</span>
-                <div className="h-px flex-1 bg-gradient-to-r from-transparent via-gray-200 to-transparent" />
+                <div className="h-px flex-1 bg-gradient-to-r from-transparent via-border to-transparent" />
+                <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Latest Stories</span>
+                <div className="h-px flex-1 bg-gradient-to-r from-transparent via-border to-transparent" />
             </div>
 
             {/* Posts grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 pb-10">
                 {posts.map((post, index) => (
-                    <motion.article
+                    <motion.div
                         key={post.id}
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.1 + index * 0.06, duration: 0.4 }}
                         whileHover={{ y: -4, transition: { duration: 0.2 } }}
-                        onClick={() => handlePostClick(post)}
-                        className="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-shadow duration-300 cursor-pointer border border-gray-100/60"
                     >
-                        {/* Cover image */}
-                        <div className="relative h-44 overflow-hidden">
-                            <img
-                                src={post.coverImage}
-                                alt={post.title}
-                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                            />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
-                            <span className="absolute top-3 left-3 inline-flex items-center gap-1.5 bg-white/90 backdrop-blur-md text-[#1a472a] text-[11px] font-semibold px-2.5 py-1 rounded-lg">
-                                <MapPin className="w-3 h-3" />
-                                {post.country}
-                            </span>
-                        </div>
+                        <Card
+                            onClick={() => handlePostClick(post)}
+                            className="group overflow-hidden cursor-pointer hover:shadow-xl transition-shadow duration-300 py-0 gap-0"
+                        >
+                            {/* Cover image */}
+                            <div className="relative h-44 overflow-hidden">
+                                <img
+                                    src={post.coverImage}
+                                    alt={post.title}
+                                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+                                <Badge
+                                    variant="secondary"
+                                    className="absolute top-3 left-3 bg-white/90 backdrop-blur-md text-[#1a472a] gap-1.5"
+                                >
+                                    <MapPin className="w-3 h-3" />
+                                    {post.country}
+                                </Badge>
+                            </div>
 
-                        {/* Card body */}
-                        <div className="p-5">
-                            <h3
-                                className="text-lg font-semibold mb-1 group-hover:text-[#2d6a4f] transition-colors"
-                                style={{ fontFamily: 'Playfair Display, serif' }}
-                            >
-                                {post.title}
-                            </h3>
-                            <p className="text-sm text-gray-400 mb-2">{post.city}, {post.country}</p>
-                            <p className="text-sm text-gray-500 leading-relaxed line-clamp-2">
-                                {post.sections[0]?.content}
-                            </p>
-                        </div>
-                    </motion.article>
+                            {/* Card body */}
+                            <CardContent className="p-5">
+                                <h3
+                                    className="text-lg font-semibold mb-1 group-hover:text-[#2d6a4f] transition-colors"
+                                    style={{ fontFamily: 'Playfair Display, serif' }}
+                                >
+                                    {post.title}
+                                </h3>
+                                <p className="text-sm text-muted-foreground mb-2">{post.city}, {post.country}</p>
+                                <p className="text-sm text-muted-foreground leading-relaxed line-clamp-2">
+                                    {post.sections[0]?.content}
+                                </p>
+                            </CardContent>
+                        </Card>
+                    </motion.div>
                 ))}
             </div>
         </div>
