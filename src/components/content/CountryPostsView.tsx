@@ -10,7 +10,7 @@ export default function CountryPostsView() {
     const countryPosts = posts.filter(p => p.country === selectedCountry);
 
     return (
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <div className="w-full px-8 sm:px-12 lg:px-16 py-10">
             {/* Header */}
             <motion.div
                 className="flex items-center gap-4 mb-8"
