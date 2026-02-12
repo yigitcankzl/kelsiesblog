@@ -81,13 +81,13 @@
   --sidebar-border: oklch(0.923 0.003 48.717);
   --sidebar-ring: oklch(0.709 0.01 56.259);
 
-  /* Custom app tokens */
-  --app-green: #1a472a;
-  --app-green-light: #2d6a4f;
-  --app-green-dark: #0d2818;
-  --app-amber: #d4a574;
-  --app-amber-light: #e8c9a0;
-  --app-amber-dark: #b8834a;
+  /* Brand tokens */
+  --brand: #1a472a;
+  --brand-light: #2d6a4f;
+  --brand-lighter: #40916c;
+  --brand-surface: #f0fdf4;
+  --amber: #d4a574;
+  --amber-light: #e8c9a0;
 }
 
 .dark {
@@ -134,7 +134,7 @@
   }
 }
 
-/* ── Global reset ── */
+/* ── Global ── */
 * {
   margin: 0;
   padding: 0;
@@ -147,6 +147,8 @@ body,
   height: 100%;
   width: 100%;
   font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 /* ── Leaflet overrides ── */
@@ -176,11 +178,11 @@ body,
 }
 
 .leaflet-control-zoom a:hover {
-  background: var(--app-green) !important;
+  background: var(--brand) !important;
   color: white !important;
 }
 
-/* ── Custom marker pulse ── */
+/* ── Marker pulse ── */
 @keyframes marker-pulse {
   0% {
     transform: scale(1);
@@ -202,7 +204,7 @@ body,
   animation: marker-pulse 2s ease-in-out infinite;
 }
 
-/* ── Custom scrollbar ── */
+/* ── Scrollbar ── */
 ::-webkit-scrollbar {
   width: 6px;
 }
@@ -212,17 +214,17 @@ body,
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--app-amber);
+  background: var(--amber);
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--app-amber-dark);
+  background: #b8834a;
 }
 
 /* ── Leaflet tooltip ── */
 .leaflet-tooltip {
-  background: rgba(26, 26, 46, 0.85) !important;
+  background: rgba(26, 26, 46, 0.88) !important;
   color: #f8f9fa !important;
   border: none !important;
   border-radius: 8px !important;
@@ -236,4 +238,16 @@ body,
 
 .leaflet-tooltip::before {
   display: none !important;
+}
+
+/* ── Map bottom fade ── */
+.map-bottom-fade {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 80px;
+  background: linear-gradient(to bottom, transparent, var(--background));
+  pointer-events: none;
+  z-index: 500;
 }
