@@ -6,7 +6,7 @@ import { useBlogStore } from '../store/store';
 import AuthGate from '../components/admin/AuthGate';
 import PostList from '../components/admin/PostList';
 import PostForm from '../components/admin/PostForm';
-import { BlogPost } from '../types';
+import type { BlogPost } from '../types';
 
 export default function AdminPage() {
     const navigate = useNavigate();

@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { Edit2, Trash2, MapPin, FileText } from 'lucide-react';
 import { useBlogStore } from '../../store/store';
-import { BlogPost } from '../../types';
+import type { BlogPost } from '../../types';
 
 interface PostListProps {
     onEdit: (post: BlogPost) => void;

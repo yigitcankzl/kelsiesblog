@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { X, MapPin, Calendar, ChevronDown } from 'lucide-react';
+import { X, MapPin, ChevronDown } from 'lucide-react';
 import { useBlogStore } from '../../store/store';
 
 export default function BlogPanel() {

@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Save, X, Plus, Trash2, ChevronUp, ChevronDown, Image, MapPin, Type } from 'lucide-react';
 import { useBlogStore } from '../../store/store';
-import { BlogPost, Section } from '../../types';
+import type { BlogPost, Section } from '../../types';
 import { countryBounds } from '../../data/countryBounds';
 
 interface PostFormProps {
