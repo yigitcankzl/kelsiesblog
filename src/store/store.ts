@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { BlogPost } from '../types';
+import type { BlogPost } from '../types';
 import { mockPosts } from '../data/mockData';
 
 interface BlogStore {
