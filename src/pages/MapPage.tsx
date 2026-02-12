@@ -1,14 +1,15 @@
 import { useState, useCallback, useMemo } from 'react';
 import { MapContainer, TileLayer, GeoJSON, useMap } from 'react-leaflet';
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { MapPin } from 'lucide-react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { useBlogStore } from '../store/store';
-import { countryBounds } from '../data/countryBounds';
-import CountryView from '../components/map/CountryView';
-import ContentArea from '../components/content/ContentArea';
-import countriesGeoJson from '../data/countries.geo.json';
+import { useBlogStore } from '@/store/store';
+import { countryBounds } from '@/data/countryBounds';
+import CountryView from '@/components/map/CountryView';
+import ContentArea from '@/components/content/ContentArea';
+import { Badge } from '@/components/ui/badge';
+import countriesGeoJson from '@/data/countries.geo.json';
 
 // Fix Leaflet icon issue
 import icon from 'leaflet/dist/images/marker-icon.png';
@@ -76,9 +77,9 @@ export default function MapPage() {
     const geoJsonKey = useMemo(() => `${hoveredCountry}-${countriesWithPosts.join(',')}`, [hoveredCountry, countriesWithPosts]);
 
     return (
-        <div className="flex flex-col flex-1 overflow-hidden">
-            {/* Map hero — 55vh */}
-            <div className="relative h-[55vh] min-h-[320px] flex-shrink-0 border-b border-gray-200">
+        <>
+            {/* Map section — scrolls with page */}
+            <div className="relative h-[55vh] min-h-[320px] flex-shrink-0 border-b border-border">
                 {/* Country indicator overlay */}
                 <AnimatePresence>
                     {selectedCountry && (
@@ -86,15 +87,17 @@ export default function MapPage() {
                             initial={{ opacity: 0, y: 12 }}
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: 12 }}
-                            className="absolute bottom-4 left-4 z-[1000] flex items-center gap-2.5 bg-white/90 backdrop-blur-xl px-4 py-2.5 rounded-xl shadow-lg"
+                            className="absolute bottom-4 left-4 z-[1000]"
                         >
-                            <MapPin className="w-4 h-4 text-[#2d6a4f]" />
-                            <div>
-                                <p className="text-[10px] text-gray-400 uppercase tracking-[0.15em] font-semibold">Exploring</p>
-                                <p className="text-base font-semibold leading-tight" style={{ fontFamily: 'Playfair Display, serif' }}>
-                                    {selectedCountry}
-                                </p>
-                            </div>
+                            <Badge variant="secondary" className="flex items-center gap-2.5 bg-white/90 backdrop-blur-xl px-4 py-2.5 rounded-xl shadow-lg text-base">
+                                <MapPin className="w-4 h-4 text-[#2d6a4f]" />
+                                <div>
+                                    <p className="text-[10px] text-muted-foreground uppercase tracking-[0.15em] font-semibold leading-none">Exploring</p>
+                                    <p className="text-sm font-semibold leading-tight mt-0.5" style={{ fontFamily: 'Playfair Display, serif' }}>
+                                        {selectedCountry}
+                                    </p>
+                                </div>
+                            </Badge>
                         </motion.div>
                     )}
                 </AnimatePresence>
@@ -125,8 +128,8 @@ export default function MapPage() {
                 </MapContainer>
             </div>
 
-            {/* Content area — scrollable */}
+            {/* Content area — part of normal flow */}
             <ContentArea />
-        </div>
+        </>
     );
 }
