@@ -94,15 +94,16 @@ export default function MapPage() {
                 <div className="map-bottom-fade" />
 
                 <MapContainer
-                    center={[20, 0]} zoom={2} minZoom={2} maxZoom={18}
-                    zoomControl={true} scrollWheelZoom={true}
+                    center={[20, 0]} zoom={2} minZoom={2} maxZoom={12}
+                    zoomControl={true} scrollWheelZoom={false}
+                    dragging={true}
                     style={{ width: '100%', height: '100%' }}
                     maxBounds={[[-85, -180], [85, 180]]}
                     maxBoundsViscosity={1.0}
                 >
                     <TileLayer
                         attribution='&copy; <a href="https://carto.com/">CARTO</a>'
-                        url="https://{s}.basemaps.cartocdn.com/voyager_nolabels/{z}/{x}/{y}{r}.png"
+                        url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
                     />
                     <GeoJSON key={geoJsonKey} data={countriesGeoJson as any} style={geoJsonStyle} onEachFeature={onEachCountry} />
                     <FlyToCountry country={selectedCountry} />
