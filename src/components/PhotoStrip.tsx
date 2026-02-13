@@ -106,6 +106,7 @@ export default function PhotoStrip() {
                     </div>
                 ))}
             </div>
+            </div>
         </section>
     );
 }
