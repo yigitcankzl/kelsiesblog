@@ -1,4 +1,3 @@
-import { Settings, Home } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useBlogStore } from '@/store/store';
 
@@ -35,27 +34,25 @@ export default function Navbar() {
                     <div className="hidden sm:flex items-center gap-8">
                         <button
                             onClick={goHome}
-                            className="text-xs font-medium tracking-[0.15em] text-gray-500 dark:text-gray-300 hover:text-[var(--brand)] transition-colors uppercase cursor-pointer flex items-center gap-1.5"
-                        >
-                            <Home className="w-3.5 h-3.5" />
-                            Home
-                        </button>
-                        <button
-                            onClick={goHome}
                             className="text-xs font-medium tracking-[0.15em] text-gray-500 dark:text-gray-300 hover:text-[var(--brand)] transition-colors uppercase cursor-pointer"
                         >
                             Destinations
                         </button>
                         <button
-                            onClick={() => navigate('/admin')}
-                            className="text-xs font-medium tracking-[0.15em] text-gray-500 dark:text-gray-300 hover:text-[var(--brand)] transition-colors uppercase cursor-pointer flex items-center gap-1.5"
+                            onClick={goHome}
+                            className="text-xs font-medium tracking-[0.15em] text-gray-500 dark:text-gray-300 hover:text-[var(--brand)] transition-colors uppercase cursor-pointer"
                         >
-                            <Settings className="w-3.5 h-3.5" />
-                            Admin
+                            Travel Guides
                         </button>
                         <button
                             onClick={goHome}
-                            className="px-6 py-2.5 text-xs font-medium text-white bg-gray-900 dark:bg-white dark:text-gray-900 hover:bg-[var(--brand)] transition-all hover:shadow-lg cursor-pointer uppercase tracking-[0.12em]"
+                            className="text-xs font-medium tracking-[0.15em] text-gray-500 dark:text-gray-300 hover:text-[var(--brand)] transition-colors uppercase cursor-pointer"
+                        >
+                            About
+                        </button>
+                        <button
+                            onClick={goHome}
+                            className="px-6 py-2.5 text-xs font-medium text-white bg-gray-900 dark:bg-white dark:text-gray-900 hover:bg-[var(--brand)] transition-all hover:shadow-lg cursor-pointer uppercase tracking-[0.12em] rounded-full"
                         >
                             Subscribe
                         </button>
@@ -65,15 +62,9 @@ export default function Navbar() {
                     <div className="sm:hidden flex items-center gap-2">
                         <button
                             onClick={goHome}
-                            className="p-2 text-gray-500 hover:text-[var(--brand)] cursor-pointer"
+                            className="p-2 text-gray-500 hover:text-[var(--brand)] cursor-pointer text-xs uppercase tracking-wider font-medium"
                         >
-                            <Home className="w-5 h-5" />
-                        </button>
-                        <button
-                            onClick={() => navigate('/admin')}
-                            className="p-2 text-gray-500 hover:text-[var(--brand)] cursor-pointer"
-                        >
-                            <Settings className="w-5 h-5" />
+                            Menu
                         </button>
                     </div>
                 </div>
