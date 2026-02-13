@@ -1,7 +1,7 @@
-import { useCallback, useMemo, useRef } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import { MapContainer, TileLayer, GeoJSON, useMap } from 'react-leaflet';
 import { AnimatePresence, motion } from 'framer-motion';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Minimize2, Maximize2 } from 'lucide-react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { useBlogStore } from '@/store/store';
@@ -32,6 +32,14 @@ export default function MapPage() {
     const { selectedCountry, setSelectedCountry, setSelectedPost, getCountriesWithPosts, posts } = useBlogStore();
     const countriesWithPosts = getCountriesWithPosts();
     const hoveredLayerRef = useRef<L.Layer | null>(null);
+
+    const MAP_SIZES = [
+        { label: 'SM', height: 'h-[40vh] min-h-[300px]' },
+        { label: 'MD', height: 'h-[55vh] min-h-[400px]' },
+        { label: 'LG', height: 'h-[75vh] min-h-[500px]' },
+        { label: 'XL', height: 'h-[90vh] min-h-[600px]' },
+    ] as const;
+    const [sizeIndex, setSizeIndex] = useState(2);
 
     const getBaseStyle = useCallback((name: string) => {
         const has = countriesWithPosts.includes(name);
@@ -82,7 +90,7 @@ export default function MapPage() {
     return (
         <>
             {/* Map hero section */}
-            <section className="relative w-full h-[75vh] min-h-[500px] bg-black flex flex-col items-center overflow-hidden scanlines">
+            <section className={`relative w-full ${MAP_SIZES[sizeIndex].height} bg-black flex flex-col items-center overflow-hidden scanlines transition-all duration-700 ease-in-out`}>
                 {/* Retro heading overlay */}
                 <div className="z-[500] text-center py-8 sm:py-10 relative px-4">
                     <p className="text-[var(--neon-cyan)] text-[8px] font-bold uppercase tracking-[0.3em] mb-4 neon-glow-cyan"
@@ -107,6 +115,31 @@ export default function MapPage() {
 
                 {/* Map container */}
                 <div className="w-full flex-1 relative">
+                    {/* Map size toggle */}
+                    <div className="absolute top-4 left-4 z-[1000] flex flex-col gap-0 border-2 border-[var(--brand)]"
+                        style={{ boxShadow: '0 0 10px rgba(0, 255, 65, 0.3)' }}>
+                        <button
+                            onClick={() => setSizeIndex(Math.min(sizeIndex + 1, MAP_SIZES.length - 1))}
+                            disabled={sizeIndex >= MAP_SIZES.length - 1}
+                            className="bg-black text-[var(--brand)] hover:bg-[var(--brand)] hover:text-black transition-all w-9 h-9 flex items-center justify-center cursor-pointer disabled:opacity-30 disabled:hover:bg-black disabled:hover:text-[var(--brand)] border-b border-[var(--brand)]/30"
+                        >
+                            <Maximize2 className="w-3.5 h-3.5" />
+                        </button>
+                        <div className="bg-black text-center py-1 border-b border-[var(--brand)]/30">
+                            <span className="text-[5px] text-[var(--brand)]"
+                                style={{ fontFamily: "'Press Start 2P', monospace" }}>
+                                {MAP_SIZES[sizeIndex].label}
+                            </span>
+                        </div>
+                        <button
+                            onClick={() => setSizeIndex(Math.max(sizeIndex - 1, 0))}
+                            disabled={sizeIndex <= 0}
+                            className="bg-black text-[var(--brand)] hover:bg-[var(--brand)] hover:text-black transition-all w-9 h-9 flex items-center justify-center cursor-pointer disabled:opacity-30 disabled:hover:bg-black disabled:hover:text-[var(--brand)]"
+                        >
+                            <Minimize2 className="w-3.5 h-3.5" />
+                        </button>
+                    </div>
+
                     {/* Country popup card */}
                     <AnimatePresence>
                         {selectedCountry && (() => {
