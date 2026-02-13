@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useRef } from 'react';
 import { MapContainer, TileLayer, GeoJSON, useMap } from 'react-leaflet';
 import { AnimatePresence, motion } from 'framer-motion';
-import { MapPin } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { useBlogStore } from '@/store/store';
@@ -29,7 +29,7 @@ function FlyToCountry({ country }: { country: string | null }) {
 }
 
 export default function MapPage() {
-    const { selectedCountry, setSelectedCountry, setSelectedPost, getCountriesWithPosts } = useBlogStore();
+    const { selectedCountry, setSelectedCountry, setSelectedPost, getCountriesWithPosts, posts } = useBlogStore();
     const countriesWithPosts = getCountriesWithPosts();
     const hoveredLayerRef = useRef<L.Layer | null>(null);
 
@@ -96,31 +96,58 @@ export default function MapPage() {
 
                 {/* Map container */}
                 <div className="w-full flex-1 relative">
-                    {/* Country badge */}
+                    {/* Country popup card */}
                     <AnimatePresence>
-                        {selectedCountry && (
-                            <motion.div
-                                initial={{ opacity: 0, y: 12 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0, y: 12 }}
-                                className="absolute top-4 left-4 z-[1000]"
-                            >
-                                <div className="flex items-center gap-2 bg-white/95 dark:bg-gray-800/95 backdrop-blur-xl px-4 py-2.5 shadow-lg border border-gray-100 dark:border-gray-700">
-                                    <MapPin className="w-4 h-4 text-[var(--brand)]" />
-                                    <div>
-                                        <p className="text-[9px] text-muted-foreground uppercase tracking-[0.2em] font-bold leading-none">
-                                            Exploring
-                                        </p>
-                                        <p
-                                            className="text-sm font-bold leading-tight text-gray-900 dark:text-white"
-                                            style={{ fontFamily: 'Playfair Display, serif', fontStyle: 'italic' }}
-                                        >
-                                            {selectedCountry}
-                                        </p>
+                        {selectedCountry && (() => {
+                            const countryPosts = posts.filter(p => p.country === selectedCountry);
+                            const mainPost = countryPosts[0];
+                            return (
+                                <motion.div
+                                    initial={{ opacity: 0, y: 12, scale: 0.95 }}
+                                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                                    exit={{ opacity: 0, y: 12, scale: 0.95 }}
+                                    className="absolute top-4 right-4 z-[1000] w-64"
+                                >
+                                    <div className="bg-white dark:bg-gray-800 shadow-xl border border-gray-100 dark:border-gray-700 overflow-hidden">
+                                        {mainPost && (
+                                            <div className="relative h-28 overflow-hidden">
+                                                <img
+                                                    src={mainPost.coverImage}
+                                                    alt={selectedCountry}
+                                                    className="w-full h-full object-cover"
+                                                />
+                                                <div className="absolute top-3 left-3">
+                                                    <span className="inline-block px-2.5 py-1 bg-[var(--brand)] text-[9px] font-bold tracking-[0.15em] uppercase text-white">
+                                                        Guide
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        )}
+                                        <div className="p-4">
+                                            <div className="flex items-center justify-between mb-2">
+                                                <h3
+                                                    className="text-lg font-bold text-gray-900 dark:text-white"
+                                                    style={{ fontFamily: 'Playfair Display, serif' }}
+                                                >
+                                                    {selectedCountry}
+                                                </h3>
+                                                <span className="text-xs text-gray-400">{countryPosts.length}→</span>
+                                            </div>
+                                            <p className="text-xs text-gray-500 dark:text-gray-400 mb-3 line-clamp-2 font-light leading-relaxed">
+                                                {mainPost ? `From the ${mainPost.city} ${mainPost.sections[0]?.heading?.toLowerCase() || 'highlights'} to the ${mainPost.sections[1]?.heading?.toLowerCase() || 'beauty'} of ${selectedCountry}...` : `Explore ${selectedCountry}`}
+                                            </p>
+                                            <button
+                                                onClick={() => { setSelectedPost(null); setSelectedCountry(selectedCountry); }}
+                                                className="text-[var(--brand)] text-[11px] font-bold uppercase tracking-[0.12em] hover:underline cursor-pointer flex items-center gap-1"
+                                            >
+                                                Read Journal
+                                                <ArrowRight className="w-3 h-3" />
+                                            </button>
+                                        </div>
                                     </div>
-                                </div>
-                            </motion.div>
-                        )}
+                                </motion.div>
+                            );
+                        })()}
                     </AnimatePresence>
 
                     {/* Visited counter */}

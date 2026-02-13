@@ -8,6 +8,8 @@ export const mockPosts: BlogPost[] = [
         city: 'Kyoto',
         coordinates: [35.0116, 135.7681],
         coverImage: 'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=1200',
+        date: 'OCT 12, 2025',
+        category: 'Culture',
         sections: [
             {
                 heading: 'Arriving in Gion',
@@ -32,6 +34,8 @@ export const mockPosts: BlogPost[] = [
         city: 'Tokyo',
         coordinates: [35.6762, 139.6503],
         coverImage: 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=1200',
+        date: 'AUG 15, 2025',
+        category: 'Nightlife',
         sections: [
             {
                 heading: 'Shibuya Crossing',
@@ -56,6 +60,8 @@ export const mockPosts: BlogPost[] = [
         city: 'Rome',
         coordinates: [41.9028, 12.4964],
         coverImage: 'https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=1200',
+        date: 'JUL 04, 2025',
+        category: 'History',
         sections: [
             {
                 heading: 'The Colosseum at Dawn',
@@ -80,6 +86,8 @@ export const mockPosts: BlogPost[] = [
         city: 'Florence',
         coordinates: [43.7696, 11.2558],
         coverImage: 'https://images.unsplash.com/photo-1541370976299-4d24ebbc9077?w=1200',
+        date: 'JUN 20, 2025',
+        category: 'Art',
         sections: [
             {
                 heading: 'The Uffizi Gallery',
@@ -99,6 +107,8 @@ export const mockPosts: BlogPost[] = [
         city: 'Istanbul',
         coordinates: [41.0082, 28.9784],
         coverImage: 'https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?w=1200',
+        date: 'SEP 28, 2024',
+        category: 'Food & Drink',
         sections: [
             {
                 heading: 'Hagia Sophia',

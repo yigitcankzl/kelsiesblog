@@ -11,6 +11,8 @@ export interface BlogPost {
     city: string;
     coordinates: [number, number];
     coverImage: string;
+    date: string;
+    category: string;
     sections: Section[];
 }
 

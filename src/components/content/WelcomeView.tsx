@@ -10,11 +10,10 @@ export default function WelcomeView() {
         setSelectedPost(post);
     };
 
-    const featured = posts[0];
-    const second = posts[1];
-    const third = posts[2];
-    const fourth = posts[3];
-    const rest = posts.slice(4);
+    // Top row: first 3 posts (equal cards)
+    const topRow = posts.slice(0, 3);
+    // Bottom row: remaining posts
+    const bottomRow = posts.slice(3);
 
     return (
         <section className="bg-background py-20 px-4 sm:px-6 lg:px-8 relative z-10">
@@ -43,159 +42,139 @@ export default function WelcomeView() {
                     </button>
                 </motion.div>
 
-                {/* Asymmetric editorial grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10">
-                    {/* Column 1: Large portrait featured */}
-                    {featured && (
+                {/* Top row: 3 equal cards */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 mb-10">
+                    {topRow.map((post, index) => (
                         <motion.article
+                            key={post.id}
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.1, duration: 0.5 }}
-                            onClick={() => handlePostClick(featured)}
-                            className="group cursor-pointer flex flex-col h-full"
+                            transition={{ delay: 0.1 + index * 0.1, duration: 0.5 }}
+                            onClick={() => handlePostClick(post)}
+                            className="group cursor-pointer"
                         >
-                            <div className="relative overflow-hidden aspect-[3/4] mb-6">
+                            <div className="relative overflow-hidden aspect-[4/5] mb-5">
                                 <img
-                                    src={featured.coverImage}
-                                    alt={featured.title}
+                                    src={post.coverImage}
+                                    alt={post.title}
                                     className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
                                 />
-                                <div className="absolute top-5 left-5">
+                                <div className="absolute top-4 left-4">
                                     <span className="inline-block px-3 py-1 bg-white dark:bg-black text-[10px] font-bold tracking-[0.15em] uppercase text-gray-900 dark:text-white">
-                                        {featured.country}
+                                        {post.country}
                                     </span>
                                 </div>
                             </div>
-                            <div className="flex flex-col flex-grow">
-                                <div className="flex items-center text-[10px] font-medium text-gray-400 mb-3 space-x-3 uppercase tracking-wider">
-                                    <span>{featured.city}</span>
-                                    <span className="w-1 h-1 bg-gray-300 rounded-full" />
-                                    <span>{featured.sections.length * 3} min read</span>
-                                </div>
-                                <h3
-                                    className="text-xl md:text-2xl lg:text-3xl font-medium text-gray-900 dark:text-white mb-3 group-hover:text-[var(--brand)] transition-colors leading-tight"
-                                    style={{ fontFamily: 'Playfair Display, serif' }}
-                                >
-                                    {featured.title}
-                                </h3>
-                                <p className="text-gray-500 dark:text-gray-400 text-sm font-light line-clamp-3 mb-4 leading-relaxed">
-                                    {featured.sections[0]?.content}
-                                </p>
-                                <span className="mt-auto text-gray-900 dark:text-white font-medium text-sm border-b border-gray-200 group-hover:border-[var(--brand)] pb-1 self-start transition-colors">
-                                    Read Story
-                                </span>
+                            <div className="flex items-center text-[10px] font-medium text-gray-400 mb-2.5 space-x-2 uppercase tracking-wider">
+                                <span>{post.date}</span>
+                                <span className="w-1 h-1 bg-gray-300 rounded-full" />
+                                <span>{post.category}</span>
                             </div>
+                            <h3
+                                className="text-lg md:text-xl font-medium text-gray-900 dark:text-white mb-2 group-hover:text-[var(--brand)] transition-colors leading-snug"
+                                style={{ fontFamily: 'Playfair Display, serif' }}
+                            >
+                                {post.title}
+                            </h3>
+                            <p className="text-gray-500 dark:text-gray-400 text-sm font-light line-clamp-2 leading-relaxed">
+                                {post.sections[0]?.content}
+                            </p>
+                        </motion.article>
+                    ))}
+                </div>
+
+                {/* Bottom row: asymmetric layout */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
+                    {/* Large card - left */}
+                    {bottomRow[0] && (
+                        <motion.article
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.4, duration: 0.5 }}
+                            onClick={() => handlePostClick(bottomRow[0])}
+                            className="group cursor-pointer"
+                        >
+                            <div className="relative overflow-hidden aspect-[4/3] mb-5">
+                                <img
+                                    src={bottomRow[0].coverImage}
+                                    alt={bottomRow[0].title}
+                                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
+                                />
+                            </div>
+                            <div className="flex items-center text-[10px] font-medium text-gray-400 mb-2.5 space-x-2 uppercase tracking-wider">
+                                <span>{bottomRow[0].date}</span>
+                                <span className="w-1 h-1 bg-gray-300 rounded-full" />
+                                <span>{bottomRow[0].sections.length * 3} min read</span>
+                            </div>
+                            <h3
+                                className="text-xl md:text-2xl font-medium text-gray-900 dark:text-white mb-2 group-hover:text-[var(--brand)] transition-colors leading-snug"
+                                style={{ fontFamily: 'Playfair Display, serif' }}
+                            >
+                                {bottomRow[0].title}
+                            </h3>
+                            <p className="text-gray-500 dark:text-gray-400 text-sm font-light line-clamp-2 leading-relaxed">
+                                {bottomRow[0].sections[0]?.content}
+                            </p>
                         </motion.article>
                     )}
 
-                    {/* Column 2: Medium card + compact card */}
-                    <div className="flex flex-col gap-10">
-                        {second && (
+                    {/* Small card - middle */}
+                    {bottomRow[1] && (
+                        <motion.article
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.5, duration: 0.5 }}
+                            onClick={() => handlePostClick(bottomRow[1])}
+                            className="group cursor-pointer"
+                        >
+                            <div className="relative overflow-hidden aspect-[16/10] mb-5">
+                                <img
+                                    src={bottomRow[1].coverImage}
+                                    alt={bottomRow[1].title}
+                                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
+                                />
+                            </div>
+                            <div className="flex items-center text-[10px] font-medium text-gray-400 mb-2.5 space-x-2 uppercase tracking-wider">
+                                <span className="text-[var(--brand)]">{bottomRow[1].country}</span>
+                                <span>{bottomRow[1].date}</span>
+                            </div>
+                            <h3
+                                className="text-lg font-medium text-gray-900 dark:text-white mb-1 group-hover:text-[var(--brand)] transition-colors leading-snug"
+                                style={{ fontFamily: 'Playfair Display, serif' }}
+                            >
+                                {bottomRow[1].title}
+                            </h3>
+                        </motion.article>
+                    )}
+
+                    {/* Third bottom card + Newsletter */}
+                    <div className="flex flex-col gap-8">
+                        {bottomRow[2] && (
                             <motion.article
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: 0.2, duration: 0.5 }}
-                                onClick={() => handlePostClick(second)}
+                                transition={{ delay: 0.55, duration: 0.5 }}
+                                onClick={() => handlePostClick(bottomRow[2])}
                                 className="group cursor-pointer"
                             >
-                                <div className="relative overflow-hidden aspect-[4/3] mb-6">
+                                <div className="relative overflow-hidden aspect-[4/3] mb-5">
                                     <img
-                                        src={second.coverImage}
-                                        alt={second.title}
-                                        className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
+                                        src={bottomRow[2].coverImage}
+                                        alt={bottomRow[2].title}
+                                        className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
                                     />
-                                    <div className="absolute top-5 left-5">
-                                        <span className="inline-block px-3 py-1 bg-white dark:bg-black text-[10px] font-bold tracking-[0.15em] uppercase text-gray-900 dark:text-white">
-                                            {second.country}
-                                        </span>
-                                    </div>
                                 </div>
-                                <div className="flex items-center text-[10px] font-medium text-gray-400 mb-3 space-x-3 uppercase tracking-wider">
-                                    <span>{second.city}</span>
+                                <div className="flex items-center text-[10px] font-medium text-gray-400 mb-2.5 space-x-2 uppercase tracking-wider">
+                                    <span>{bottomRow[2].date}</span>
                                     <span className="w-1 h-1 bg-gray-300 rounded-full" />
-                                    <span>{second.sections.length * 3} min read</span>
+                                    <span>{bottomRow[2].category}</span>
                                 </div>
                                 <h3
-                                    className="text-xl md:text-2xl font-medium text-gray-900 dark:text-white mb-2 group-hover:text-[var(--brand)] transition-colors leading-snug"
+                                    className="text-lg font-medium text-gray-900 dark:text-white mb-1 group-hover:text-[var(--brand)] transition-colors leading-snug"
                                     style={{ fontFamily: 'Playfair Display, serif' }}
                                 >
-                                    {second.title}
+                                    {bottomRow[2].title}
                                 </h3>
-                                <p className="text-gray-500 dark:text-gray-400 text-sm font-light line-clamp-2 leading-relaxed">
-                                    {second.sections[0]?.content}
-                                </p>
-                            </motion.article>
-                        )}
-
-                        {third && (
-                            <motion.article
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: 0.3, duration: 0.5 }}
-                                onClick={() => handlePostClick(third)}
-                                className="group cursor-pointer pt-8 border-t border-gray-100 dark:border-gray-800"
-                            >
-                                <div className="flex gap-5 items-center">
-                                    <div className="w-28 h-28 flex-shrink-0 relative overflow-hidden">
-                                        <img
-                                            src={third.coverImage}
-                                            alt={third.title}
-                                            className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
-                                        />
-                                    </div>
-                                    <div className="flex flex-col justify-center">
-                                        <div className="flex items-center text-[10px] text-gray-400 mb-2 uppercase tracking-wider font-medium">
-                                            <span className="text-[var(--brand)] mr-2">{third.country}</span>
-                                            <span>{third.city}</span>
-                                        </div>
-                                        <h3
-                                            className="text-lg font-medium text-gray-900 dark:text-white group-hover:text-[var(--brand)] transition-colors leading-snug"
-                                            style={{ fontFamily: 'Playfair Display, serif' }}
-                                        >
-                                            {third.title}
-                                        </h3>
-                                    </div>
-                                </div>
-                            </motion.article>
-                        )}
-                    </div>
-
-                    {/* Column 3: Portrait card + newsletter */}
-                    <div className="flex flex-col gap-10">
-                        {fourth && (
-                            <motion.article
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: 0.25, duration: 0.5 }}
-                                onClick={() => handlePostClick(fourth)}
-                                className="group cursor-pointer"
-                            >
-                                <div className="relative overflow-hidden aspect-[3/4] mb-6">
-                                    <img
-                                        src={fourth.coverImage}
-                                        alt={fourth.title}
-                                        className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
-                                    />
-                                    <div className="absolute top-5 left-5">
-                                        <span className="inline-block px-3 py-1 bg-white dark:bg-black text-[10px] font-bold tracking-[0.15em] uppercase text-gray-900 dark:text-white">
-                                            {fourth.country}
-                                        </span>
-                                    </div>
-                                </div>
-                                <div className="flex items-center text-[10px] font-medium text-gray-400 mb-3 space-x-3 uppercase tracking-wider">
-                                    <span>{fourth.city}</span>
-                                    <span className="w-1 h-1 bg-gray-300 rounded-full" />
-                                    <span>{fourth.sections.length * 3} min read</span>
-                                </div>
-                                <h3
-                                    className="text-xl md:text-2xl font-medium text-gray-900 dark:text-white mb-2 group-hover:text-[var(--brand)] transition-colors leading-snug"
-                                    style={{ fontFamily: 'Playfair Display, serif' }}
-                                >
-                                    {fourth.title}
-                                </h3>
-                                <p className="text-gray-500 dark:text-gray-400 text-sm font-light line-clamp-2 leading-relaxed">
-                                    {fourth.sections[0]?.content}
-                                </p>
                             </motion.article>
                         )}
 
@@ -203,7 +182,7 @@ export default function WelcomeView() {
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.35, duration: 0.5 }}
+                            transition={{ delay: 0.6, duration: 0.5 }}
                             className="bg-gray-50 dark:bg-gray-900 p-8 border border-gray-100 dark:border-gray-800"
                         >
                             <MapPin className="w-7 h-7 text-[var(--brand)] mb-3" />
@@ -229,58 +208,6 @@ export default function WelcomeView() {
                         </motion.div>
                     </div>
                 </div>
-
-                {/* Extra posts row if any */}
-                {rest.length > 0 && (
-                    <>
-                        <div className="flex items-center gap-4 my-12">
-                            <div className="h-px flex-1 bg-gray-100 dark:bg-gray-800" />
-                            <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400">
-                                More Stories
-                            </span>
-                            <div className="h-px flex-1 bg-gray-100 dark:bg-gray-800" />
-                        </div>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                            {rest.map((post, index) => (
-                                <motion.article
-                                    key={post.id}
-                                    initial={{ opacity: 0, y: 20 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: 0.1 + index * 0.06, duration: 0.4 }}
-                                    onClick={() => handlePostClick(post)}
-                                    className="group cursor-pointer"
-                                >
-                                    <div className="relative overflow-hidden aspect-[4/3] mb-5">
-                                        <img
-                                            src={post.coverImage}
-                                            alt={post.title}
-                                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                                        />
-                                        <div className="absolute top-4 left-4">
-                                            <span className="inline-block px-3 py-1 bg-white/90 dark:bg-black/80 text-[10px] font-bold tracking-[0.12em] uppercase text-gray-900 dark:text-white">
-                                                {post.country}
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <div className="flex items-center text-[10px] font-medium text-gray-400 mb-2 space-x-3 uppercase tracking-wider">
-                                        <span>{post.city}</span>
-                                        <span className="w-1 h-1 bg-gray-300 rounded-full" />
-                                        <span>{post.sections.length * 3} min read</span>
-                                    </div>
-                                    <h3
-                                        className="text-lg font-medium text-gray-900 dark:text-white mb-1.5 group-hover:text-[var(--brand)] transition-colors leading-snug"
-                                        style={{ fontFamily: 'Playfair Display, serif' }}
-                                    >
-                                        {post.title}
-                                    </h3>
-                                    <p className="text-gray-500 text-sm font-light line-clamp-2 leading-relaxed">
-                                        {post.sections[0]?.content}
-                                    </p>
-                                </motion.article>
-                            ))}
-                        </div>
-                    </>
-                )}
 
                 {/* Mobile view-all */}
                 <div className="mt-12 text-center sm:hidden">
