@@ -26,10 +26,7 @@ export default function CountryPostsView() {
                     <div className="flex items-center gap-4">
                         <div className="w-px h-10 bg-gray-200 dark:bg-gray-700" />
                         <div>
-                            <h2
-                                className="text-3xl sm:text-4xl font-medium text-gray-900 dark:text-white leading-tight"
-                                style={{ fontFamily: 'Playfair Display, serif' }}
-                            >
+                            <h2 className="text-3xl sm:text-4xl font-medium text-gray-900 dark:text-white leading-tight font-display">
                                 {selectedCountry}
                             </h2>
                             <p className="text-xs text-gray-400 mt-1 uppercase tracking-wider font-medium">
@@ -58,21 +55,18 @@ export default function CountryPostsView() {
                                 />
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                                 <div className="absolute top-4 left-4">
-                                    <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#1a2e35] text-[10px] font-bold tracking-[0.12em] uppercase text-white rounded-full">
+                                    <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[var(--tag-bg)] text-xs font-bold tracking-[0.12em] uppercase text-white rounded-full">
                                         <MapPin className="w-3 h-3" />
                                         {post.city}
                                     </span>
                                 </div>
                             </div>
-                            <div className="flex items-center text-[10px] font-medium text-gray-400 mb-2 space-x-3 uppercase tracking-wider">
+                            <div className="flex items-center text-xs font-medium text-gray-400 mb-2 space-x-3 uppercase tracking-wider">
                                 <span>{post.city}, {post.country}</span>
                                 <span className="w-1 h-1 bg-gray-300 rounded-full" />
                                 <span>{post.sections.length * 3} min read</span>
                             </div>
-                            <h3
-                                className="text-lg font-medium text-gray-900 dark:text-white mb-1.5 group-hover:text-[var(--brand)] transition-colors leading-snug"
-                                style={{ fontFamily: 'Playfair Display, serif' }}
-                            >
+                            <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-1.5 group-hover:text-[var(--brand)] transition-colors leading-snug font-display">
                                 {post.title}
                             </h3>
                             <p className="text-gray-500 text-sm font-light line-clamp-2 leading-relaxed">

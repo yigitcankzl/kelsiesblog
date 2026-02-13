@@ -84,8 +84,14 @@
   /* Brand tokens */
   --brand: #10B981;
   --brand-dark: #059669;
+  --brand-deep: #047857;
   --brand-surface: #f0fdf9;
   --map-unvisited: #E5E7EB;
+
+  /* Semantic tokens */
+  --tag-bg: #1a2e35;
+  --footer-bg: #0f1f1a;
+  --admin-bg: #faf8f5;
 }
 
 .dark {

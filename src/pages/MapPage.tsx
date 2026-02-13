@@ -36,10 +36,10 @@ export default function MapPage() {
     const getBaseStyle = useCallback((name: string) => {
         const has = countriesWithPosts.includes(name);
         return {
-            fillColor: has ? '#059669' : '#E5E7EB',
+            fillColor: has ? 'var(--brand-dark)' : 'var(--map-unvisited)',
             weight: has ? 1.5 : 0.5,
             opacity: 1,
-            color: has ? '#047857' : '#ffffff',
+            color: has ? 'var(--brand-deep)' : '#ffffff',
             fillOpacity: has ? 0.7 : 0.4,
         };
     }, [countriesWithPosts]);
@@ -82,13 +82,10 @@ export default function MapPage() {
             <section className="relative w-full h-[75vh] min-h-[500px] bg-background flex flex-col items-center overflow-hidden">
                 {/* Editorial heading overlay */}
                 <div className="z-[500] text-center py-8 sm:py-10 relative px-4">
-                    <p className="text-[var(--brand)] text-[10px] font-bold uppercase tracking-[0.2em] mb-3">
+                    <p className="text-[var(--brand)] text-xs font-bold uppercase tracking-[0.2em] mb-3">
                         Explore The World
                     </p>
-                    <h1
-                        className="text-4xl md:text-6xl lg:text-7xl text-gray-900 dark:text-white mb-2 tracking-tight"
-                        style={{ fontFamily: 'Playfair Display, serif', fontStyle: 'italic' }}
-                    >
+                    <h1 className="text-4xl md:text-6xl lg:text-7xl text-gray-900 dark:text-white mb-2 tracking-tight font-display italic">
                         Where to next?
                     </h1>
                     <div className="w-16 h-1 bg-[var(--brand)] mx-auto mt-4 opacity-60" />
@@ -117,7 +114,7 @@ export default function MapPage() {
                                                     className="w-full h-full object-cover"
                                                 />
                                                 <div className="absolute top-3 left-3">
-                                                    <span className="inline-block px-2.5 py-1 bg-[var(--brand)] text-[9px] font-bold tracking-[0.15em] uppercase text-white">
+                                                    <span className="inline-block px-2.5 py-1 bg-[var(--brand)] text-xs font-bold tracking-[0.15em] uppercase text-white">
                                                         Guide
                                                     </span>
                                                 </div>
@@ -125,20 +122,17 @@ export default function MapPage() {
                                         )}
                                         <div className="p-4">
                                             <div className="flex items-center justify-between mb-2">
-                                                <h3
-                                                    className="text-lg font-bold text-gray-900 dark:text-white"
-                                                    style={{ fontFamily: 'Playfair Display, serif' }}
-                                                >
+                                                <h3 className="text-lg font-bold text-gray-900 dark:text-white font-display">
                                                     {selectedCountry}
                                                 </h3>
-                                                <span className="text-xs text-gray-400">{countryPosts.length}→</span>
+                                                <span className="text-xs text-gray-400">{countryPosts.length}&rarr;</span>
                                             </div>
                                             <p className="text-xs text-gray-500 dark:text-gray-400 mb-3 line-clamp-2 font-light leading-relaxed">
                                                 {mainPost ? `From the ${mainPost.city} ${mainPost.sections[0]?.heading?.toLowerCase() || 'highlights'} to the ${mainPost.sections[1]?.heading?.toLowerCase() || 'beauty'} of ${selectedCountry}...` : `Explore ${selectedCountry}`}
                                             </p>
                                             <button
                                                 onClick={() => { setSelectedPost(null); setSelectedCountry(selectedCountry); }}
-                                                className="text-[var(--brand)] text-[11px] font-bold uppercase tracking-[0.12em] hover:underline cursor-pointer flex items-center gap-1"
+                                                className="text-[var(--brand)] text-xs font-bold uppercase tracking-[0.12em] hover:underline cursor-pointer flex items-center gap-1"
                                             >
                                                 Read Journal
                                                 <ArrowRight className="w-3 h-3" />
@@ -152,20 +146,14 @@ export default function MapPage() {
 
                     {/* Visited counter */}
                     <div className="absolute bottom-10 left-8 z-[600] hidden md:flex flex-col gap-1">
-                        <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400">
+                        <span className="text-xs font-bold uppercase tracking-[0.2em] text-gray-400">
                             Total Visited
                         </span>
                         <div className="flex items-baseline gap-2">
-                            <span
-                                className="text-3xl text-gray-900 dark:text-white"
-                                style={{ fontFamily: 'Playfair Display, serif' }}
-                            >
+                            <span className="text-3xl text-gray-900 dark:text-white font-display">
                                 {countriesWithPosts.length}
                             </span>
-                            <span
-                                className="text-sm text-gray-500 italic"
-                                style={{ fontFamily: 'Playfair Display, serif' }}
-                            >
+                            <span className="text-sm text-gray-500 italic font-display">
                                 countries
                             </span>
                         </div>
@@ -173,7 +161,7 @@ export default function MapPage() {
 
                     {/* Featured destinations — bottom-right */}
                     <div className="absolute bottom-10 right-8 z-[600] hidden md:flex flex-col gap-3 items-end">
-                        <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400">
+                        <span className="text-xs font-bold uppercase tracking-[0.2em] text-gray-400">
                             Featured Destinations
                         </span>
                         <div className="flex flex-col gap-2 items-end">
@@ -181,8 +169,7 @@ export default function MapPage() {
                                 <button
                                     key={country}
                                     onClick={() => { setSelectedPost(null); setSelectedCountry(country); }}
-                                    className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300 hover:text-[var(--brand)] transition-colors cursor-pointer group/dest"
-                                    style={{ fontFamily: 'Playfair Display, serif' }}
+                                    className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300 hover:text-[var(--brand)] transition-colors cursor-pointer font-display"
                                 >
                                     {country}
                                     <span className="w-1.5 h-1.5 rounded-full bg-[var(--brand)]" />

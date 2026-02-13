@@ -2,15 +2,14 @@ import { ArrowRight } from 'lucide-react';
 
 export default function Footer() {
     return (
-        <footer className="bg-[#0f1f1a] text-white">
+        <footer className="bg-[var(--footer-bg)] text-white">
             {/* Main footer content */}
             <div className="max-w-7xl mx-auto py-20 px-4 sm:px-8 lg:px-12">
                 <div className="grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-8">
                     {/* Branding column */}
                     <div className="md:col-span-5">
                         <span
-                            className="text-3xl font-bold tracking-tight"
-                            style={{ fontFamily: 'Playfair Display, serif' }}
+                            className="text-3xl font-bold tracking-tight font-display"
                         >
                             Kelsie Sharp
                             <span className="text-[var(--brand)]">.</span>
@@ -47,7 +46,7 @@ export default function Footer() {
 
                     {/* Quick links */}
                     <div className="md:col-span-3">
-                        <h4 className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500 mb-5">
+                        <h4 className="text-xs font-bold uppercase tracking-[0.2em] text-gray-500 mb-5">
                             Navigate
                         </h4>
                         <ul className="space-y-3">
@@ -64,7 +63,7 @@ export default function Footer() {
 
                     {/* Newsletter mini */}
                     <div className="md:col-span-4">
-                        <h4 className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500 mb-5">
+                        <h4 className="text-xs font-bold uppercase tracking-[0.2em] text-gray-500 mb-5">
                             Stay Connected
                         </h4>
                         <p className="text-sm text-gray-400 font-light mb-5 leading-relaxed">

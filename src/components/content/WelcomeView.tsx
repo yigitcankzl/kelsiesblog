@@ -31,13 +31,10 @@ export default function WelcomeView() {
                     transition={{ duration: 0.5 }}
                 >
                     <div>
-                        <span className="text-[var(--brand)] font-bold tracking-[0.15em] text-[10px] uppercase block mb-3">
+                        <span className="text-[var(--brand)] font-bold tracking-[0.15em] text-xs uppercase block mb-3">
                             Journal
                         </span>
-                        <h2
-                            className="text-3xl md:text-4xl lg:text-5xl text-gray-900 dark:text-white leading-tight"
-                            style={{ fontFamily: 'Playfair Display, serif' }}
-                        >
+                        <h2 className="text-3xl md:text-4xl lg:text-5xl text-gray-900 dark:text-white leading-tight font-display">
                             Latest Stories
                         </h2>
                     </div>
@@ -66,19 +63,16 @@ export default function WelcomeView() {
                                     className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
                                 />
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                                <span className="absolute top-4 left-4 bg-[#1a2e35] text-white text-[10px] font-bold uppercase tracking-widest px-3.5 py-1.5 rounded-full">
+                                <span className="absolute top-4 left-4 bg-[var(--tag-bg)] text-white text-xs font-bold uppercase tracking-widest px-3.5 py-1.5 rounded-full">
                                     {santorini.country}
                                 </span>
                             </div>
-                            <div className="flex items-center text-[11px] font-medium text-gray-400 mb-4 gap-3 uppercase tracking-wider">
+                            <div className="flex items-center text-xs font-medium text-gray-400 mb-4 gap-3 uppercase tracking-wider">
                                 <span>{santorini.date}</span>
-                                <span className="text-gray-300">•</span>
+                                <span className="text-gray-300">&bull;</span>
                                 <span>{santorini.category}</span>
                             </div>
-                            <h3
-                                className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white mb-5 group-hover:text-[var(--brand)] transition-colors leading-snug"
-                                style={{ fontFamily: 'Playfair Display, serif' }}
-                            >
+                            <h3 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white mb-5 group-hover:text-[var(--brand)] transition-colors leading-snug font-display">
                                 {santorini.title}
                             </h3>
                             <p className="text-gray-500 dark:text-gray-400 text-sm font-light leading-[1.8] mb-8 flex-1">
@@ -111,19 +105,16 @@ export default function WelcomeView() {
                                         className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
                                     />
                                     <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                                    <span className="absolute top-4 left-4 bg-[#1a2e35] text-white text-[10px] font-bold uppercase tracking-widest px-3.5 py-1.5 rounded-full">
+                                    <span className="absolute top-4 left-4 bg-[var(--tag-bg)] text-white text-xs font-bold uppercase tracking-widest px-3.5 py-1.5 rounded-full">
                                         {istanbul.country}
                                     </span>
                                 </div>
-                                <div className="flex items-center text-[11px] font-medium text-gray-400 mb-4 gap-3 uppercase tracking-wider">
+                                <div className="flex items-center text-xs font-medium text-gray-400 mb-4 gap-3 uppercase tracking-wider">
                                     <span>{istanbul.date}</span>
-                                    <span className="text-gray-300">•</span>
+                                    <span className="text-gray-300">&bull;</span>
                                     <span>{istanbul.category}</span>
                                 </div>
-                                <h3
-                                    className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white mb-4 group-hover:text-[var(--brand)] transition-colors leading-snug"
-                                    style={{ fontFamily: 'Playfair Display, serif' }}
-                                >
+                                <h3 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white mb-4 group-hover:text-[var(--brand)] transition-colors leading-snug font-display">
                                     {istanbul.title}
                                 </h3>
                                 <p className="text-gray-500 dark:text-gray-400 text-sm font-light line-clamp-2 leading-[1.8]">
@@ -152,14 +143,11 @@ export default function WelcomeView() {
                                     />
                                 </div>
                                 <div className="flex-1 min-w-0">
-                                    <div className="flex items-center text-[11px] font-medium text-gray-400 mb-2 gap-3 uppercase tracking-wider">
+                                    <div className="flex items-center text-xs font-medium text-gray-400 mb-2 gap-3 uppercase tracking-wider">
                                         <span className="text-[var(--brand)] font-bold">{tokyo.country}</span>
                                         <span>{tokyo.date}</span>
                                     </div>
-                                    <h3
-                                        className="text-lg font-bold text-gray-900 dark:text-white group-hover:text-[var(--brand)] transition-colors leading-snug"
-                                        style={{ fontFamily: 'Playfair Display, serif' }}
-                                    >
+                                    <h3 className="text-lg font-bold text-gray-900 dark:text-white group-hover:text-[var(--brand)] transition-colors leading-snug font-display">
                                         {tokyo.title}
                                     </h3>
                                 </div>
@@ -185,19 +173,16 @@ export default function WelcomeView() {
                                         className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
                                     />
                                     <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                                    <span className="absolute top-4 left-4 bg-[#1a2e35] text-white text-[10px] font-bold uppercase tracking-widest px-3.5 py-1.5 rounded-full">
+                                    <span className="absolute top-4 left-4 bg-[var(--tag-bg)] text-white text-xs font-bold uppercase tracking-widest px-3.5 py-1.5 rounded-full">
                                         {cinqueTerre.country}
                                     </span>
                                 </div>
-                                <div className="flex items-center text-[11px] font-medium text-gray-400 mb-4 gap-3 uppercase tracking-wider">
+                                <div className="flex items-center text-xs font-medium text-gray-400 mb-4 gap-3 uppercase tracking-wider">
                                     <span>{cinqueTerre.date}</span>
-                                    <span className="text-gray-300">•</span>
+                                    <span className="text-gray-300">&bull;</span>
                                     <span>{cinqueTerre.category}</span>
                                 </div>
-                                <h3
-                                    className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white mb-4 group-hover:text-[var(--brand)] transition-colors leading-snug"
-                                    style={{ fontFamily: 'Playfair Display, serif' }}
-                                >
+                                <h3 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white mb-4 group-hover:text-[var(--brand)] transition-colors leading-snug font-display">
                                     {cinqueTerre.title}
                                 </h3>
                                 <p className="text-gray-500 dark:text-gray-400 text-sm font-light line-clamp-2 leading-[1.8]">
@@ -214,10 +199,7 @@ export default function WelcomeView() {
                             className="bg-gray-50/80 dark:bg-gray-900/80 backdrop-blur-sm p-10 rounded-2xl border border-gray-100 dark:border-gray-800"
                         >
                             <Mail className="w-7 h-7 text-[var(--brand)] mb-5" strokeWidth={1.5} />
-                            <h4
-                                className="text-xl font-bold text-gray-900 dark:text-white mb-3"
-                                style={{ fontFamily: 'Playfair Display, serif' }}
-                            >
+                            <h4 className="text-xl font-bold text-gray-900 dark:text-white mb-3 font-display">
                                 Don't miss a post
                             </h4>
                             <p className="text-xs text-gray-500 dark:text-gray-400 mb-8 font-light leading-relaxed">

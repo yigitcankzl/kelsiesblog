@@ -22,8 +22,7 @@ export default function Navbar() {
                         className="flex-shrink-0 cursor-pointer"
                     >
                         <span
-                            className="text-2xl sm:text-3xl font-bold tracking-tight text-gray-900 dark:text-white"
-                            style={{ fontFamily: 'Playfair Display, serif' }}
+                            className="text-2xl sm:text-3xl font-bold tracking-tight text-gray-900 dark:text-white font-display"
                         >
                             Kelsie Sharp
                             <span className="text-[var(--brand)] text-3xl sm:text-4xl">.</span>

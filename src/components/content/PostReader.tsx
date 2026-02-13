@@ -23,14 +23,11 @@ export default function PostReader() {
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-black/10" />
                 <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-10">
                     <div className="max-w-3xl mx-auto">
-                        <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-white/20 backdrop-blur-md text-white text-[10px] font-bold uppercase tracking-[0.12em] mb-4">
+                        <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-white/20 backdrop-blur-md text-white text-xs font-bold uppercase tracking-[0.12em] mb-4">
                             <MapPin className="w-3 h-3" />
                             {selectedPost.city}, {selectedPost.country}
                         </span>
-                        <h1
-                            className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white leading-tight"
-                            style={{ fontFamily: 'Playfair Display, serif' }}
-                        >
+                        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white leading-tight font-display">
                             {selectedPost.title}
                         </h1>
                         <div className="flex items-center gap-3 mt-3 text-white/60 text-sm">
@@ -77,10 +74,7 @@ export default function PostReader() {
                                 </div>
                             )}
 
-                            <h2
-                                className="text-xl sm:text-2xl font-bold mb-4 leading-snug text-gray-900 dark:text-white"
-                                style={{ fontFamily: 'Playfair Display, serif' }}
-                            >
+                            <h2 className="text-xl sm:text-2xl font-bold mb-4 leading-snug text-gray-900 dark:text-white font-display">
                                 {section.heading}
                             </h2>
 
