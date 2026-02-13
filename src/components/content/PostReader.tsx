@@ -35,9 +35,9 @@ export default function PostReader() {
                     initial={{ opacity: 0, y: 16 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.15, duration: 0.5 }}
-                    className="mb-12"
+                    style={{ marginBottom: '24px' }}
                 >
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-[var(--brand)] text-black text-[6px] font-bold uppercase tracking-[0.12em] mb-4"
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-[var(--brand)] text-black text-[6px] font-bold uppercase tracking-[0.12em]"
                         style={{ fontFamily: "'Press Start 2P', monospace" }}>
                         {selectedPost.city}, {selectedPost.country}
                     </span>
