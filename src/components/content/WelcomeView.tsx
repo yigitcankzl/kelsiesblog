@@ -26,12 +26,13 @@ export default function WelcomeView() {
                     transition={{ duration: 0.5 }}
                 >
                     <div>
-                        <span className="text-[var(--brand)] font-bold tracking-[0.2em] text-[8px] uppercase block mb-3 neon-glow"
+                        <span className="text-[var(--neon-cyan)] font-bold tracking-[0.2em] text-[8px] uppercase block mb-3 neon-glow-cyan"
                             style={{ fontFamily: "'Press Start 2P', monospace" }}>
                             ▸ JOURNAL ◂
                         </span>
-                        <h2 className="text-lg md:text-2xl lg:text-3xl text-white leading-tight"
-                            style={{ fontFamily: "'Press Start 2P', monospace" }}>
+                        <h2 className="text-lg md:text-2xl lg:text-3xl text-white leading-tight relative text-glitch-always"
+                            style={{ fontFamily: "'Press Start 2P', monospace" }}
+                            data-text="Latest Stories">
                             Latest Stories
                         </h2>
                     </div>
@@ -57,8 +58,9 @@ export default function WelcomeView() {
                             onClick={() => handlePostClick(santorini)}
                             className="group cursor-pointer flex flex-col h-full transition-all duration-500 hover:-translate-y-1"
                         >
-                            <div className="relative overflow-hidden aspect-[3/4] mb-7 border-2 border-[var(--brand)]"
+                            <div className="relative overflow-hidden aspect-[3/4] mb-7 retro-corners hover-glitch"
                                 style={{ boxShadow: '0 0 10px rgba(0, 255, 65, 0.15)' }}>
+                                <span className="rc-extra absolute inset-0" />
                                 <img
                                     src={santorini.coverImage}
                                     alt={santorini.title}
@@ -73,12 +75,13 @@ export default function WelcomeView() {
                             </div>
                             <div className="flex items-center text-[6px] font-medium text-gray-500 mb-4 gap-3 uppercase tracking-wider"
                                 style={{ fontFamily: "'Press Start 2P', monospace" }}>
-                                <span>{santorini.date}</span>
-                                <span className="text-[var(--brand)]">■</span>
+                                <span className="text-[var(--neon-cyan)]">{santorini.date}</span>
+                                <span className="text-[var(--neon-magenta)]">■</span>
                                 <span>{santorini.category}</span>
                             </div>
-                            <h3 className="text-[10px] md:text-xs font-bold text-white mb-5 group-hover:text-[var(--brand)] transition-colors leading-relaxed"
-                                style={{ fontFamily: "'Press Start 2P', monospace" }}>
+                            <h3 className="text-[10px] md:text-xs font-bold text-white mb-5 group-hover:text-[var(--brand)] transition-colors leading-relaxed text-glitch"
+                                style={{ fontFamily: "'Press Start 2P', monospace" }}
+                                data-text={santorini.title}>
                                 {santorini.title}
                             </h3>
                             <p className="text-gray-400 text-[8px] leading-[2] mb-8 flex-1"
@@ -105,8 +108,9 @@ export default function WelcomeView() {
                                 onClick={() => handlePostClick(istanbul)}
                                 className="group cursor-pointer transition-all duration-500 hover:-translate-y-1"
                             >
-                                <div className="relative overflow-hidden aspect-[4/3] mb-7 border-2 border-[var(--brand)]"
+                                <div className="relative overflow-hidden aspect-[4/3] mb-7 retro-corners hover-glitch"
                                     style={{ boxShadow: '0 0 10px rgba(0, 255, 65, 0.15)' }}>
+                                    <span className="rc-extra absolute inset-0" />
                                     <img
                                         src={istanbul.coverImage}
                                         alt={istanbul.title}
@@ -121,12 +125,13 @@ export default function WelcomeView() {
                                 </div>
                                 <div className="flex items-center text-[6px] font-medium text-gray-500 mb-4 gap-3 uppercase tracking-wider"
                                     style={{ fontFamily: "'Press Start 2P', monospace" }}>
-                                    <span>{istanbul.date}</span>
-                                    <span className="text-[var(--brand)]">■</span>
+                                    <span className="text-[var(--neon-cyan)]">{istanbul.date}</span>
+                                    <span className="text-[var(--neon-magenta)]">■</span>
                                     <span>{istanbul.category}</span>
                                 </div>
-                                <h3 className="text-[10px] md:text-xs font-bold text-white mb-4 group-hover:text-[var(--brand)] transition-colors leading-relaxed"
-                                    style={{ fontFamily: "'Press Start 2P', monospace" }}>
+                                <h3 className="text-[10px] md:text-xs font-bold text-white mb-4 group-hover:text-[var(--brand)] transition-colors leading-relaxed text-glitch"
+                                    style={{ fontFamily: "'Press Start 2P', monospace" }}
+                                    data-text={istanbul.title}>
                                     {istanbul.title}
                                 </h3>
                                 <p className="text-gray-400 text-[8px] line-clamp-4 leading-[2]"
@@ -136,11 +141,14 @@ export default function WelcomeView() {
                             </motion.article>
                         )}
 
-                        {/* Pixel divider */}
+                        {/* Pixel divider — multi-color */}
                         <div className="flex items-center gap-1 justify-center">
                             {Array.from({ length: 15 }).map((_, i) => (
                                 <div key={i} className="w-1.5 h-1.5"
-                                    style={{ backgroundColor: i % 2 === 0 ? '#00FF41' : 'transparent', opacity: 0.5 }} />
+                                    style={{
+                                        backgroundColor: i % 3 === 0 ? '#00FF41' : i % 3 === 1 ? '#00FFFF' : '#FF00E4',
+                                        opacity: i % 2 === 0 ? 0.5 : 0.2,
+                                    }} />
                             ))}
                         </div>
 
@@ -153,8 +161,9 @@ export default function WelcomeView() {
                                 onClick={() => handlePostClick(tokyo)}
                                 className="group cursor-pointer flex gap-5 items-start"
                             >
-                                <div className="relative overflow-hidden w-28 h-24 flex-shrink-0 border-2 border-[var(--brand)]"
+                                <div className="relative overflow-hidden w-28 h-24 flex-shrink-0 retro-corners hover-glitch"
                                     style={{ boxShadow: '0 0 8px rgba(0, 255, 65, 0.15)' }}>
+                                    <span className="rc-extra absolute inset-0" />
                                     <img
                                         src={tokyo.coverImage}
                                         alt={tokyo.title}
@@ -165,11 +174,12 @@ export default function WelcomeView() {
                                 <div className="flex-1 min-w-0">
                                     <div className="flex items-center text-[6px] font-medium text-gray-500 mb-2 gap-3 uppercase tracking-wider"
                                         style={{ fontFamily: "'Press Start 2P', monospace" }}>
-                                        <span className="text-[var(--brand)] font-bold">{tokyo.country}</span>
-                                        <span>{tokyo.date}</span>
+                                        <span className="text-[var(--neon-amber)] font-bold">{tokyo.country}</span>
+                                        <span className="text-[var(--neon-cyan)]">{tokyo.date}</span>
                                     </div>
-                                    <h3 className="text-[9px] font-bold text-white group-hover:text-[var(--brand)] transition-colors leading-relaxed"
-                                        style={{ fontFamily: "'Press Start 2P', monospace" }}>
+                                    <h3 className="text-[9px] font-bold text-white group-hover:text-[var(--brand)] transition-colors leading-relaxed text-glitch"
+                                        style={{ fontFamily: "'Press Start 2P', monospace" }}
+                                        data-text={tokyo.title}>
                                         {tokyo.title}
                                     </h3>
                                 </div>
@@ -187,8 +197,9 @@ export default function WelcomeView() {
                                 onClick={() => handlePostClick(cinqueTerre)}
                                 className="group cursor-pointer transition-all duration-500 hover:-translate-y-1"
                             >
-                                <div className="relative overflow-hidden aspect-[3/4] mb-7 border-2 border-[var(--brand)]"
+                                <div className="relative overflow-hidden aspect-[3/4] mb-7 retro-corners hover-glitch"
                                     style={{ boxShadow: '0 0 10px rgba(0, 255, 65, 0.15)' }}>
+                                    <span className="rc-extra absolute inset-0" />
                                     <img
                                         src={cinqueTerre.coverImage}
                                         alt={cinqueTerre.title}
@@ -203,12 +214,13 @@ export default function WelcomeView() {
                                 </div>
                                 <div className="flex items-center text-[6px] font-medium text-gray-500 mb-4 gap-3 uppercase tracking-wider"
                                     style={{ fontFamily: "'Press Start 2P', monospace" }}>
-                                    <span>{cinqueTerre.date}</span>
-                                    <span className="text-[var(--brand)]">■</span>
+                                    <span className="text-[var(--neon-cyan)]">{cinqueTerre.date}</span>
+                                    <span className="text-[var(--neon-magenta)]">■</span>
                                     <span>{cinqueTerre.category}</span>
                                 </div>
-                                <h3 className="text-[10px] md:text-xs font-bold text-white mb-4 group-hover:text-[var(--brand)] transition-colors leading-relaxed"
-                                    style={{ fontFamily: "'Press Start 2P', monospace" }}>
+                                <h3 className="text-[10px] md:text-xs font-bold text-white mb-4 group-hover:text-[var(--brand)] transition-colors leading-relaxed text-glitch"
+                                    style={{ fontFamily: "'Press Start 2P', monospace" }}
+                                    data-text={cinqueTerre.title}>
                                     {cinqueTerre.title}
                                 </h3>
                                 <p className="text-gray-400 text-[8px] line-clamp-2 leading-[2]"
@@ -223,10 +235,17 @@ export default function WelcomeView() {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.4, duration: 0.5 }}
-                            className="bg-black p-8 border-2 border-[var(--brand)]"
+                            className="bg-black p-8 retro-corners"
                             style={{ boxShadow: '0 0 12px rgba(0, 255, 65, 0.2)' }}
                         >
-                            <Mail className="w-6 h-6 text-[var(--brand)] mb-5" strokeWidth={1.5} />
+                            <span className="rc-extra absolute inset-0" style={{ position: 'relative' }} />
+                            <div className="flex items-center gap-3 mb-5">
+                                <Mail className="w-5 h-5 text-[var(--neon-cyan)]" strokeWidth={1.5} />
+                                <span className="text-[5px] text-[var(--neon-amber)] uppercase tracking-[0.3em]"
+                                    style={{ fontFamily: "'Press Start 2P', monospace" }}>
+                                    INCOMING TRANSMISSION
+                                </span>
+                            </div>
                             <h4 className="text-[10px] font-bold text-white mb-3"
                                 style={{ fontFamily: "'Press Start 2P', monospace" }}>
                                 JOIN THE PARTY
@@ -236,12 +255,14 @@ export default function WelcomeView() {
                                 15,000+ PLAYERS GET WEEKLY UPDATES AND TRAVEL TIPS.
                             </p>
                             <div className="flex flex-col gap-4">
-                                <input
-                                    type="email"
-                                    placeholder="EMAIL_ADDRESS_"
-                                    className="w-full text-[8px] px-4 py-3 border-2 border-[var(--brand)] bg-black text-[var(--brand)] focus:ring-2 focus:ring-[var(--brand)]/30 outline-none transition-all placeholder-gray-600"
-                                    style={{ fontFamily: "'Press Start 2P', monospace" }}
-                                />
+                                <div className="relative">
+                                    <input
+                                        type="email"
+                                        placeholder="EMAIL_ADDRESS"
+                                        className="w-full text-[8px] px-4 py-3 border-2 border-[var(--brand)] bg-black text-[var(--brand)] focus:ring-2 focus:ring-[var(--brand)]/30 outline-none transition-all placeholder-gray-600 blink-cursor"
+                                        style={{ fontFamily: "'Press Start 2P', monospace" }}
+                                    />
+                                </div>
                                 <button className="bg-[var(--brand)] text-black font-medium text-[8px] py-3 px-4 hover:bg-[#00cc33] transition-all cursor-pointer uppercase tracking-wider w-full border-2 border-[var(--brand)]"
                                     style={{
                                         fontFamily: "'Press Start 2P', monospace",
