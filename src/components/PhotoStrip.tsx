@@ -6,7 +6,7 @@ export default function PhotoStrip() {
     const images = [
         {
             src: 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=600',
-            alt: 'European caf\u00e9 with red awning',
+            alt: 'European café with red awning',
             location: 'Paris',
         },
         {
@@ -37,40 +37,53 @@ export default function PhotoStrip() {
     ];
 
     return (
-        <section className="w-full overflow-hidden">
+        <section className="w-full overflow-hidden border-t-2 border-b-2 border-[var(--brand)]"
+            style={{ boxShadow: '0 0 12px rgba(0, 255, 65, 0.15) inset' }}>
             <div className="flex">
                 {images.map((img, index) => (
                     <div
                         key={index}
                         className="relative w-1/3 sm:w-1/6 aspect-square overflow-hidden cursor-pointer"
+                        style={{
+                            borderRight: index < images.length - 1 ? '1px solid #00FF4144' : 'none',
+                        }}
                         onMouseEnter={() => setHoveredIndex(index)}
                         onMouseLeave={() => setHoveredIndex(null)}
                     >
                         <img
                             src={img.src}
                             alt={img.alt}
-                            className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out"
+                            className="absolute inset-0 w-full h-full object-cover transition-all duration-700 ease-out"
                             style={{
                                 transform: hoveredIndex === index ? 'scale(1.15)' : 'scale(1)',
+                                filter: hoveredIndex === index
+                                    ? 'saturate(0.3) contrast(1.3) brightness(0.6)'
+                                    : 'saturate(0.5) brightness(0.7)',
+                                imageRendering: hoveredIndex === index ? 'pixelated' as any : 'auto',
                             }}
                         />
-                        {/* Gradient overlay on hover */}
+                        {/* Neon green gradient overlay on hover */}
                         <div
                             className="absolute inset-0 transition-opacity duration-500"
                             style={{
                                 opacity: hoveredIndex === index ? 1 : 0,
-                                background: 'linear-gradient(to top, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0) 60%)',
+                                background: 'linear-gradient(to top, rgba(0,255,65,0.3) 0%, rgba(0,0,0,0) 60%)',
                             }}
                         />
                         {/* Location label on hover */}
                         <span
-                            className="absolute bottom-3 left-0 right-0 text-center text-white text-xs font-bold uppercase tracking-[0.2em] transition-all duration-500"
+                            className="absolute bottom-3 left-0 right-0 text-center text-[var(--brand)] transition-all duration-500"
                             style={{
+                                fontFamily: "'Press Start 2P', monospace",
+                                fontSize: '7px',
+                                letterSpacing: '0.2em',
+                                textTransform: 'uppercase',
                                 opacity: hoveredIndex === index ? 1 : 0,
                                 transform: hoveredIndex === index ? 'translateY(0)' : 'translateY(8px)',
+                                textShadow: '0 0 8px rgba(0, 255, 65, 0.6)',
                             }}
                         >
-                            {img.location}
+                            {'> '}{img.location}{' <'}
                         </span>
                     </div>
                 ))}
