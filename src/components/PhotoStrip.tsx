@@ -48,7 +48,7 @@ export default function PhotoStrip() {
     return (
         <section className="w-full overflow-hidden border-t-2 border-b-2 border-[var(--brand)]"
             style={{ boxShadow: '0 0 12px rgba(0, 255, 65, 0.15) inset' }}>
-            <div className="flex">
+            <div className="flex" style={{ maxWidth: '1024px', margin: '0 auto' }}>
                 {images.map((img, index) => (
                     <div
                         key={index}
