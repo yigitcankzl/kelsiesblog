@@ -40,9 +40,8 @@ export default function PhotoStrip() {
     const allImages = [...images, ...images];
 
     return (
-        <section className="w-full py-28"
-            style={{ boxShadow: '0 0 12px rgba(0, 255, 65, 0.15) inset' }}>
-            <div className="overflow-hidden" style={{ maxWidth: '976px', margin: '0 auto' }}>
+        <section className="w-full py-28">
+            <div className="overflow-hidden" style={{ maxWidth: '976px', margin: '0 auto', boxShadow: '0 0 12px rgba(0, 255, 65, 0.15) inset' }}>
             <div className="marquee-track">
                 {allImages.map((img, index) => (
                     <div
