@@ -1,16 +1,31 @@
-import { useBlogStore } from '@/store/store';
-
 export default function PhotoStrip() {
-    const { posts } = useBlogStore();
-
-    // Use cover images from posts, cycling if fewer than 6
-    const images = Array.from({ length: 6 }, (_, i) => {
-        const post = posts[i % posts.length];
-        return {
-            src: post?.coverImage || '',
-            alt: post?.title || 'Travel photo',
-        };
-    });
+    // 6 unique travel images matching the Stitch reference
+    const images = [
+        {
+            src: 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=600',
+            alt: 'European café with red awning',
+        },
+        {
+            src: 'https://images.unsplash.com/photo-1523906834658-6e24ef2386f9?w=600',
+            alt: 'Venice canal with gondolas',
+        },
+        {
+            src: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=600',
+            alt: 'Dubai skyline at sunset',
+        },
+        {
+            src: 'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=600',
+            alt: 'Big Ben and Houses of Parliament',
+        },
+        {
+            src: 'https://images.unsplash.com/photo-1531210483974-4f8205f49e36?w=600',
+            alt: 'Matterhorn mountain peak',
+        },
+        {
+            src: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600',
+            alt: 'Tropical beach with palm tree',
+        },
+    ];
 
     return (
         <section className="w-full overflow-hidden">
@@ -18,26 +33,9 @@ export default function PhotoStrip() {
                 {images.map((img, index) => (
                     <div
                         key={index}
-                        className="w-1/3 sm:w-1/6 aspect-square bg-cover bg-center relative group cursor-pointer"
+                        className="w-1/3 sm:w-1/6 aspect-square bg-cover bg-center"
                         style={{ backgroundImage: `url('${img.src}')` }}
-                    >
-                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="28"
-                                height="28"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="white"
-                                strokeWidth="1.5"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                            >
-                                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
-                                <circle cx="12" cy="13" r="4" />
-                            </svg>
-                        </div>
-                    </div>
+                    />
                 ))}
             </div>
         </section>

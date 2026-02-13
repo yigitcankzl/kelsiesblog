@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { MapPin, ArrowRight } from 'lucide-react';
+import { Mail, ArrowRight } from 'lucide-react';
 import { useBlogStore } from '@/store/store';
 
 export default function WelcomeView() {
@@ -10,10 +10,15 @@ export default function WelcomeView() {
         setSelectedPost(post);
     };
 
-    // Top row: first 3 posts (equal cards)
-    const topRow = posts.slice(0, 3);
-    // Bottom row: remaining posts
-    const bottomRow = posts.slice(3);
+    // Posts mapped to reference grid slots:
+    // [0] Santorini = tall left card
+    // [1] Istanbul Coffee = middle-top card
+    // [2] Tokyo = middle-bottom small card
+    // [3] Cinque Terre = tall right card
+    const santorini = posts[0];
+    const istanbul = posts[1];
+    const tokyo = posts[2];
+    const cinqueTerre = posts[3];
 
     return (
         <section className="bg-background py-20 px-4 sm:px-6 lg:px-8 relative z-10">
@@ -42,139 +47,149 @@ export default function WelcomeView() {
                     </button>
                 </motion.div>
 
-                {/* Top row: 3 equal cards */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 mb-10">
-                    {topRow.map((post, index) => (
-                        <motion.article
-                            key={post.id}
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.1 + index * 0.1, duration: 0.5 }}
-                            onClick={() => handlePostClick(post)}
-                            className="group cursor-pointer"
-                        >
-                            <div className="relative overflow-hidden aspect-[4/5] mb-5">
-                                <img
-                                    src={post.coverImage}
-                                    alt={post.title}
-                                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
-                                />
-                                <div className="absolute top-4 left-4">
-                                    <span className="inline-block px-3 py-1 bg-white dark:bg-black text-[10px] font-bold tracking-[0.15em] uppercase text-gray-900 dark:text-white">
-                                        {post.country}
-                                    </span>
-                                </div>
-                            </div>
-                            <div className="flex items-center text-[10px] font-medium text-gray-400 mb-2.5 space-x-2 uppercase tracking-wider">
-                                <span>{post.date}</span>
-                                <span className="w-1 h-1 bg-gray-300 rounded-full" />
-                                <span>{post.category}</span>
-                            </div>
-                            <h3
-                                className="text-lg md:text-xl font-medium text-gray-900 dark:text-white mb-2 group-hover:text-[var(--brand)] transition-colors leading-snug"
-                                style={{ fontFamily: 'Playfair Display, serif' }}
-                            >
-                                {post.title}
-                            </h3>
-                            <p className="text-gray-500 dark:text-gray-400 text-sm font-light line-clamp-2 leading-relaxed">
-                                {post.sections[0]?.content}
-                            </p>
-                        </motion.article>
-                    ))}
-                </div>
-
-                {/* Bottom row: asymmetric layout */}
+                {/* Main grid — 3 columns matching reference */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
-                    {/* Large card - left */}
-                    {bottomRow[0] && (
+
+                    {/* === Column 1: Tall Santorini card === */}
+                    {santorini && (
                         <motion.article
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.4, duration: 0.5 }}
-                            onClick={() => handlePostClick(bottomRow[0])}
-                            className="group cursor-pointer"
+                            transition={{ delay: 0.1, duration: 0.5 }}
+                            onClick={() => handlePostClick(santorini)}
+                            className="group cursor-pointer flex flex-col"
                         >
-                            <div className="relative overflow-hidden aspect-[4/3] mb-5">
+                            <div className="relative overflow-hidden aspect-[3/4] mb-5">
                                 <img
-                                    src={bottomRow[0].coverImage}
-                                    alt={bottomRow[0].title}
+                                    src={santorini.coverImage}
+                                    alt={santorini.title}
                                     className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
                                 />
                             </div>
                             <div className="flex items-center text-[10px] font-medium text-gray-400 mb-2.5 space-x-2 uppercase tracking-wider">
-                                <span>{bottomRow[0].date}</span>
+                                <span>{santorini.date}</span>
                                 <span className="w-1 h-1 bg-gray-300 rounded-full" />
-                                <span>{bottomRow[0].sections.length * 3} min read</span>
+                                <span>{santorini.category}</span>
                             </div>
                             <h3
-                                className="text-xl md:text-2xl font-medium text-gray-900 dark:text-white mb-2 group-hover:text-[var(--brand)] transition-colors leading-snug"
+                                className="text-lg md:text-xl font-bold text-gray-900 dark:text-white mb-3 group-hover:text-[var(--brand)] transition-colors leading-snug"
                                 style={{ fontFamily: 'Playfair Display, serif' }}
                             >
-                                {bottomRow[0].title}
+                                {santorini.title}
                             </h3>
-                            <p className="text-gray-500 dark:text-gray-400 text-sm font-light line-clamp-2 leading-relaxed">
-                                {bottomRow[0].sections[0]?.content}
+                            <p className="text-gray-500 dark:text-gray-400 text-sm font-light leading-relaxed mb-4 flex-1">
+                                {santorini.sections[0]?.content}
                             </p>
-                        </motion.article>
-                    )}
-
-                    {/* Small card - middle */}
-                    {bottomRow[1] && (
-                        <motion.article
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.5, duration: 0.5 }}
-                            onClick={() => handlePostClick(bottomRow[1])}
-                            className="group cursor-pointer"
-                        >
-                            <div className="relative overflow-hidden aspect-[16/10] mb-5">
-                                <img
-                                    src={bottomRow[1].coverImage}
-                                    alt={bottomRow[1].title}
-                                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
-                                />
-                            </div>
-                            <div className="flex items-center text-[10px] font-medium text-gray-400 mb-2.5 space-x-2 uppercase tracking-wider">
-                                <span className="text-[var(--brand)]">{bottomRow[1].country}</span>
-                                <span>{bottomRow[1].date}</span>
-                            </div>
-                            <h3
-                                className="text-lg font-medium text-gray-900 dark:text-white mb-1 group-hover:text-[var(--brand)] transition-colors leading-snug"
-                                style={{ fontFamily: 'Playfair Display, serif' }}
+                            <span
+                                className="text-sm font-medium text-gray-900 dark:text-white border-b border-gray-900 dark:border-white pb-0.5 self-start hover:text-[var(--brand)] hover:border-[var(--brand)] transition-colors cursor-pointer"
                             >
-                                {bottomRow[1].title}
-                            </h3>
+                                Read Story
+                            </span>
                         </motion.article>
                     )}
 
-                    {/* Third bottom card + Newsletter */}
+                    {/* === Column 2: Stacked — Istanbul top + Tokyo bottom === */}
                     <div className="flex flex-col gap-8">
-                        {bottomRow[2] && (
+                        {/* Istanbul coffee card (horizontal image + text below) */}
+                        {istanbul && (
                             <motion.article
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: 0.55, duration: 0.5 }}
-                                onClick={() => handlePostClick(bottomRow[2])}
+                                transition={{ delay: 0.2, duration: 0.5 }}
+                                onClick={() => handlePostClick(istanbul)}
                                 className="group cursor-pointer"
                             >
-                                <div className="relative overflow-hidden aspect-[4/3] mb-5">
+                                <div className="relative overflow-hidden aspect-[16/10] mb-5">
                                     <img
-                                        src={bottomRow[2].coverImage}
-                                        alt={bottomRow[2].title}
+                                        src={istanbul.coverImage}
+                                        alt={istanbul.title}
                                         className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
                                     />
                                 </div>
                                 <div className="flex items-center text-[10px] font-medium text-gray-400 mb-2.5 space-x-2 uppercase tracking-wider">
-                                    <span>{bottomRow[2].date}</span>
+                                    <span>{istanbul.date}</span>
                                     <span className="w-1 h-1 bg-gray-300 rounded-full" />
-                                    <span>{bottomRow[2].category}</span>
+                                    <span>{istanbul.category}</span>
                                 </div>
                                 <h3
-                                    className="text-lg font-medium text-gray-900 dark:text-white mb-1 group-hover:text-[var(--brand)] transition-colors leading-snug"
+                                    className="text-lg md:text-xl font-bold text-gray-900 dark:text-white mb-2 group-hover:text-[var(--brand)] transition-colors leading-snug"
                                     style={{ fontFamily: 'Playfair Display, serif' }}
                                 >
-                                    {bottomRow[2].title}
+                                    {istanbul.title}
                                 </h3>
+                                <p className="text-gray-500 dark:text-gray-400 text-sm font-light line-clamp-2 leading-relaxed">
+                                    {istanbul.sections[0]?.content}
+                                </p>
+                            </motion.article>
+                        )}
+
+                        {/* Divider */}
+                        <hr className="border-gray-100 dark:border-gray-800" />
+
+                        {/* Tokyo small card (thumbnail + text side by side) */}
+                        {tokyo && (
+                            <motion.article
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.3, duration: 0.5 }}
+                                onClick={() => handlePostClick(tokyo)}
+                                className="group cursor-pointer flex gap-4 items-start"
+                            >
+                                <div className="relative overflow-hidden w-24 h-20 flex-shrink-0">
+                                    <img
+                                        src={tokyo.coverImage}
+                                        alt={tokyo.title}
+                                        className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                                    />
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                    <div className="flex items-center text-[10px] font-medium text-gray-400 mb-1.5 space-x-2 uppercase tracking-wider">
+                                        <span className="text-[var(--brand)] font-bold">{tokyo.country}</span>
+                                        <span>{tokyo.date}</span>
+                                    </div>
+                                    <h3
+                                        className="text-base font-bold text-gray-900 dark:text-white group-hover:text-[var(--brand)] transition-colors leading-snug"
+                                        style={{ fontFamily: 'Playfair Display, serif' }}
+                                    >
+                                        {tokyo.title}
+                                    </h3>
+                                </div>
+                            </motion.article>
+                        )}
+                    </div>
+
+                    {/* === Column 3: Tall Cinque Terre card + Newsletter === */}
+                    <div className="flex flex-col gap-8">
+                        {/* Cinque Terre tall card */}
+                        {cinqueTerre && (
+                            <motion.article
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.25, duration: 0.5 }}
+                                onClick={() => handlePostClick(cinqueTerre)}
+                                className="group cursor-pointer"
+                            >
+                                <div className="relative overflow-hidden aspect-[3/4] mb-5">
+                                    <img
+                                        src={cinqueTerre.coverImage}
+                                        alt={cinqueTerre.title}
+                                        className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
+                                    />
+                                </div>
+                                <div className="flex items-center text-[10px] font-medium text-gray-400 mb-2.5 space-x-2 uppercase tracking-wider">
+                                    <span>{cinqueTerre.date}</span>
+                                    <span className="w-1 h-1 bg-gray-300 rounded-full" />
+                                    <span>{cinqueTerre.category}</span>
+                                </div>
+                                <h3
+                                    className="text-lg md:text-xl font-bold text-gray-900 dark:text-white mb-2 group-hover:text-[var(--brand)] transition-colors leading-snug"
+                                    style={{ fontFamily: 'Playfair Display, serif' }}
+                                >
+                                    {cinqueTerre.title}
+                                </h3>
+                                <p className="text-gray-500 dark:text-gray-400 text-sm font-light line-clamp-2 leading-relaxed">
+                                    {cinqueTerre.sections[0]?.content}
+                                </p>
                             </motion.article>
                         )}
 
@@ -182,10 +197,10 @@ export default function WelcomeView() {
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.6, duration: 0.5 }}
-                            className="bg-gray-50 dark:bg-gray-900 p-8 border border-gray-100 dark:border-gray-800"
+                            transition={{ delay: 0.4, duration: 0.5 }}
+                            className="bg-gray-50 dark:bg-gray-900 p-8"
                         >
-                            <MapPin className="w-7 h-7 text-[var(--brand)] mb-3" />
+                            <Mail className="w-7 h-7 text-[var(--brand)] mb-4" strokeWidth={1.5} />
                             <h4
                                 className="text-xl font-bold text-gray-900 dark:text-white mb-2"
                                 style={{ fontFamily: 'Playfair Display, serif' }}
@@ -193,7 +208,7 @@ export default function WelcomeView() {
                                 Don't miss a post
                             </h4>
                             <p className="text-xs text-gray-500 dark:text-gray-400 mb-6 font-light leading-relaxed">
-                                Join travelers getting weekly updates, curated guides, and travel tips.
+                                Join 15,000+ travelers getting weekly updates, curated guides, and travel tips.
                             </p>
                             <div className="flex flex-col gap-3">
                                 <input
