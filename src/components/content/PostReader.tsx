@@ -48,13 +48,13 @@ export default function PostReader() {
                     initial={{ opacity: 0, x: -12 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.1 }}
-                    className="mb-10"
+                    className="mb-12"
                 >
                     <button
                         onClick={() => setSelectedPost(null)}
-                        className="flex items-center gap-2 text-xs font-medium text-gray-500 hover:text-[var(--brand)] transition-colors uppercase tracking-[0.15em] cursor-pointer border-b border-gray-200 hover:border-[var(--brand)] pb-1"
+                        className="flex items-center gap-2 text-xs font-medium text-gray-900 dark:text-white px-5 py-2.5 border border-gray-200 dark:border-gray-700 rounded-full hover:bg-[var(--brand)] hover:text-white hover:border-[var(--brand)] transition-all duration-300 cursor-pointer uppercase tracking-[0.12em] group"
                     >
-                        <ArrowLeft className="w-4 h-4" />
+                        <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-0.5 transition-transform" />
                         Back to {selectedCountry || 'Posts'}
                     </button>
                 </motion.div>
@@ -70,10 +70,10 @@ export default function PostReader() {
                         >
                             {/* Section divider */}
                             {index > 0 && (
-                                <div className="flex items-center gap-3 mb-10">
-                                    <div className="flex-1 h-px bg-gray-100 dark:bg-gray-800" />
-                                    <div className="w-1.5 h-1.5 bg-[var(--brand)]" />
-                                    <div className="flex-1 h-px bg-gray-100 dark:bg-gray-800" />
+                                <div className="flex items-center gap-4 mb-12 opacity-40">
+                                    <div className="flex-1 h-px bg-gradient-to-r from-transparent via-gray-300 dark:via-gray-600 to-transparent" />
+                                    <div className="w-1.5 h-1.5 rotate-45 bg-[var(--brand)]" />
+                                    <div className="flex-1 h-px bg-gradient-to-r from-transparent via-gray-300 dark:via-gray-600 to-transparent" />
                                 </div>
                             )}
 
@@ -94,7 +94,7 @@ export default function PostReader() {
                                 </div>
                             )}
 
-                            <p className="text-[15px] text-gray-600 dark:text-gray-300 leading-[1.85] font-light">
+                            <p className="text-lg text-gray-600 dark:text-gray-300 leading-relaxed font-light">
                                 {section.content}
                             </p>
                         </motion.section>
