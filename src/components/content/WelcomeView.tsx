@@ -119,7 +119,7 @@ export default function WelcomeView() {
 
                 {/* Stories grid — dynamic, centered */}
                 {rest.length > 0 && (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 justify-items-center">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-10 justify-items-center max-w-4xl mx-auto">
                         {rest.map((post, index) => (
                             <motion.article
                                 key={post.id}
