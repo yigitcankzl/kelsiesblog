@@ -2,6 +2,15 @@ export default function Footer() {
     return (
         <footer className="border-t-2 border-[var(--brand)] bg-black"
             style={{ boxShadow: '0 -2px 12px rgba(0, 255, 65, 0.15)' }}>
+
+            {/* ASCII art top border */}
+            <div className="text-center py-2 overflow-hidden">
+                <span className="text-[6px] text-[var(--brand)] tracking-[0.3em] opacity-40"
+                    style={{ fontFamily: "'Press Start 2P', monospace" }}>
+                    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+                </span>
+            </div>
+
             <div className="max-w-7xl mx-auto px-4 sm:px-8 lg:px-12 py-6 flex items-center justify-between">
                 {/* Brand + Copyright */}
                 <div className="flex items-center gap-4">
@@ -15,9 +24,23 @@ export default function Footer() {
                     </span>
                 </div>
 
+                {/* System status */}
+                <div className="hidden sm:flex items-center gap-3">
+                    <div className="w-2 h-2 bg-[var(--brand)]"
+                        style={{ boxShadow: '0 0 6px rgba(0, 255, 65, 0.6), 0 0 12px rgba(0, 255, 65, 0.3)' }} />
+                    <span className="text-[6px] text-[var(--brand)] uppercase tracking-[0.2em] opacity-60"
+                        style={{ fontFamily: "'Press Start 2P', monospace" }}>
+                        SYS ONLINE
+                    </span>
+                    <span className="text-[6px] text-[var(--neon-cyan)] uppercase tracking-[0.15em] opacity-40"
+                        style={{ fontFamily: "'Press Start 2P', monospace" }}>
+                        v2.0.4
+                    </span>
+                </div>
+
                 {/* Retro icons */}
                 <div className="flex items-center gap-4">
-                    <a href="#" className="text-gray-500 hover:text-[var(--brand)] transition-colors">
+                    <a href="#" className="text-gray-500 hover:text-[var(--neon-magenta)] transition-colors">
                         <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
                             <path
                                 fillRule="evenodd"
@@ -26,7 +49,7 @@ export default function Footer() {
                             />
                         </svg>
                     </a>
-                    <a href="#" className="text-gray-500 hover:text-[var(--brand)] transition-colors">
+                    <a href="#" className="text-gray-500 hover:text-[var(--neon-cyan)] transition-colors">
                         <svg className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
                             <rect x="2" y="2" width="20" height="20" rx="0" />
                             <circle cx="12" cy="12" r="5" />
@@ -36,16 +59,22 @@ export default function Footer() {
                 </div>
             </div>
 
-            {/* Retro pixel decoration */}
-            <div className="flex justify-center pb-4 gap-1">
-                {Array.from({ length: 20 }).map((_, i) => (
-                    <div key={i} className="w-1.5 h-1.5"
-                        style={{
-                            backgroundColor: i % 2 === 0 ? '#00FF41' : 'transparent',
-                            opacity: 0.4,
-                        }}
-                    />
-                ))}
+            {/* ASCII art bottom border */}
+            <div className="text-center pb-3 overflow-hidden">
+                <span className="text-[5px] text-gray-600 tracking-[0.5em] block mb-2"
+                    style={{ fontFamily: "'Press Start 2P', monospace" }}>
+                    {'<'} BUILT WITH PIXELS AND LOVE {'>'}
+                </span>
+                <div className="flex justify-center gap-0.5">
+                    {Array.from({ length: 30 }).map((_, i) => (
+                        <div key={i} className="w-1.5 h-1.5"
+                            style={{
+                                backgroundColor: i % 3 === 0 ? '#00FF41' : i % 3 === 1 ? '#00FFFF' : 'transparent',
+                                opacity: 0.3,
+                            }}
+                        />
+                    ))}
+                </div>
             </div>
         </footer>
     );
