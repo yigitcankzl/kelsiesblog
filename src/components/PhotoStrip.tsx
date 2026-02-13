@@ -42,15 +42,15 @@ export default function PhotoStrip() {
     return (
         <section className="w-full"
             style={{ boxShadow: '0 0 12px rgba(0, 255, 65, 0.15) inset' }}>
-            <div className="overflow-hidden" style={{ maxWidth: '1024px', margin: '0 auto' }}>
+            <div className="overflow-hidden" style={{ maxWidth: '1024px', margin: '0 auto', paddingLeft: '24px', paddingRight: '24px' }}>
             <div className="marquee-track">
                 {allImages.map((img, index) => (
                     <div
                         key={index}
                         className="relative overflow-hidden cursor-pointer hover-glitch shrink-0"
                         style={{
-                            width: '170px',
-                            height: '170px',
+                            width: '200px',
+                            height: '150px',
                             borderRight: '1px solid #00FF4144',
                         }}
                         onMouseEnter={() => setHoveredIndex(index)}

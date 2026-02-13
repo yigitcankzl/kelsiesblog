@@ -93,7 +93,7 @@ export default function MapPage() {
             <section className={`relative w-full pt-20 ${MAP_SIZES[sizeIndex].height} bg-black flex flex-col items-center overflow-hidden scanlines transition-all duration-700 ease-in-out`}>
 
                 {/* Map container */}
-                <div className="flex-1 relative" style={{ maxWidth: '1024px', width: '100%' }}>
+                <div className="flex-1 relative" style={{ maxWidth: '1024px', width: '100%', paddingLeft: '24px', paddingRight: '24px' }}>
                     {/* Country popup card */}
                     <AnimatePresence>
                         {selectedCountry && (() => {
