@@ -4,7 +4,7 @@ import L from 'leaflet';
 import { useBlogStore } from '../../store/store';
 
 function createCityIcon(hasPosts: boolean): L.DivIcon {
-    const rawColor = hasPosts ? '#10B981' : '#9ca3af';
+    const rawColor = hasPosts ? '#00FF41' : '#555555';
     const pulseClass = hasPosts ? 'marker-pulse' : '';
 
     return L.divIcon({
@@ -16,15 +16,15 @@ function createCityIcon(hasPosts: boolean): L.DivIcon {
           width: 24px;
           height: 24px;
           background: ${rawColor}33;
-          border-radius: 50%;
+          border-radius: 0;
         "></div>
         <div style="
-          width: 14px;
-          height: 14px;
+          width: 10px;
+          height: 10px;
           background: ${rawColor};
-          border: 3px solid white;
-          border-radius: 50%;
-          box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+          border: 2px solid #000000;
+          border-radius: 0;
+          box-shadow: 0 0 8px ${rawColor}99;
           position: relative;
           z-index: 1;
           cursor: ${hasPosts ? 'pointer' : 'default'};
@@ -65,10 +65,10 @@ export default function CountryView({ country }: CountryViewProps) {
                     }}
                 >
                     <Popup>
-                        <div className="font-sans p-1">
-                            <p className="font-semibold text-sm mb-0.5">{cityData.city}</p>
-                            <p className="text-gray-500 text-xs">
-                                {posts.length} {posts.length === 1 ? 'post' : 'posts'}
+                        <div style={{ fontFamily: "'Press Start 2P', monospace" }} className="p-1">
+                            <p className="text-[8px] text-[#00FF41] mb-1">{cityData.city}</p>
+                            <p className="text-gray-400 text-[6px]">
+                                {posts.length} {posts.length === 1 ? 'POST' : 'POSTS'}
                             </p>
                             {posts.length > 0 && (
                                 <div className="mt-1.5">
@@ -76,9 +76,10 @@ export default function CountryView({ country }: CountryViewProps) {
                                         <button
                                             key={post.id}
                                             onClick={() => setSelectedPost(post)}
-                                            className="block w-full text-left px-2 py-1 mt-0.5 bg-[var(--brand-surface)] border border-green-200 rounded-md text-xs cursor-pointer font-sans hover:bg-green-100 transition-colors"
+                                            className="block w-full text-left px-2 py-1 mt-0.5 bg-[#001a0a] border border-[#00FF41] text-[6px] cursor-pointer hover:bg-[#00FF41] hover:text-black transition-colors text-white"
+                                            style={{ fontFamily: "'Press Start 2P', monospace" }}
                                         >
-                                            {post.title}
+                                            ▶ {post.title}
                                         </button>
                                     ))}
                                 </div>

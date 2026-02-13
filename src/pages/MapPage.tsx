@@ -36,11 +36,11 @@ export default function MapPage() {
     const getBaseStyle = useCallback((name: string) => {
         const has = countriesWithPosts.includes(name);
         return {
-            fillColor: has ? '#059669' : '#E5E7EB',
+            fillColor: has ? '#00FF41' : '#222222',
             weight: has ? 1.5 : 0.5,
             opacity: 1,
-            color: has ? '#047857' : '#ffffff',
-            fillOpacity: has ? 0.7 : 0.4,
+            color: has ? '#00cc33' : '#333333',
+            fillOpacity: has ? 0.5 : 0.3,
         };
     }, [countriesWithPosts]);
 
@@ -57,8 +57,8 @@ export default function MapPage() {
             mouseover: () => {
                 hoveredLayerRef.current = layer;
                 (layer as any).setStyle({
-                    fillColor: has ? '#10B981' : '#d1d5db',
-                    fillOpacity: has ? 0.85 : 0.55,
+                    fillColor: has ? '#00FF41' : '#333333',
+                    fillOpacity: has ? 0.7 : 0.4,
                 });
             },
             mouseout: () => {
@@ -79,16 +79,22 @@ export default function MapPage() {
     return (
         <>
             {/* Map hero section */}
-            <section className="relative w-full h-[75vh] min-h-[500px] bg-background flex flex-col items-center overflow-hidden">
-                {/* Editorial heading overlay */}
+            <section className="relative w-full h-[75vh] min-h-[500px] bg-black flex flex-col items-center overflow-hidden scanlines">
+                {/* Retro heading overlay */}
                 <div className="z-[500] text-center py-8 sm:py-10 relative px-4">
-                    <p className="text-[var(--brand)] text-xs font-bold uppercase tracking-[0.2em] mb-3">
-                        Explore The World
+                    <p className="text-[var(--brand)] text-[8px] font-bold uppercase tracking-[0.3em] mb-4 neon-glow"
+                        style={{ fontFamily: "'Press Start 2P', monospace" }}>
+                        ▸ EXPLORE THE WORLD ◂
                     </p>
-                    <h1 className="text-4xl md:text-6xl lg:text-7xl text-gray-900 dark:text-white mb-2 tracking-tight font-display italic">
+                    <h1 className="text-xl md:text-3xl lg:text-4xl text-white mb-2 tracking-tight"
+                        style={{ fontFamily: "'Press Start 2P', monospace" }}>
                         Where to next?
                     </h1>
-                    <div className="w-16 h-1 bg-[var(--brand)] mx-auto mt-4 opacity-60" />
+                    <div className="flex justify-center mt-4 gap-1">
+                        {Array.from({ length: 8 }).map((_, i) => (
+                            <div key={i} className="w-2 h-1 bg-[var(--brand)]" style={{ opacity: 0.6 }} />
+                        ))}
+                    </div>
                 </div>
 
                 {/* Map container */}
@@ -105,36 +111,45 @@ export default function MapPage() {
                                     exit={{ opacity: 0, y: 12, scale: 0.95 }}
                                     className="absolute top-4 right-4 z-[1000] w-64"
                                 >
-                                    <div className="bg-white dark:bg-gray-800 shadow-2xl border border-gray-100 dark:border-gray-700 overflow-hidden rounded-xl">
+                                    <div className="bg-black border-2 border-[var(--brand)] overflow-hidden"
+                                        style={{ boxShadow: '0 0 15px rgba(0, 255, 65, 0.25)' }}>
                                         {mainPost && (
                                             <div className="relative h-28 overflow-hidden">
                                                 <img
                                                     src={mainPost.coverImage}
                                                     alt={selectedCountry}
                                                     className="w-full h-full object-cover"
+                                                    style={{ filter: 'saturate(0.4) brightness(0.7)' }}
                                                 />
                                                 <div className="absolute top-3 left-3">
-                                                    <span className="inline-block px-2.5 py-1 bg-[var(--brand)] text-xs font-bold tracking-[0.15em] uppercase text-white">
-                                                        Guide
+                                                    <span className="inline-block px-2.5 py-1 bg-[var(--brand)] text-black text-[6px] font-bold tracking-[0.15em] uppercase"
+                                                        style={{ fontFamily: "'Press Start 2P', monospace" }}>
+                                                        GUIDE
                                                     </span>
                                                 </div>
                                             </div>
                                         )}
                                         <div className="p-4">
                                             <div className="flex items-center justify-between mb-2">
-                                                <h3 className="text-lg font-bold text-gray-900 dark:text-white font-display">
+                                                <h3 className="text-[10px] font-bold text-white"
+                                                    style={{ fontFamily: "'Press Start 2P', monospace" }}>
                                                     {selectedCountry}
                                                 </h3>
-                                                <span className="text-xs text-gray-400">{countryPosts.length}&rarr;</span>
+                                                <span className="text-[8px] text-[var(--brand)]"
+                                                    style={{ fontFamily: "'Press Start 2P', monospace" }}>
+                                                    {countryPosts.length}→
+                                                </span>
                                             </div>
-                                            <p className="text-xs text-gray-500 dark:text-gray-400 mb-3 line-clamp-2 font-light leading-relaxed">
-                                                {mainPost ? `From the ${mainPost.city} ${mainPost.sections[0]?.heading?.toLowerCase() || 'highlights'} to the ${mainPost.sections[1]?.heading?.toLowerCase() || 'beauty'} of ${selectedCountry}...` : `Explore ${selectedCountry}`}
+                                            <p className="text-[7px] text-gray-400 mb-3 line-clamp-2 leading-relaxed"
+                                                style={{ fontFamily: "'Press Start 2P', monospace" }}>
+                                                {mainPost ? `${mainPost.city} adventures...` : `Explore ${selectedCountry}`}
                                             </p>
                                             <button
                                                 onClick={() => { setSelectedPost(null); setSelectedCountry(selectedCountry); }}
-                                                className="text-[var(--brand)] text-xs font-bold uppercase tracking-[0.12em] hover:underline cursor-pointer flex items-center gap-1"
+                                                className="text-[var(--brand)] text-[7px] font-bold uppercase tracking-[0.12em] hover:underline cursor-pointer flex items-center gap-1"
+                                                style={{ fontFamily: "'Press Start 2P', monospace" }}
                                             >
-                                                Read Journal
+                                                ▶ READ
                                                 <ArrowRight className="w-3 h-3" />
                                             </button>
                                         </div>
@@ -146,35 +161,41 @@ export default function MapPage() {
 
                     {/* Visited counter */}
                     <div className="absolute bottom-10 left-8 z-[600] hidden md:flex flex-col gap-1">
-                        <span className="text-xs font-bold uppercase tracking-[0.2em] text-gray-400">
-                            Total Visited
+                        <span className="text-[7px] font-bold uppercase tracking-[0.2em] text-gray-500"
+                            style={{ fontFamily: "'Press Start 2P', monospace" }}>
+                            SCORE
                         </span>
                         <div className="flex items-baseline gap-2">
-                            <span className="text-3xl text-gray-900 dark:text-white font-display">
+                            <span className="text-2xl text-[var(--brand)] neon-glow"
+                                style={{ fontFamily: "'Press Start 2P', monospace" }}>
                                 {countriesWithPosts.length}
                             </span>
-                            <span className="text-sm text-gray-500 italic font-display">
-                                countries
+                            <span className="text-[8px] text-gray-500"
+                                style={{ fontFamily: "'Press Start 2P', monospace" }}>
+                                LVL
                             </span>
                         </div>
                     </div>
 
 
                     {/* Featured destinations — bottom-right */}
-                    <div className="absolute bottom-10 right-8 z-[1000] hidden md:flex flex-col gap-3 items-end bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm p-5 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-xl">
-                        <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500 mb-1">
-                            Featured Destinations
+                    <div className="absolute bottom-10 right-8 z-[1000] hidden md:flex flex-col gap-3 items-end bg-black border-2 border-[var(--brand)] p-5"
+                        style={{ boxShadow: '0 0 12px rgba(0, 255, 65, 0.2)' }}>
+                        <span className="text-[6px] font-bold uppercase tracking-[0.2em] text-gray-500 mb-1"
+                            style={{ fontFamily: "'Press Start 2P', monospace" }}>
+                            ★ TOP DESTINATIONS
                         </span>
                         <div className="flex flex-col gap-3 items-end">
                             {countriesWithPosts.slice(0, 3).map((country) => (
                                 <button
                                     key={country}
                                     onClick={() => { setSelectedPost(null); setSelectedCountry(country); }}
-                                    className="flex items-center gap-3 text-sm font-medium text-gray-900 dark:text-white hover:text-[var(--brand)] transition-colors cursor-pointer group/dest"
-                                    style={{ fontFamily: 'Playfair Display, serif' }}
+                                    className="flex items-center gap-3 text-[8px] font-medium text-white hover:text-[var(--brand)] transition-colors cursor-pointer group/dest"
+                                    style={{ fontFamily: "'Press Start 2P', monospace" }}
                                 >
                                     {country}
-                                    <span className="w-1.5 h-1.5 rounded-full bg-[var(--brand)] ring-2 ring-[var(--brand-surface)] group-hover:scale-125 transition-transform" />
+                                    <span className="w-2 h-2 bg-[var(--brand)]"
+                                        style={{ boxShadow: '0 0 6px rgba(0, 255, 65, 0.5)' }} />
                                 </button>
                             ))}
                         </div>
@@ -192,7 +213,7 @@ export default function MapPage() {
                     >
                         <TileLayer
                             attribution='&copy; <a href="https://carto.com/">CARTO</a>'
-                            url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
+                            url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
                         />
                         <GeoJSON key={geoJsonKey} data={countriesGeoJson as any} style={geoJsonStyle} onEachFeature={onEachCountry} />
                         <FlyToCountry country={selectedCountry} />
