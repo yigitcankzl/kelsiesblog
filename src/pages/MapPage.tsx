@@ -115,31 +115,6 @@ export default function MapPage() {
 
                 {/* Map container */}
                 <div className="w-full flex-1 relative">
-                    {/* Map size toggle */}
-                    <div className="absolute top-4 left-4 z-[1000] flex flex-col gap-0 border-2 border-[var(--brand)]"
-                        style={{ boxShadow: '0 0 10px rgba(0, 255, 65, 0.3)' }}>
-                        <button
-                            onClick={() => setSizeIndex(Math.min(sizeIndex + 1, MAP_SIZES.length - 1))}
-                            disabled={sizeIndex >= MAP_SIZES.length - 1}
-                            className="bg-black text-[var(--brand)] hover:bg-[var(--brand)] hover:text-black transition-all w-9 h-9 flex items-center justify-center cursor-pointer disabled:opacity-30 disabled:hover:bg-black disabled:hover:text-[var(--brand)] border-b border-[var(--brand)]/30"
-                        >
-                            <Maximize2 className="w-3.5 h-3.5" />
-                        </button>
-                        <div className="bg-black text-center py-1 border-b border-[var(--brand)]/30">
-                            <span className="text-[5px] text-[var(--brand)]"
-                                style={{ fontFamily: "'Press Start 2P', monospace" }}>
-                                {MAP_SIZES[sizeIndex].label}
-                            </span>
-                        </div>
-                        <button
-                            onClick={() => setSizeIndex(Math.max(sizeIndex - 1, 0))}
-                            disabled={sizeIndex <= 0}
-                            className="bg-black text-[var(--brand)] hover:bg-[var(--brand)] hover:text-black transition-all w-9 h-9 flex items-center justify-center cursor-pointer disabled:opacity-30 disabled:hover:bg-black disabled:hover:text-[var(--brand)]"
-                        >
-                            <Minimize2 className="w-3.5 h-3.5" />
-                        </button>
-                    </div>
-
                     {/* Country popup card */}
                     <AnimatePresence>
                         {selectedCountry && (() => {
@@ -201,30 +176,58 @@ export default function MapPage() {
                         })()}
                     </AnimatePresence>
 
-                    {/* Visited counter + XP bar */}
-                    <div className="absolute bottom-10 left-8 z-[600] hidden md:flex flex-col gap-1">
-                        <span className="text-[7px] font-bold uppercase tracking-[0.2em] text-gray-500"
-                            style={{ fontFamily: "'Press Start 2P', monospace" }}>
-                            SCORE
-                        </span>
-                        <div className="flex items-baseline gap-2">
-                            <span className="text-2xl text-[var(--brand)] neon-glow"
+                    {/* Visited counter + XP bar + Size toggle */}
+                    <div className="absolute bottom-10 left-8 z-[600] hidden md:flex items-end gap-5">
+                        {/* Score */}
+                        <div className="flex flex-col gap-1">
+                            <span className="text-[7px] font-bold uppercase tracking-[0.2em] text-gray-500"
                                 style={{ fontFamily: "'Press Start 2P', monospace" }}>
-                                {countriesWithPosts.length}
+                                SCORE
                             </span>
-                            <span className="text-[8px] text-[var(--neon-amber)]"
+                            <div className="flex items-baseline gap-2">
+                                <span className="text-2xl text-[var(--brand)] neon-glow"
+                                    style={{ fontFamily: "'Press Start 2P', monospace" }}>
+                                    {countriesWithPosts.length}
+                                </span>
+                                <span className="text-[8px] text-[var(--neon-amber)]"
+                                    style={{ fontFamily: "'Press Start 2P', monospace" }}>
+                                    LVL
+                                </span>
+                            </div>
+                            {/* XP Bar */}
+                            <div className="xp-bar w-24 mt-2">
+                                <div className="xp-bar-fill" style={{ width: `${xpPercent}%` }} />
+                            </div>
+                            <span className="text-[5px] text-gray-600 mt-1"
                                 style={{ fontFamily: "'Press Start 2P', monospace" }}>
-                                LVL
+                                {countriesWithPosts.length}/10 XP
                             </span>
                         </div>
-                        {/* XP Bar */}
-                        <div className="xp-bar w-24 mt-2">
-                            <div className="xp-bar-fill" style={{ width: `${xpPercent}%` }} />
+
+                        {/* Map size toggle */}
+                        <div className="flex flex-col gap-0 border-2 border-[var(--brand)]"
+                            style={{ boxShadow: '0 0 10px rgba(0, 255, 65, 0.3)' }}>
+                            <button
+                                onClick={() => setSizeIndex(Math.min(sizeIndex + 1, MAP_SIZES.length - 1))}
+                                disabled={sizeIndex >= MAP_SIZES.length - 1}
+                                className="bg-black text-[var(--brand)] hover:bg-[var(--brand)] hover:text-black transition-all w-8 h-7 flex items-center justify-center cursor-pointer disabled:opacity-30 disabled:hover:bg-black disabled:hover:text-[var(--brand)] border-b border-[var(--brand)]/30"
+                            >
+                                <Maximize2 className="w-3 h-3" />
+                            </button>
+                            <div className="bg-black text-center py-0.5 border-b border-[var(--brand)]/30">
+                                <span className="text-[5px] text-[var(--brand)]"
+                                    style={{ fontFamily: "'Press Start 2P', monospace" }}>
+                                    {MAP_SIZES[sizeIndex].label}
+                                </span>
+                            </div>
+                            <button
+                                onClick={() => setSizeIndex(Math.max(sizeIndex - 1, 0))}
+                                disabled={sizeIndex <= 0}
+                                className="bg-black text-[var(--brand)] hover:bg-[var(--brand)] hover:text-black transition-all w-8 h-7 flex items-center justify-center cursor-pointer disabled:opacity-30 disabled:hover:bg-black disabled:hover:text-[var(--brand)]"
+                            >
+                                <Minimize2 className="w-3 h-3" />
+                            </button>
                         </div>
-                        <span className="text-[5px] text-gray-600 mt-1"
-                            style={{ fontFamily: "'Press Start 2P', monospace" }}>
-                            {countriesWithPosts.length}/10 XP
-                        </span>
                     </div>
 
 
