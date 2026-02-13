@@ -45,7 +45,7 @@ export default function CountryPostsView() {
                 </motion.div>
 
                 {/* Grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-10">
                     {countryPosts.map((post, index) => (
                         <motion.article
                             key={post.id}
@@ -55,7 +55,7 @@ export default function CountryPostsView() {
                             onClick={() => setSelectedPost(post)}
                             className="group cursor-pointer transition-all duration-500 hover:-translate-y-1"
                         >
-                            <div className="relative overflow-hidden aspect-[4/3] mb-5 retro-corners hover-glitch"
+                            <div className="relative overflow-hidden aspect-[16/9] mb-6 retro-corners hover-glitch"
                                 style={{ boxShadow: '0 0 10px rgba(0, 255, 65, 0.15)' }}>
                                 <span className="rc-extra absolute inset-0" />
                                 <img
@@ -72,20 +72,20 @@ export default function CountryPostsView() {
                                     </span>
                                 </div>
                             </div>
-                            <div className="flex items-center text-[6px] font-medium text-gray-500 mb-2 space-x-3 uppercase tracking-wider"
+                            <div className="flex items-center text-[8px] font-medium text-gray-500 mb-4 space-x-3 uppercase tracking-wider"
                                 style={{ fontFamily: "'Press Start 2P', monospace" }}>
                                 <span className="text-[var(--neon-cyan)]">{post.city}, {post.country}</span>
                                 <span className="w-1.5 h-1.5 bg-[var(--neon-magenta)]" />
                                 <span className="text-[var(--neon-amber)]">{post.sections.length * 3} MIN</span>
                             </div>
-                            <h3 className="text-[9px] font-medium text-white mb-1.5 group-hover:text-[var(--brand)] transition-colors leading-relaxed text-glitch"
+                            <h3 className="text-sm md:text-base font-bold text-white mb-4 group-hover:text-[var(--brand)] transition-colors leading-relaxed text-glitch"
                                 style={{ fontFamily: "'Press Start 2P', monospace" }}
                                 data-text={post.title}>
                                 {post.title}
                             </h3>
-                            <p className="text-gray-500 text-[7px] line-clamp-2 leading-[2]"
+                            <p className="text-gray-400 text-[10px] line-clamp-3 leading-[2.4]"
                                 style={{ fontFamily: "'Press Start 2P', monospace" }}>
-                                {post.sections[0]?.content?.substring(0, 80)}...
+                                {post.sections[0]?.content?.substring(0, 100)}...
                             </p>
                         </motion.article>
                     ))}
