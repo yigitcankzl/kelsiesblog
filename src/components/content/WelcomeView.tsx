@@ -14,8 +14,8 @@ export default function WelcomeView() {
     const rest = posts.slice(1);
 
     return (
-        <section className="bg-black py-28 px-4 sm:px-8 lg:px-12 relative z-10">
-            <div className="max-w-8xl mx-auto">
+        <section className="bg-black py-28 relative z-10 flex justify-center">
+            <div className="w-full max-w-5xl px-6 sm:px-8">
                 {/* Section header — centered */}
                 <motion.div
                     className="text-center mb-20"
