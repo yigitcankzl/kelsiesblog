@@ -7,8 +7,8 @@ export default function CountryPostsView() {
     const countryPosts = posts.filter(p => p.country === selectedCountry);
 
     return (
-        <section className="py-16 bg-black flex justify-center">
-            <div className="w-full max-w-5xl px-6 sm:px-8">
+        <section className="py-16 bg-black">
+            <div style={{ maxWidth: '1024px', margin: '0 auto', paddingLeft: '24px', paddingRight: '24px' }}>
                 {/* Header */}
                 <motion.div
                     className="flex items-end gap-6 mb-12"

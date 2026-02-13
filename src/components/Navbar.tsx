@@ -15,7 +15,7 @@ export default function Navbar() {
     return (
         <nav className="fixed w-full z-[10000] bg-black border-b-2 border-[var(--brand)]"
             style={{ boxShadow: '0 2px 12px rgba(0, 255, 65, 0.2)' }}>
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div style={{ maxWidth: '1024px', margin: '0 auto', paddingLeft: '24px', paddingRight: '24px' }}>
                 <div className="flex justify-between items-center h-20">
                     {/* Brand */}
                     <button
