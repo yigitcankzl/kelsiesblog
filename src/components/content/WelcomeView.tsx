@@ -149,7 +149,7 @@ export default function WelcomeView() {
                                         #{String(index + 2).padStart(2, '0')}
                                     </span>
                                 </div>
-                                <div className="flex items-center text-[7px] font-medium text-gray-500 mb-3 gap-3 uppercase tracking-wider"
+                                <div className="flex items-center text-[8px] font-medium text-gray-500 mb-4 gap-3 uppercase tracking-wider"
                                     style={{ fontFamily: "'Press Start 2P', monospace" }}>
                                     <span className="text-[var(--neon-cyan)]">{post.date}</span>
                                     <span className="text-[var(--neon-magenta)]">■</span>
@@ -158,12 +158,12 @@ export default function WelcomeView() {
                                         {post.sections.length * 3} MIN
                                     </span>
                                 </div>
-                                <h3 className="text-[11px] md:text-xs font-bold text-white mb-3 group-hover:text-[var(--brand)] transition-colors leading-relaxed text-glitch"
+                                <h3 className="text-sm md:text-base font-bold text-white mb-4 group-hover:text-[var(--brand)] transition-colors leading-relaxed text-glitch"
                                     style={{ fontFamily: "'Press Start 2P', monospace" }}
                                     data-text={post.title}>
                                     {post.title}
                                 </h3>
-                                <p className="text-gray-400 text-[8px] leading-[2.2] line-clamp-3"
+                                <p className="text-gray-400 text-[10px] leading-[2.4] line-clamp-3"
                                     style={{ fontFamily: "'Press Start 2P', monospace" }}>
                                     {post.sections[0]?.content?.substring(0, 100)}...
                                 </p>
