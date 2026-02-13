@@ -130,6 +130,8 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  scrollbar-width: thin;
+  scrollbar-color: #d1d5db transparent;
 }
 
 html {
@@ -141,6 +143,7 @@ body,
 #root {
   height: 100%;
   width: 100%;
+  max-width: 100%;
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -233,6 +236,10 @@ body,
 }
 
 .leaflet-tooltip::before {
+  display: none !important;
+}
+
+.leaflet-control-attribution {
   display: none !important;
 }
 
