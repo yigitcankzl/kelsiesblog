@@ -32,7 +32,7 @@ export default function Navbar() {
                     </button>
 
                     {/* Links */}
-                    <div className="hidden sm:flex items-center space-x-8">
+                    <div className="hidden sm:flex items-center gap-8">
                         <button
                             onClick={goHome}
                             className="text-xs font-medium tracking-[0.15em] text-gray-500 dark:text-gray-300 hover:text-[var(--brand)] transition-colors uppercase cursor-pointer flex items-center gap-1.5"
