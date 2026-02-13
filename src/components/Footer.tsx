@@ -1,7 +1,7 @@
 export default function Footer() {
     return (
         <footer className="bg-white dark:bg-[#10221c] border-t border-gray-100 dark:border-gray-800">
-            <div className="max-w-7xl mx-auto py-14 px-4 sm:px-6 md:flex md:items-center md:justify-between lg:px-8">
+            <div className="max-w-7xl mx-auto py-16 px-4 sm:px-8 md:flex md:items-center md:justify-between lg:px-12">
                 {/* Social links */}
                 <div className="flex justify-center space-x-5 md:order-2">
                     {/* Facebook */}

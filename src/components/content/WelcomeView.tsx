@@ -21,11 +21,11 @@ export default function WelcomeView() {
     const cinqueTerre = posts[3];
 
     return (
-        <section className="bg-background py-20 px-4 sm:px-6 lg:px-8 relative z-10">
+        <section className="bg-background py-28 px-4 sm:px-8 lg:px-12 relative z-10">
             <div className="max-w-7xl mx-auto">
                 {/* Section header */}
                 <motion.div
-                    className="flex items-end justify-between mb-14"
+                    className="flex items-end justify-between mb-16"
                     initial={{ opacity: 0, y: 16 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5 }}
@@ -48,7 +48,7 @@ export default function WelcomeView() {
                 </motion.div>
 
                 {/* Main grid — 3 columns matching reference */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12">
 
                     {/* === Column 1: Tall Santorini card === */}
                     {santorini && (
@@ -59,25 +59,25 @@ export default function WelcomeView() {
                             onClick={() => handlePostClick(santorini)}
                             className="group cursor-pointer flex flex-col"
                         >
-                            <div className="relative overflow-hidden aspect-[3/4] mb-5">
+                            <div className="relative overflow-hidden aspect-[3/4] mb-6">
                                 <img
                                     src={santorini.coverImage}
                                     alt={santorini.title}
                                     className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
                                 />
                             </div>
-                            <div className="flex items-center text-[10px] font-medium text-gray-400 mb-2.5 space-x-2 uppercase tracking-wider">
+                            <div className="flex items-center text-[10px] font-medium text-gray-400 mb-3 space-x-3 uppercase tracking-wider">
                                 <span>{santorini.date}</span>
                                 <span className="w-1 h-1 bg-gray-300 rounded-full" />
                                 <span>{santorini.category}</span>
                             </div>
                             <h3
-                                className="text-lg md:text-xl font-bold text-gray-900 dark:text-white mb-3 group-hover:text-[var(--brand)] transition-colors leading-snug"
+                                className="text-lg md:text-xl font-bold text-gray-900 dark:text-white mb-4 group-hover:text-[var(--brand)] transition-colors leading-snug"
                                 style={{ fontFamily: 'Playfair Display, serif' }}
                             >
                                 {santorini.title}
                             </h3>
-                            <p className="text-gray-500 dark:text-gray-400 text-sm font-light leading-relaxed mb-4 flex-1">
+                            <p className="text-gray-500 dark:text-gray-400 text-sm font-light leading-relaxed mb-6 flex-1">
                                 {santorini.sections[0]?.content}
                             </p>
                             <span
@@ -89,7 +89,7 @@ export default function WelcomeView() {
                     )}
 
                     {/* === Column 2: Stacked — Istanbul top + Tokyo bottom === */}
-                    <div className="flex flex-col gap-8">
+                    <div className="flex flex-col gap-10">
                         {/* Istanbul coffee card (horizontal image + text below) */}
                         {istanbul && (
                             <motion.article
@@ -99,20 +99,20 @@ export default function WelcomeView() {
                                 onClick={() => handlePostClick(istanbul)}
                                 className="group cursor-pointer"
                             >
-                                <div className="relative overflow-hidden aspect-[16/10] mb-5">
+                                <div className="relative overflow-hidden aspect-[16/10] mb-6">
                                     <img
                                         src={istanbul.coverImage}
                                         alt={istanbul.title}
                                         className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
                                     />
                                 </div>
-                                <div className="flex items-center text-[10px] font-medium text-gray-400 mb-2.5 space-x-2 uppercase tracking-wider">
+                                <div className="flex items-center text-[10px] font-medium text-gray-400 mb-3 space-x-3 uppercase tracking-wider">
                                     <span>{istanbul.date}</span>
                                     <span className="w-1 h-1 bg-gray-300 rounded-full" />
                                     <span>{istanbul.category}</span>
                                 </div>
                                 <h3
-                                    className="text-lg md:text-xl font-bold text-gray-900 dark:text-white mb-2 group-hover:text-[var(--brand)] transition-colors leading-snug"
+                                    className="text-lg md:text-xl font-bold text-gray-900 dark:text-white mb-3 group-hover:text-[var(--brand)] transition-colors leading-snug"
                                     style={{ fontFamily: 'Playfair Display, serif' }}
                                 >
                                     {istanbul.title}
@@ -159,7 +159,7 @@ export default function WelcomeView() {
                     </div>
 
                     {/* === Column 3: Tall Cinque Terre card + Newsletter === */}
-                    <div className="flex flex-col gap-8">
+                    <div className="flex flex-col gap-10">
                         {/* Cinque Terre tall card */}
                         {cinqueTerre && (
                             <motion.article
@@ -169,20 +169,20 @@ export default function WelcomeView() {
                                 onClick={() => handlePostClick(cinqueTerre)}
                                 className="group cursor-pointer"
                             >
-                                <div className="relative overflow-hidden aspect-[3/4] mb-5">
+                                <div className="relative overflow-hidden aspect-[3/4] mb-6">
                                     <img
                                         src={cinqueTerre.coverImage}
                                         alt={cinqueTerre.title}
                                         className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
                                     />
                                 </div>
-                                <div className="flex items-center text-[10px] font-medium text-gray-400 mb-2.5 space-x-2 uppercase tracking-wider">
+                                <div className="flex items-center text-[10px] font-medium text-gray-400 mb-3 space-x-3 uppercase tracking-wider">
                                     <span>{cinqueTerre.date}</span>
                                     <span className="w-1 h-1 bg-gray-300 rounded-full" />
                                     <span>{cinqueTerre.category}</span>
                                 </div>
                                 <h3
-                                    className="text-lg md:text-xl font-bold text-gray-900 dark:text-white mb-2 group-hover:text-[var(--brand)] transition-colors leading-snug"
+                                    className="text-lg md:text-xl font-bold text-gray-900 dark:text-white mb-3 group-hover:text-[var(--brand)] transition-colors leading-snug"
                                     style={{ fontFamily: 'Playfair Display, serif' }}
                                 >
                                     {cinqueTerre.title}
@@ -198,19 +198,19 @@ export default function WelcomeView() {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.4, duration: 0.5 }}
-                            className="bg-gray-50 dark:bg-gray-900 p-8"
+                            className="bg-gray-50 dark:bg-gray-900 p-10"
                         >
-                            <Mail className="w-7 h-7 text-[var(--brand)] mb-4" strokeWidth={1.5} />
+                            <Mail className="w-7 h-7 text-[var(--brand)] mb-5" strokeWidth={1.5} />
                             <h4
-                                className="text-xl font-bold text-gray-900 dark:text-white mb-2"
+                                className="text-xl font-bold text-gray-900 dark:text-white mb-3"
                                 style={{ fontFamily: 'Playfair Display, serif' }}
                             >
                                 Don't miss a post
                             </h4>
-                            <p className="text-xs text-gray-500 dark:text-gray-400 mb-6 font-light leading-relaxed">
+                            <p className="text-xs text-gray-500 dark:text-gray-400 mb-8 font-light leading-relaxed">
                                 Join 15,000+ travelers getting weekly updates, curated guides, and travel tips.
                             </p>
-                            <div className="flex flex-col gap-3">
+                            <div className="flex flex-col gap-4">
                                 <input
                                     type="email"
                                     placeholder="Email address"
