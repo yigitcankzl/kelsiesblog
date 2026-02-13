@@ -18,9 +18,9 @@ export default function CountryPostsView() {
                 >
                     <button
                         onClick={() => setSelectedCountry(null)}
-                        className="flex items-center gap-2 text-xs font-medium text-gray-500 hover:text-[var(--brand)] transition-colors uppercase tracking-[0.15em] cursor-pointer shrink-0 border-b border-gray-200 hover:border-[var(--brand)] pb-1"
+                        className="flex items-center gap-2 text-xs font-medium text-gray-900 dark:text-white px-5 py-2.5 border border-gray-200 dark:border-gray-700 rounded-full hover:bg-[var(--brand)] hover:text-white hover:border-[var(--brand)] transition-all duration-300 cursor-pointer uppercase tracking-[0.12em] group shrink-0"
                     >
-                        <ArrowLeft className="w-4 h-4" />
+                        <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-0.5 transition-transform" />
                         All Posts
                     </button>
                     <div className="flex items-center gap-4">
@@ -48,16 +48,17 @@ export default function CountryPostsView() {
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.05 + index * 0.08, duration: 0.4 }}
                             onClick={() => setSelectedPost(post)}
-                            className="group cursor-pointer"
+                            className="group cursor-pointer transition-transform duration-500 hover:-translate-y-1"
                         >
-                            <div className="relative overflow-hidden aspect-[4/3] mb-5">
+                            <div className="relative overflow-hidden aspect-[4/3] mb-5 rounded-lg">
                                 <img
                                     src={post.coverImage}
                                     alt={post.title}
                                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                                 />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                                 <div className="absolute top-4 left-4">
-                                    <span className="inline-flex items-center gap-1 px-3 py-1 bg-white/90 dark:bg-black/80 text-[10px] font-bold tracking-[0.12em] uppercase text-gray-900 dark:text-white">
+                                    <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#1a2e35] text-[10px] font-bold tracking-[0.12em] uppercase text-white rounded-full">
                                         <MapPin className="w-3 h-3" />
                                         {post.city}
                                     </span>
