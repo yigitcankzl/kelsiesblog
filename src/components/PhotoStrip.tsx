@@ -36,16 +36,22 @@ export default function PhotoStrip() {
         },
     ];
 
+    // Duplicate for seamless loop
+    const allImages = [...images, ...images];
+
     return (
-        <section className="w-full overflow-hidden"
+        <section className="w-full"
             style={{ boxShadow: '0 0 12px rgba(0, 255, 65, 0.15) inset' }}>
-            <div className="flex" style={{ maxWidth: '1024px', margin: '0 auto' }}>
-                {images.map((img, index) => (
+            <div className="overflow-hidden" style={{ maxWidth: '1024px', margin: '0 auto' }}>
+            <div className="marquee-track">
+                {allImages.map((img, index) => (
                     <div
                         key={index}
-                        className="relative w-1/3 sm:w-1/6 aspect-square overflow-hidden cursor-pointer hover-glitch"
+                        className="relative overflow-hidden cursor-pointer hover-glitch shrink-0"
                         style={{
-                            borderRight: index < images.length - 1 ? '1px solid #00FF4144' : 'none',
+                            width: '170px',
+                            height: '170px',
+                            borderRight: '1px solid #00FF4144',
                         }}
                         onMouseEnter={() => setHoveredIndex(index)}
                         onMouseLeave={() => setHoveredIndex(null)}
@@ -59,7 +65,6 @@ export default function PhotoStrip() {
                             }}
                         />
 
-
                         {/* Neon green gradient overlay on hover */}
                         <div
                             className="absolute inset-0 transition-opacity duration-500"
@@ -71,7 +76,7 @@ export default function PhotoStrip() {
 
                         {/* Channel number */}
                         <span
-                            className="absolute top-2 left-2 text-[var(--neon-cyan)] opacity-40 transition-opacity duration-300"
+                            className="absolute top-2 left-2 text-[var(--neon-cyan)] transition-opacity duration-300"
                             style={{
                                 fontFamily: "'Press Start 2P', monospace",
                                 fontSize: '5px',
@@ -80,7 +85,7 @@ export default function PhotoStrip() {
                                 textShadow: hoveredIndex === index ? '0 0 4px rgba(0,255,255,0.5)' : 'none',
                             }}
                         >
-                            CH-{String(index + 1).padStart(2, '0')}
+                            CH-{String((index % images.length) + 1).padStart(2, '0')}
                         </span>
 
                         {/* Location label on hover */}
