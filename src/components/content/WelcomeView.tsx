@@ -15,7 +15,7 @@ export default function WelcomeView() {
 
     return (
         <section className="bg-black py-28 px-4 sm:px-8 lg:px-12 relative z-10">
-            <div className="max-w-6xl mx-auto">
+            <div className="max-w-8xl mx-auto">
                 {/* Section header — centered */}
                 <motion.div
                     className="text-center mb-20"
