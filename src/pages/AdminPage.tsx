@@ -21,7 +21,7 @@ export default function AdminPage() {
     const showForm = isCreating || editingPost !== null;
 
     return (
-        <div className="min-h-screen bg-[#faf8f5]">
+        <div className="min-h-screen bg-[var(--admin-bg)]">
             {/* Header */}
             <header className="bg-white border-b border-gray-100 sticky top-0 z-50">
                 <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
@@ -36,7 +36,7 @@ export default function AdminPage() {
                             <Globe className="w-4 h-4" />
                         </motion.button>
                         <div>
-                            <h1 className="text-xl font-bold" style={{ fontFamily: 'Playfair Display, serif' }}>
+                            <h1 className="text-xl font-bold font-display">
                                 Admin Dashboard
                             </h1>
                             <p className="text-xs text-gray-500 uppercase tracking-wider">Kelsie Sharp Blog</p>
@@ -48,7 +48,7 @@ export default function AdminPage() {
                                 whileHover={{ scale: 1.02 }}
                                 whileTap={{ scale: 0.98 }}
                                 onClick={() => setIsCreating(true)}
-                                className="flex items-center gap-2 bg-[#1a472a] text-white px-4 py-2.5 rounded-xl text-sm font-medium hover:bg-[#2d6a4f] transition-colors cursor-pointer"
+                                className="flex items-center gap-2 bg-[var(--brand-deep)] text-white px-4 py-2.5 rounded-xl text-sm font-medium hover:bg-[var(--brand-dark)] transition-colors cursor-pointer"
                             >
                                 <Plus className="w-4 h-4" />
                                 New Post

@@ -38,7 +38,7 @@ export default function PostList({ onEdit }: PostListProps) {
             {Object.entries(grouped).map(([country, countryPosts]) => (
                 <div key={country}>
                     <div className="flex items-center gap-2 mb-3">
-                        <MapPin className="w-4 h-4 text-[#2d6a4f]" />
+                        <MapPin className="w-4 h-4 text-[var(--brand-dark)]" />
                         <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider">{country}</h3>
                         <div className="flex-1 h-px bg-gray-100" />
                     </div>
@@ -66,7 +66,7 @@ export default function PostList({ onEdit }: PostListProps) {
                                     <div className="flex-1 px-4 py-3 flex flex-col justify-center min-w-0">
                                         <h4 className="font-semibold text-sm text-gray-900 truncate">{post.title}</h4>
                                         <p className="text-xs text-gray-500 mt-0.5">
-                                            {post.city} · {post.sections.length} {post.sections.length === 1 ? 'section' : 'sections'}
+                                            {post.city} &middot; {post.sections.length} {post.sections.length === 1 ? 'section' : 'sections'}
                                         </p>
                                         <p className="text-xs text-gray-400 mt-0.5">
                                             [{post.coordinates[0].toFixed(2)}, {post.coordinates[1].toFixed(2)}]

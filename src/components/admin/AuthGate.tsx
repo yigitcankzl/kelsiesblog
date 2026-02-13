@@ -19,7 +19,7 @@ export default function AuthGate() {
     };
 
     return (
-        <div className="min-h-screen bg-[#faf8f5] flex items-center justify-center px-4">
+        <div className="min-h-screen bg-[var(--admin-bg)] flex items-center justify-center px-4">
             <motion.div
                 initial={{ opacity: 0, y: 30, scale: 0.95 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -29,15 +29,12 @@ export default function AuthGate() {
                 <div className="bg-white rounded-3xl shadow-xl border border-gray-100 p-8">
                     {/* Logo */}
                     <div className="flex justify-center mb-6">
-                        <div className="w-16 h-16 bg-gradient-to-br from-[#1a472a] to-[#2d6a4f] rounded-2xl flex items-center justify-center shadow-lg">
+                        <div className="w-16 h-16 bg-gradient-to-br from-[var(--brand-deep)] to-[var(--brand-dark)] rounded-2xl flex items-center justify-center shadow-lg">
                             <Globe className="w-8 h-8 text-white" />
                         </div>
                     </div>
 
-                    <h2
-                        className="text-2xl font-bold text-center mb-1"
-                        style={{ fontFamily: 'Playfair Display, serif' }}
-                    >
+                    <h2 className="text-2xl font-bold text-center mb-1 font-display">
                         Admin Access
                     </h2>
                     <p className="text-center text-gray-500 text-sm mb-8">
@@ -54,7 +51,7 @@ export default function AuthGate() {
                                 placeholder="Password"
                                 className={`w-full pl-11 pr-12 py-3.5 rounded-xl border-2 transition-all outline-none text-sm ${error
                                         ? 'border-red-300 bg-red-50 shake'
-                                        : 'border-gray-200 focus:border-[#2d6a4f] bg-gray-50 focus:bg-white'
+                                        : 'border-gray-200 focus:border-[var(--brand-dark)] bg-gray-50 focus:bg-white'
                                     }`}
                             />
                             <button
@@ -80,7 +77,7 @@ export default function AuthGate() {
                             whileHover={{ scale: 1.01 }}
                             whileTap={{ scale: 0.99 }}
                             type="submit"
-                            className="w-full bg-gradient-to-r from-[#1a472a] to-[#2d6a4f] text-white py-3.5 rounded-xl font-medium text-sm shadow-lg hover:shadow-xl transition-shadow cursor-pointer"
+                            className="w-full bg-gradient-to-r from-[var(--brand-deep)] to-[var(--brand-dark)] text-white py-3.5 rounded-xl font-medium text-sm shadow-lg hover:shadow-xl transition-shadow cursor-pointer"
                         >
                             Sign In
                         </motion.button>
@@ -88,7 +85,7 @@ export default function AuthGate() {
                 </div>
 
                 <p className="text-center text-gray-400 text-xs mt-6">
-                    Kelsie Sharp Blog · Admin Panel
+                    Kelsie Sharp Blog &middot; Admin Panel
                 </p>
             </motion.div>
         </div>

@@ -87,10 +87,7 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
     return (
         <form onSubmit={handleSubmit} className="max-w-3xl mx-auto">
             <div className="flex items-center justify-between mb-6">
-                <h2
-                    className="text-xl font-bold"
-                    style={{ fontFamily: 'Playfair Display, serif' }}
-                >
+                <h2 className="text-xl font-bold font-display">
                     {isEditing ? 'Edit Post' : 'Create New Post'}
                 </h2>
                 <button
@@ -117,7 +114,7 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                             value={title}
                             onChange={(e) => setTitle(e.target.value)}
                             placeholder="e.g. Temples & Tea in Kyoto"
-                            className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-[#2d6a4f] bg-gray-50 focus:bg-white outline-none transition-all text-sm"
+                            className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-[var(--brand-dark)] bg-gray-50 focus:bg-white outline-none transition-all text-sm"
                             required
                         />
                     </div>
@@ -128,7 +125,7 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                             <select
                                 value={country}
                                 onChange={(e) => setCountry(e.target.value)}
-                                className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-[#2d6a4f] bg-gray-50 focus:bg-white outline-none transition-all text-sm cursor-pointer"
+                                className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-[var(--brand-dark)] bg-gray-50 focus:bg-white outline-none transition-all text-sm cursor-pointer"
                                 required
                             >
                                 <option value="">Select country...</option>
@@ -146,7 +143,7 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                                 value={city}
                                 onChange={(e) => setCity(e.target.value)}
                                 placeholder="e.g. Kyoto"
-                                className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-[#2d6a4f] bg-gray-50 focus:bg-white outline-none transition-all text-sm"
+                                className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-[var(--brand-dark)] bg-gray-50 focus:bg-white outline-none transition-all text-sm"
                                 required
                             />
                         </div>
@@ -164,7 +161,7 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                                 value={lat}
                                 onChange={(e) => setLat(e.target.value)}
                                 placeholder="35.0116"
-                                className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-[#2d6a4f] bg-gray-50 focus:bg-white outline-none transition-all text-sm"
+                                className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-[var(--brand-dark)] bg-gray-50 focus:bg-white outline-none transition-all text-sm"
                                 required
                             />
                         </div>
@@ -179,7 +176,7 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                                 value={lng}
                                 onChange={(e) => setLng(e.target.value)}
                                 placeholder="135.7681"
-                                className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-[#2d6a4f] bg-gray-50 focus:bg-white outline-none transition-all text-sm"
+                                className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-[var(--brand-dark)] bg-gray-50 focus:bg-white outline-none transition-all text-sm"
                                 required
                             />
                         </div>
@@ -195,7 +192,7 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                             value={coverImage}
                             onChange={(e) => setCoverImage(e.target.value)}
                             placeholder="https://images.unsplash.com/photo-..."
-                            className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-[#2d6a4f] bg-gray-50 focus:bg-white outline-none transition-all text-sm"
+                            className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-[var(--brand-dark)] bg-gray-50 focus:bg-white outline-none transition-all text-sm"
                         />
                         {coverImage && (
                             <div className="mt-2 rounded-xl overflow-hidden h-32">
@@ -217,7 +214,7 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                         onClick={addSection}
-                        className="flex items-center gap-1.5 text-[#2d6a4f] hover:text-[#1a472a] text-sm font-medium px-3 py-1.5 rounded-lg hover:bg-green-50 transition-colors cursor-pointer"
+                        className="flex items-center gap-1.5 text-[var(--brand-dark)] hover:text-[var(--brand-deep)] text-sm font-medium px-3 py-1.5 rounded-lg hover:bg-[var(--brand-surface)] transition-colors cursor-pointer"
                     >
                         <Plus className="w-4 h-4" />
                         Add Section
@@ -233,7 +230,7 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                             className="border-2 border-gray-100 rounded-xl p-4 relative group hover:border-gray-200 transition-colors"
                         >
                             {/* Section number badge */}
-                            <div className="absolute -top-3 left-4 bg-[#2d6a4f] text-white text-xs font-bold w-6 h-6 rounded-full flex items-center justify-center">
+                            <div className="absolute -top-3 left-4 bg-[var(--brand-dark)] text-white text-xs font-bold w-6 h-6 rounded-full flex items-center justify-center">
                                 {index + 1}
                             </div>
 
@@ -271,21 +268,21 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                                     value={section.heading}
                                     onChange={(e) => updateSection(index, 'heading', e.target.value)}
                                     placeholder="Section Heading"
-                                    className="w-full px-3 py-2.5 rounded-lg border border-gray-200 focus:border-[#2d6a4f] bg-gray-50 focus:bg-white outline-none transition-all text-sm font-medium"
+                                    className="w-full px-3 py-2.5 rounded-lg border border-gray-200 focus:border-[var(--brand-dark)] bg-gray-50 focus:bg-white outline-none transition-all text-sm font-medium"
                                 />
                                 <textarea
                                     value={section.content}
                                     onChange={(e) => updateSection(index, 'content', e.target.value)}
                                     placeholder="Write your story here..."
                                     rows={4}
-                                    className="w-full px-3 py-2.5 rounded-lg border border-gray-200 focus:border-[#2d6a4f] bg-gray-50 focus:bg-white outline-none transition-all text-sm resize-y"
+                                    className="w-full px-3 py-2.5 rounded-lg border border-gray-200 focus:border-[var(--brand-dark)] bg-gray-50 focus:bg-white outline-none transition-all text-sm resize-y"
                                 />
                                 <input
                                     type="url"
                                     value={section.image || ''}
                                     onChange={(e) => updateSection(index, 'image', e.target.value)}
                                     placeholder="Image URL (optional)"
-                                    className="w-full px-3 py-2.5 rounded-lg border border-gray-200 focus:border-[#2d6a4f] bg-gray-50 focus:bg-white outline-none transition-all text-sm"
+                                    className="w-full px-3 py-2.5 rounded-lg border border-gray-200 focus:border-[var(--brand-dark)] bg-gray-50 focus:bg-white outline-none transition-all text-sm"
                                 />
                             </div>
                         </motion.div>
@@ -309,7 +306,7 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     disabled={!isValid}
-                    className="flex items-center gap-2 bg-gradient-to-r from-[#1a472a] to-[#2d6a4f] text-white px-6 py-3 rounded-xl text-sm font-medium shadow-lg hover:shadow-xl transition-shadow disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                    className="flex items-center gap-2 bg-gradient-to-r from-[var(--brand-deep)] to-[var(--brand-dark)] text-white px-6 py-3 rounded-xl text-sm font-medium shadow-lg hover:shadow-xl transition-shadow disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                 >
                     <Save className="w-4 h-4" />
                     {isEditing ? 'Update Post' : 'Publish Post'}
