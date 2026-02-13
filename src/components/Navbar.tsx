@@ -20,14 +20,15 @@ export default function Navbar() {
                     {/* Brand */}
                     <button
                         onClick={goHome}
-                        className="flex-shrink-0 cursor-pointer"
+                        className="flex-shrink-0 cursor-pointer group"
                     >
                         <span
-                            className="text-sm sm:text-base font-bold tracking-tight text-white"
+                            className="text-sm sm:text-base font-bold tracking-tight text-white text-glitch"
                             style={{ fontFamily: "'Press Start 2P', monospace" }}
+                            data-text="Kelsie Sharp."
                         >
                             Kelsie Sharp
-                            <span className="text-[var(--brand)] neon-glow text-lg sm:text-xl">.</span>
+                            <span className="text-[var(--brand)] neon-glow text-lg sm:text-xl blink-cursor" style={{ marginLeft: 0 }}>.</span>
                         </span>
                     </button>
 
