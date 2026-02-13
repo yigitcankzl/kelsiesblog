@@ -29,14 +29,21 @@ export default function PostReader() {
                             <MapPin className="w-3 h-3" />
                             {selectedPost.city}, {selectedPost.country}
                         </span>
-                        <h1 className="text-base sm:text-xl lg:text-2xl font-bold text-white leading-relaxed"
-                            style={{ fontFamily: "'Press Start 2P', monospace" }}>
+                        <h1 className="text-base sm:text-xl lg:text-2xl font-bold text-white leading-relaxed relative text-glitch-always"
+                            style={{ fontFamily: "'Press Start 2P', monospace" }}
+                            data-text={selectedPost.title}>
                             {selectedPost.title}
                         </h1>
-                        <div className="flex items-center gap-3 mt-3 text-[var(--brand)] text-[7px]"
-                            style={{ fontFamily: "'Press Start 2P', monospace" }}>
-                            <Clock className="w-3.5 h-3.5" />
-                            <span>{selectedPost.sections.length * 3} MIN READ</span>
+                        <div className="flex items-center gap-4 mt-3">
+                            <span className="flex items-center gap-1.5 text-[var(--neon-cyan)] text-[7px]"
+                                style={{ fontFamily: "'Press Start 2P', monospace" }}>
+                                <Clock className="w-3.5 h-3.5" />
+                                {selectedPost.sections.length * 3} MIN READ
+                            </span>
+                            <span className="text-[var(--neon-amber)] text-[6px]"
+                                style={{ fontFamily: "'Press Start 2P', monospace" }}>
+                                {selectedPost.date}
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -73,24 +80,29 @@ export default function PostReader() {
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.15 + index * 0.08, duration: 0.4 }}
                         >
-                            {/* Section pixel divider */}
+                            {/* Section pixel divider — multi-color */}
                             {index > 0 && (
                                 <div className="flex items-center gap-2 mb-12 justify-center">
-                                    {Array.from({ length: 5 }).map((_, i) => (
-                                        <div key={i} className="w-2 h-2 bg-[var(--brand)]"
-                                            style={{ opacity: i === 2 ? 1 : 0.4 }} />
+                                    {Array.from({ length: 7 }).map((_, i) => (
+                                        <div key={i} className="w-2 h-2"
+                                            style={{
+                                                backgroundColor: i % 3 === 0 ? '#00FF41' : i % 3 === 1 ? '#00FFFF' : '#FF00E4',
+                                                opacity: i === 3 ? 1 : 0.3,
+                                            }} />
                                     ))}
                                 </div>
                             )}
 
-                            <h2 className="text-[10px] sm:text-xs font-bold mb-4 leading-relaxed text-[var(--brand)]"
+                            <h2 className="text-[10px] sm:text-xs font-bold mb-4 leading-relaxed text-[var(--brand)] blink-cursor"
                                 style={{ fontFamily: "'Press Start 2P', monospace" }}>
+                                <span className="text-[var(--neon-cyan)] mr-1">$</span>
                                 {'> '}{section.heading}
                             </h2>
 
                             {section.image && (
-                                <div className="mb-5 overflow-hidden border-2 border-[var(--brand)]"
+                                <div className="mb-5 overflow-hidden retro-corners hover-glitch"
                                     style={{ boxShadow: '0 0 10px rgba(0, 255, 65, 0.15)' }}>
+                                    <span className="rc-extra absolute inset-0" />
                                     <img
                                         src={section.image}
                                         alt={section.heading}
@@ -108,13 +120,13 @@ export default function PostReader() {
                     ))}
                 </div>
 
-                {/* End marker */}
+                {/* End marker — multi-color */}
                 <div className="flex justify-center pt-14">
                     <div className="flex items-center gap-2">
                         {Array.from({ length: 7 }).map((_, i) => (
                             <div key={i} className="w-2 h-2"
                                 style={{
-                                    backgroundColor: '#00FF41',
+                                    backgroundColor: i % 3 === 0 ? '#00FF41' : i % 3 === 1 ? '#00FFFF' : '#FF00E4',
                                     opacity: i === 3 ? 1 : 0.3,
                                 }} />
                         ))}
@@ -123,9 +135,9 @@ export default function PostReader() {
 
                 {/* GAME OVER text */}
                 <div className="text-center mt-6 mb-8">
-                    <span className="text-[8px] text-gray-600 uppercase tracking-[0.3em]"
-                        style={{ fontFamily: "'Press Start 2P', monospace" }}>
-                        — END OF STORY —
+                    <span className="text-[8px] text-[var(--neon-magenta)] uppercase tracking-[0.3em] neon-glow-magenta"
+                        style={{ fontFamily: "'Press Start 2P', monospace", opacity: 0.6 }}>
+                        — TRANSMISSION COMPLETE —
                     </span>
                 </div>
             </div>
