@@ -66,7 +66,7 @@ export default function WelcomeView() {
                                     className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
                                 />
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                                <span className="absolute top-4 left-4 bg-white/20 backdrop-blur-md text-white text-[10px] font-bold uppercase tracking-widest px-3.5 py-1.5 rounded-full border border-white/30">
+                                <span className="absolute top-4 left-4 bg-[#1a2e35] text-white text-[10px] font-bold uppercase tracking-widest px-3.5 py-1.5 rounded-full">
                                     {santorini.country}
                                 </span>
                             </div>
@@ -111,7 +111,7 @@ export default function WelcomeView() {
                                         className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
                                     />
                                     <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                                    <span className="absolute top-4 left-4 bg-white/20 backdrop-blur-md text-white text-[10px] font-bold uppercase tracking-widest px-3.5 py-1.5 rounded-full border border-white/30">
+                                    <span className="absolute top-4 left-4 bg-[#1a2e35] text-white text-[10px] font-bold uppercase tracking-widest px-3.5 py-1.5 rounded-full">
                                         {istanbul.country}
                                     </span>
                                 </div>
@@ -185,7 +185,7 @@ export default function WelcomeView() {
                                         className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
                                     />
                                     <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                                    <span className="absolute top-4 left-4 bg-white/20 backdrop-blur-md text-white text-[10px] font-bold uppercase tracking-widest px-3.5 py-1.5 rounded-full border border-white/30">
+                                    <span className="absolute top-4 left-4 bg-[#1a2e35] text-white text-[10px] font-bold uppercase tracking-widest px-3.5 py-1.5 rounded-full">
                                         {cinqueTerre.country}
                                     </span>
                                 </div>
