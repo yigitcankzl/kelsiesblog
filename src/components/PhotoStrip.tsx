@@ -6,7 +6,7 @@ export default function PhotoStrip() {
     const images = [
         {
             src: 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=600',
-            alt: 'European café with red awning',
+            alt: 'European caf\u00e9 with red awning',
             location: 'Paris',
         },
         {
@@ -64,7 +64,7 @@ export default function PhotoStrip() {
                         />
                         {/* Location label on hover */}
                         <span
-                            className="absolute bottom-3 left-0 right-0 text-center text-white text-[10px] font-bold uppercase tracking-[0.2em] transition-all duration-500"
+                            className="absolute bottom-3 left-0 right-0 text-center text-white text-xs font-bold uppercase tracking-[0.2em] transition-all duration-500"
                             style={{
                                 opacity: hoveredIndex === index ? 1 : 0,
                                 transform: hoveredIndex === index ? 'translateY(0)' : 'translateY(8px)',
