@@ -54,7 +54,7 @@ export default function WelcomeView() {
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.1, duration: 0.5 }}
                             onClick={() => handlePostClick(santorini)}
-                            className="group cursor-pointer flex flex-col transition-transform duration-500 hover:-translate-y-1"
+                            className="group cursor-pointer flex flex-col h-full transition-transform duration-500 hover:-translate-y-1"
                         >
                             <div className="relative overflow-hidden aspect-[3/4] mb-7 rounded-lg">
                                 <img
@@ -88,7 +88,7 @@ export default function WelcomeView() {
                     )}
 
                     {/* === Column 2: Stacked — Istanbul top + Tokyo bottom === */}
-                    <div className="flex flex-col gap-10">
+                    <div className="flex flex-col gap-10 h-full justify-between">
                         {/* Istanbul coffee card (horizontal image + text below) */}
                         {istanbul && (
                             <motion.article
