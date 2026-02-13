@@ -177,7 +177,7 @@ export default function WelcomeView() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.5, duration: 0.5 }}
-                    className="max-w-lg mx-auto mt-20 bg-black p-8 sm:p-10 retro-corners text-center"
+                    className="mt-20 bg-black p-8 sm:p-10 retro-corners text-center"
                     style={{ boxShadow: '0 0 12px rgba(0, 255, 65, 0.2)' }}
                 >
                     <span className="rc-extra absolute inset-0" style={{ position: 'relative' }} />
