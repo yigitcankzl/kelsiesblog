@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { ArrowLeft, MapPin, Clock } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { useBlogStore } from '@/store/store';
 
 export default function PostReader() {
@@ -8,49 +8,6 @@ export default function PostReader() {
 
     return (
         <article className="pb-20 bg-black">
-            {/* Cover hero — full bleed */}
-            <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.5 }}
-                className="relative h-72 sm:h-[420px] overflow-hidden"
-                style={{ maxWidth: '976px', margin: '0 auto' }}
-            >
-                <img
-                    src={selectedPost.coverImage}
-                    alt={selectedPost.title}
-                    className="w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-black/20" />
-                <div className="absolute bottom-0 left-0 right-0 pb-6 sm:pb-10">
-                    <div>
-                    <div>
-                        <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-[var(--brand)] text-black text-[6px] font-bold uppercase tracking-[0.12em] mb-4"
-                            style={{ fontFamily: "'Press Start 2P', monospace" }}>
-                            <MapPin className="w-3 h-3" />
-                            {selectedPost.city}, {selectedPost.country}
-                        </span>
-                        <h1 className="text-base sm:text-xl lg:text-2xl font-bold text-white leading-relaxed relative text-glitch-always"
-                            style={{ fontFamily: "'Press Start 2P', monospace" }}
-                            data-text={selectedPost.title}>
-                            {selectedPost.title}
-                        </h1>
-                        <div className="flex items-center gap-4 mt-3">
-                            <span className="flex items-center gap-1.5 text-[var(--neon-cyan)] text-[7px]"
-                                style={{ fontFamily: "'Press Start 2P', monospace" }}>
-                                <Clock className="w-3.5 h-3.5" />
-                                {selectedPost.sections.length * 3} MIN READ
-                            </span>
-                            <span className="text-[var(--neon-amber)] text-[6px]"
-                                style={{ fontFamily: "'Press Start 2P', monospace" }}>
-                                {selectedPost.date}
-                            </span>
-                        </div>
-                    </div>
-                    </div>
-                </div>
-            </motion.div>
-
             {/* Content */}
             <div style={{ maxWidth: '1024px', margin: '0 auto', paddingLeft: '24px', paddingRight: '24px', paddingTop: '40px' }}>
                 {/* Back button */}
@@ -58,7 +15,7 @@ export default function PostReader() {
                     initial={{ opacity: 0, x: -12 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.1 }}
-                    className="mb-12"
+                    className="mb-8"
                 >
                     <button
                         onClick={() => setSelectedPost(null)}
@@ -71,6 +28,34 @@ export default function PostReader() {
                         <ArrowLeft className="w-3 h-3 group-hover:-translate-x-0.5 transition-transform" />
                         ◂ {selectedCountry || 'POSTS'}
                     </button>
+                </motion.div>
+
+                {/* Post header */}
+                <motion.div
+                    initial={{ opacity: 0, y: 16 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.15, duration: 0.5 }}
+                    className="mb-12"
+                >
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-[var(--brand)] text-black text-[6px] font-bold uppercase tracking-[0.12em] mb-4"
+                        style={{ fontFamily: "'Press Start 2P', monospace" }}>
+                        {selectedPost.city}, {selectedPost.country}
+                    </span>
+                    <h1 className="text-base sm:text-xl lg:text-2xl font-bold text-white leading-relaxed relative text-glitch-always mt-4"
+                        style={{ fontFamily: "'Press Start 2P', monospace" }}
+                        data-text={selectedPost.title}>
+                        {selectedPost.title}
+                    </h1>
+                    <div className="flex items-center gap-4 mt-3">
+                        <span className="text-[var(--neon-cyan)] text-[7px]"
+                            style={{ fontFamily: "'Press Start 2P', monospace" }}>
+                            {selectedPost.sections.length * 3} MIN READ
+                        </span>
+                        <span className="text-[var(--neon-amber)] text-[6px]"
+                            style={{ fontFamily: "'Press Start 2P', monospace" }}>
+                            {selectedPost.date}
+                        </span>
+                    </div>
                 </motion.div>
 
                 {/* Sections */}
