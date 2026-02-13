@@ -1,14 +1,5 @@
 import { useState } from 'react';
 
-const TINT_COLORS = [
-    'rgba(0, 255, 65, 0.15)',   // green
-    'rgba(0, 255, 255, 0.12)',  // cyan
-    'rgba(255, 184, 0, 0.1)',   // amber
-    'rgba(255, 0, 228, 0.1)',   // magenta
-    'rgba(0, 255, 65, 0.15)',   // green
-    'rgba(0, 255, 255, 0.12)',  // cyan
-];
-
 export default function PhotoStrip() {
     const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
@@ -65,26 +56,9 @@ export default function PhotoStrip() {
                             className="absolute inset-0 w-full h-full object-cover transition-all duration-700 ease-out"
                             style={{
                                 transform: hoveredIndex === index ? 'scale(1.15)' : 'scale(1)',
-                                filter: hoveredIndex === index
-                                    ? 'saturate(0.3) contrast(1.3) brightness(0.6)'
-                                    : 'saturate(0.5) brightness(0.7)',
-                                imageRendering: hoveredIndex === index ? 'pixelated' as any : 'auto',
                             }}
                         />
 
-                        {/* Color tint overlay */}
-                        <div
-                            className="absolute inset-0 pointer-events-none"
-                            style={{ background: TINT_COLORS[index] }}
-                        />
-
-                        {/* Scanline overlay per cell */}
-                        <div
-                            className="absolute inset-0 pointer-events-none"
-                            style={{
-                                background: 'repeating-linear-gradient(to bottom, transparent 0px, transparent 1px, rgba(0,0,0,0.08) 1px, rgba(0,0,0,0.08) 2px)',
-                            }}
-                        />
 
                         {/* Neon green gradient overlay on hover */}
                         <div

@@ -61,7 +61,6 @@ export default function WelcomeView() {
                                     src={featured.coverImage}
                                     alt={featured.title}
                                     className="absolute inset-0 w-full h-full object-cover transition-all duration-1000 group-hover:scale-105"
-                                    style={{ filter: 'saturate(0.4) brightness(0.7)' }}
                                 />
                                 <div className="absolute inset-0 bg-gradient-to-r from-transparent to-black/40 hidden md:block" />
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent md:hidden" />
@@ -136,8 +135,7 @@ export default function WelcomeView() {
                                         src={post.coverImage}
                                         alt={post.title}
                                         className="absolute inset-0 w-full h-full object-cover transition-all duration-1000 group-hover:scale-110"
-                                        style={{ filter: 'saturate(0.4) brightness(0.7)' }}
-                                    />
+                                        />
                                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
                                     <span className="absolute top-4 left-4 bg-[var(--brand)] text-black text-[6px] font-bold uppercase tracking-widest px-3 py-1.5"
                                         style={{ fontFamily: "'Press Start 2P', monospace" }}>

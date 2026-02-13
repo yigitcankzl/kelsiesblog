@@ -115,7 +115,6 @@ export default function MapPage() {
                                                     src={mainPost.coverImage}
                                                     alt={selectedCountry}
                                                     className="w-full h-full object-cover"
-                                                    style={{ filter: 'saturate(0.4) brightness(0.7)' }}
                                                 />
                                                 <div className="absolute top-3 left-3">
                                                     <span className="inline-block px-2.5 py-1 bg-[var(--brand)] text-black text-[6px] font-bold tracking-[0.15em] uppercase"

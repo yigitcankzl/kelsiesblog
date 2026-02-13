@@ -20,7 +20,6 @@ export default function PostReader() {
                     src={selectedPost.coverImage}
                     alt={selectedPost.title}
                     className="w-full h-full object-cover"
-                    style={{ filter: 'saturate(0.3) brightness(0.5) contrast(1.2)' }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-black/20" />
                 <div className="absolute bottom-0 left-0 right-0 pb-6 sm:pb-10">
@@ -110,7 +109,6 @@ export default function PostReader() {
                                         src={section.image}
                                         alt={section.heading}
                                         className="w-full h-52 sm:h-72 object-cover"
-                                        style={{ filter: 'saturate(0.4) brightness(0.7)' }}
                                     />
                                 </div>
                             )}
