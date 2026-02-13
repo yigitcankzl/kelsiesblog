@@ -90,28 +90,7 @@ export default function MapPage() {
     return (
         <>
             {/* Map hero section */}
-            <section className={`relative w-full ${MAP_SIZES[sizeIndex].height} bg-black flex flex-col items-center overflow-hidden scanlines transition-all duration-700 ease-in-out`}>
-                {/* Retro heading overlay */}
-                <div className="z-[500] text-center py-8 sm:py-10 relative px-4">
-                    <p className="text-[var(--neon-cyan)] text-[8px] font-bold uppercase tracking-[0.3em] mb-4 neon-glow-cyan"
-                        style={{ fontFamily: "'Press Start 2P', monospace" }}>
-                        ▸ EXPLORE THE WORLD ◂
-                    </p>
-                    <h1 className="text-xl md:text-3xl lg:text-4xl text-white mb-2 tracking-tight relative text-glitch-always"
-                        style={{ fontFamily: "'Press Start 2P', monospace" }}
-                        data-text="Where to next?">
-                        Where to next?
-                    </h1>
-                    <div className="flex justify-center mt-4 gap-1">
-                        {Array.from({ length: 8 }).map((_, i) => (
-                            <div key={i} className="w-2 h-1"
-                                style={{
-                                    backgroundColor: i % 2 === 0 ? '#00FF41' : '#00FFFF',
-                                    opacity: 0.5,
-                                }} />
-                        ))}
-                    </div>
-                </div>
+            <section className={`relative w-full pt-20 ${MAP_SIZES[sizeIndex].height} bg-black flex flex-col items-center overflow-hidden scanlines transition-all duration-700 ease-in-out`}>
 
                 {/* Map container */}
                 <div className="w-full flex-1 relative">
