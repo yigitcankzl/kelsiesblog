@@ -2,40 +2,66 @@ import type { BlogPost } from '../types';
 
 export const mockPosts: BlogPost[] = [
     {
-        id: 'kyoto-temples',
-        title: 'Temples & Tea in Kyoto',
-        country: 'Japan',
-        city: 'Kyoto',
-        coordinates: [35.0116, 135.7681],
-        coverImage: 'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=1200',
-        date: 'OCT 12, 2025',
-        category: 'Culture',
+        id: 'santorini-sunset',
+        title: 'Sunset in Santorini: Chasing the Golden Hour',
+        country: 'Greece',
+        city: 'Santorini',
+        coordinates: [36.3932, 25.4615],
+        coverImage: 'https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?w=1200',
+        date: 'OCT 12, 2023',
+        category: '5 Min Read',
         sections: [
             {
-                heading: 'Arriving in Gion',
-                content: 'The narrow streets of Gion welcomed us with the soft click of wooden sandals on stone. Geishas — or rather, maiko in training — glided past in flashes of silk and white makeup. The air smelled of incense and grilled mochi, and every corner felt like stepping into a woodblock print come to life.',
-                image: 'https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=800'
+                heading: 'Arriving in Oia',
+                content: 'The narrow streets of Oia are filled with anticipation as the sun begins its descent. Finding the perfect spot requires patience, but the reward is a front-row seat to one of the most photographed sunsets in the world. The white-washed buildings glow amber, and the caldera shimmers below.',
+                image: 'https://images.unsplash.com/photo-1613395877344-13d4a8e0d49e?w=800'
             },
             {
-                heading: 'The Golden Pavilion',
-                content: 'Kinkaku-ji is one of those places that no photograph can truly capture. The pavilion floats above the mirror pond, gilded in actual gold leaf, reflecting a perfect twin of itself in the still water. We arrived early enough to beat the crowds and had a few precious minutes of silence to take it all in.',
-                image: 'https://images.unsplash.com/photo-1490761668535-35497054764d?w=800'
+                heading: 'Blue Domes at Dawn',
+                content: 'Before the cruise ship crowds arrive, Santorini belongs to the early risers. The iconic blue domes of Oia catch the first light, and the Aegean stretches out endlessly. We walked through empty alleys, past sleeping cats and closed tavernas, feeling like we had the whole island to ourselves.',
+                image: 'https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?w=800'
             },
             {
-                heading: 'A Traditional Tea Ceremony',
-                content: 'Our host, Tanaka-san, guided us through every deliberate movement — the rotation of the bowl, the exact angle of the whisk, the mindful sip. In a world of rush, the ceremony was a masterclass in slowing down. The matcha was earthy, slightly bitter, and absolutely perfect with the delicate wagashi sweet.',
+                heading: 'Wine Tasting in Pyrgos',
+                content: 'Santorini\'s volcanic soil produces some of Greece\'s finest wines. At a hillside vineyard in Pyrgos, we tasted crisp Assyrtiko and velvety Vinsanto while overlooking terraced vineyards that cascade toward the sea. The sommelier explained how the unique basket-shaped vines protect grapes from the fierce Aegean winds.'
             }
         ]
     },
     {
-        id: 'tokyo-neon',
-        title: 'Neon Nights in Tokyo',
+        id: 'istanbul-coffee',
+        title: 'Coffee Culture in Istanbul',
+        country: 'Turkey',
+        city: 'Istanbul',
+        coordinates: [41.0082, 28.9784],
+        coverImage: 'https://images.unsplash.com/photo-1544787219-7f47ccb76574?w=1200',
+        date: 'SEP 28, 2023',
+        category: 'Food & Drink',
+        sections: [
+            {
+                heading: 'Beyoğlu\'s Historic Cafes',
+                content: 'Exploring the historic cafes of Beyoğlu and the ritual of Turkish coffee preparation. Each cup tells a story — the beans ground to powder, the cezve heated slowly over sand, the foam rising just so. In Istanbul, coffee is not a drink; it is a ceremony, a conversation starter, a fortune-telling device.',
+                image: 'https://images.unsplash.com/photo-1541167760496-1628856ab772?w=800'
+            },
+            {
+                heading: 'The Grand Bazaar',
+                content: 'With over 4,000 shops spread across 61 covered streets, the Grand Bazaar is sensory overload in the best way. Turkish lamps cast kaleidoscopic patterns, spice merchants offer samples of saffron and sumac, and carpet sellers invite you for tea before showing their treasures.',
+                image: 'https://images.unsplash.com/photo-1527838832700-5059252407fa?w=800'
+            },
+            {
+                heading: 'Bosphorus at Dusk',
+                content: 'We took a ferry across the Bosphorus as the sun dipped behind the minarets. Seagulls rode the wind, the call to prayer echoed across the water, and for a moment, suspended between two continents, everything felt absolutely right with the world.'
+            }
+        ]
+    },
+    {
+        id: 'tokyo-weekend',
+        title: 'A Weekend in Tokyo',
         country: 'Japan',
         city: 'Tokyo',
         coordinates: [35.6762, 139.6503],
         coverImage: 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=1200',
-        date: 'AUG 15, 2025',
-        category: 'Nightlife',
+        date: 'AUG 15, 2023',
+        category: 'City Break',
         sections: [
             {
                 heading: 'Shibuya Crossing',
@@ -54,28 +80,28 @@ export const mockPosts: BlogPost[] = [
         ]
     },
     {
-        id: 'rome-eternal',
-        title: 'The Eternal City',
+        id: 'cinque-terre',
+        title: 'Colors of Cinque Terre',
         country: 'Italy',
-        city: 'Rome',
-        coordinates: [41.9028, 12.4964],
-        coverImage: 'https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=1200',
-        date: 'JUL 04, 2025',
-        category: 'History',
+        city: 'Cinque Terre',
+        coordinates: [44.1461, 9.6439],
+        coverImage: 'https://images.unsplash.com/photo-1498307833015-e7b400441eb8?w=1200',
+        date: 'JUL 04, 2023',
+        category: 'Coastal',
         sections: [
             {
-                heading: 'The Colosseum at Dawn',
-                content: 'We queued before sunrise and were rewarded with golden light streaming through the ancient arches. Standing in the arena where gladiators once fought, you can almost hear the roar of 50,000 spectators. The scale of Roman ambition is humbling — this was built nearly 2,000 years ago without modern machinery.',
-                image: 'https://images.unsplash.com/photo-1604580864964-0462f5d5b1a8?w=800'
+                heading: 'Hiking the Azure Trail',
+                content: 'Hiking the Azure Trail between the five famous villages of the Italian Riviera. The path winds along cliffsides with views that stop you in your tracks — turquoise water crashing against ancient rocks, pastel houses stacked like a painter\'s palette, and lemon groves perfuming the salty air.',
+                image: 'https://images.unsplash.com/photo-1516483638261-f4dbaf036963?w=800'
             },
             {
-                heading: 'Trastevere by Night',
-                content: 'Cobblestone streets, ivy-clad buildings, the warm glow of trattorias spilling onto sidewalks — Trastevere is Rome at its most romantic. We found a tiny restaurant where the pasta was handmade that morning and the house wine was better than anything back home.',
-                image: 'https://images.unsplash.com/photo-1529260830199-42c24126f198?w=800'
+                heading: 'Manarola at Golden Hour',
+                content: 'As the sun dips toward the Ligurian Sea, Manarola transforms. The colorful houses glow warm against the deepening blue sky, fishing boats rock gently in the tiny harbor, and the locals gather at the waterfront bar for aperitivo. This is Italy at its most magical.',
+                image: 'https://images.unsplash.com/photo-1534308983496-4fabb1a015ee?w=800'
             },
             {
-                heading: 'Vatican Museums',
-                content: 'Nothing prepares you for the Sistine Chapel. After winding through seemingly endless galleries of Renaissance masterpieces, you enter the chapel and instinctively look up. Michelangelo\'s ceiling is overwhelming — every panel tells a story, every figure pulses with divine energy.'
+                heading: 'Vernazza\'s Hidden Beach',
+                content: 'Tucked below the main piazza, Vernazza\'s small beach feels like a secret. We spread towels on the rocks, swam in impossibly clear water, and watched the medieval tower cast long shadows across the harbor. The simplest pleasures, elevated by extraordinary beauty.'
             }
         ]
     },
@@ -86,7 +112,7 @@ export const mockPosts: BlogPost[] = [
         city: 'Florence',
         coordinates: [43.7696, 11.2558],
         coverImage: 'https://images.unsplash.com/photo-1541370976299-4d24ebbc9077?w=1200',
-        date: 'JUN 20, 2025',
+        date: 'JUN 20, 2023',
         category: 'Art',
         sections: [
             {
@@ -97,32 +123,6 @@ export const mockPosts: BlogPost[] = [
             {
                 heading: 'Sunset from Piazzale Michelangelo',
                 content: 'The panoramic view of Florence at golden hour is the stuff of postcards — the red dome of the Duomo, the Arno glinting below, the Tuscan hills rolling into the distance. We sat on the steps with aperol spritzes and watched the sky turn from gold to pink to purple.'
-            }
-        ]
-    },
-    {
-        id: 'istanbul-crossroads',
-        title: 'Where East Meets West',
-        country: 'Turkey',
-        city: 'Istanbul',
-        coordinates: [41.0082, 28.9784],
-        coverImage: 'https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?w=1200',
-        date: 'SEP 28, 2024',
-        category: 'Food & Drink',
-        sections: [
-            {
-                heading: 'Hagia Sophia',
-                content: 'Stepping into Hagia Sophia is like entering a dream. The massive dome seems to float above, supported by shafts of golden light streaming through high windows. For nearly 1,500 years, this building has been a cathedral, a mosque, a museum, and now a mosque again — each era leaving its mark on the walls.',
-                image: 'https://images.unsplash.com/photo-1541432901042-2d8bd64b4a9b?w=800'
-            },
-            {
-                heading: 'The Grand Bazaar',
-                content: 'With over 4,000 shops spread across 61 covered streets, the Grand Bazaar is sensory overload in the best way. Turkish lamps cast kaleidoscopic patterns, spice merchants offer samples of saffron and sumac, and carpet sellers invite you for tea before showing their treasures.',
-                image: 'https://images.unsplash.com/photo-1527838832700-5059252407fa?w=800'
-            },
-            {
-                heading: 'Bosphorus at Dusk',
-                content: 'We took a ferry across the Bosphorus as the sun dipped behind the minarets. Seagulls rode the wind, the call to prayer echoed across the water, and for a moment, suspended between two continents, everything felt absolutely right with the world.'
             }
         ]
     }
