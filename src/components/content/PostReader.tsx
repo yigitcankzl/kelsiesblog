@@ -14,7 +14,7 @@ export default function PostReader() {
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.5 }}
                 className="relative h-72 sm:h-[420px] overflow-hidden"
-                style={{ maxWidth: '1024px', margin: '0 auto' }}
+                style={{ maxWidth: '976px', margin: '0 auto' }}
             >
                 <img
                     src={selectedPost.coverImage}
@@ -23,7 +23,7 @@ export default function PostReader() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-black/20" />
                 <div className="absolute bottom-0 left-0 right-0 pb-6 sm:pb-10">
-                    <div style={{ maxWidth: '1024px', margin: '0 auto', paddingLeft: '24px', paddingRight: '24px' }}>
+                    <div>
                     <div>
                         <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-[var(--brand)] text-black text-[6px] font-bold uppercase tracking-[0.12em] mb-4"
                             style={{ fontFamily: "'Press Start 2P', monospace" }}>
