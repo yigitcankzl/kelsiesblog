@@ -90,10 +90,10 @@ export default function MapPage() {
     return (
         <>
             {/* Map hero section */}
-            <section className={`relative w-full pt-20 ${MAP_SIZES[sizeIndex].height} bg-black flex flex-col items-center overflow-hidden scanlines transition-all duration-700 ease-in-out`}>
+            <section className={`relative w-full pt-20 ${MAP_SIZES[sizeIndex].height} bg-black flex justify-center overflow-hidden scanlines transition-all duration-700 ease-in-out`}>
 
                 {/* Map container */}
-                <div className="w-full flex-1 relative">
+                <div className="w-full max-w-5xl flex-1 relative">
                     {/* Country popup card */}
                     <AnimatePresence>
                         {selectedCountry && (() => {
