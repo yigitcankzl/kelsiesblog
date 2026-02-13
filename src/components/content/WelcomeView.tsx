@@ -52,11 +52,11 @@ export default function WelcomeView() {
                         onClick={() => handlePostClick(featured)}
                         className="group cursor-pointer mb-16 transition-all duration-500 hover:-translate-y-1"
                     >
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-0 retro-corners overflow-hidden"
+                        <div className="grid grid-cols-1 md:grid-cols-[3fr_2fr] gap-0 retro-corners overflow-hidden md:min-h-[420px]"
                             style={{ boxShadow: '0 0 20px rgba(0, 255, 65, 0.15)' }}>
                             <span className="rc-extra absolute inset-0" />
                             {/* Image side */}
-                            <div className="relative overflow-hidden aspect-[4/3] md:aspect-auto hover-glitch">
+                            <div className="relative overflow-hidden aspect-[16/9] md:aspect-auto md:min-h-[420px] hover-glitch">
                                 <img
                                     src={featured.coverImage}
                                     alt={featured.title}
@@ -75,7 +75,7 @@ export default function WelcomeView() {
                                 </span>
                             </div>
                             {/* Info side */}
-                            <div className="bg-[#0a0a0a] p-8 md:p-10 flex flex-col justify-center border-t-2 md:border-t-0 md:border-l-2 border-[var(--brand)]/20">
+                            <div className="bg-[#0a0a0a] p-10 md:p-14 flex flex-col justify-center border-t-2 md:border-t-0 md:border-l-2 border-[var(--brand)]/20">
                                 <div className="flex items-center text-[6px] font-medium text-gray-500 mb-5 gap-3 uppercase tracking-wider"
                                     style={{ fontFamily: "'Press Start 2P', monospace" }}>
                                     <span className="text-[var(--neon-cyan)]">{featured.date}</span>
@@ -85,12 +85,12 @@ export default function WelcomeView() {
                                         {featured.sections.length * 3} MIN
                                     </span>
                                 </div>
-                                <h3 className="text-xs md:text-sm font-bold text-white mb-5 group-hover:text-[var(--brand)] transition-colors leading-relaxed text-glitch"
+                                <h3 className="text-sm md:text-base font-bold text-white mb-5 group-hover:text-[var(--brand)] transition-colors leading-relaxed text-glitch"
                                     style={{ fontFamily: "'Press Start 2P', monospace" }}
                                     data-text={featured.title}>
                                     {featured.title}
                                 </h3>
-                                <p className="text-gray-400 text-[8px] leading-[2.2] mb-8 line-clamp-4"
+                                <p className="text-gray-400 text-[9px] leading-[2.4] mb-8 line-clamp-4"
                                     style={{ fontFamily: "'Press Start 2P', monospace" }}>
                                     {featured.sections[0]?.content?.substring(0, 180)}...
                                 </p>
@@ -129,7 +129,7 @@ export default function WelcomeView() {
                                 onClick={() => handlePostClick(post)}
                                 className="group cursor-pointer w-full transition-all duration-500 hover:-translate-y-1"
                             >
-                                <div className="relative overflow-hidden aspect-[4/3] mb-6 retro-corners hover-glitch"
+                                <div className="relative overflow-hidden aspect-[16/9] mb-6 retro-corners hover-glitch"
                                     style={{ boxShadow: '0 0 10px rgba(0, 255, 65, 0.15)' }}>
                                     <span className="rc-extra absolute inset-0" />
                                     <img
@@ -149,7 +149,7 @@ export default function WelcomeView() {
                                         #{String(index + 2).padStart(2, '0')}
                                     </span>
                                 </div>
-                                <div className="flex items-center text-[6px] font-medium text-gray-500 mb-3 gap-3 uppercase tracking-wider"
+                                <div className="flex items-center text-[7px] font-medium text-gray-500 mb-3 gap-3 uppercase tracking-wider"
                                     style={{ fontFamily: "'Press Start 2P', monospace" }}>
                                     <span className="text-[var(--neon-cyan)]">{post.date}</span>
                                     <span className="text-[var(--neon-magenta)]">■</span>
@@ -158,12 +158,12 @@ export default function WelcomeView() {
                                         {post.sections.length * 3} MIN
                                     </span>
                                 </div>
-                                <h3 className="text-[9px] md:text-[10px] font-bold text-white mb-3 group-hover:text-[var(--brand)] transition-colors leading-relaxed text-glitch"
+                                <h3 className="text-[11px] md:text-xs font-bold text-white mb-3 group-hover:text-[var(--brand)] transition-colors leading-relaxed text-glitch"
                                     style={{ fontFamily: "'Press Start 2P', monospace" }}
                                     data-text={post.title}>
                                     {post.title}
                                 </h3>
-                                <p className="text-gray-400 text-[7px] leading-[2] line-clamp-3"
+                                <p className="text-gray-400 text-[8px] leading-[2.2] line-clamp-3"
                                     style={{ fontFamily: "'Press Start 2P', monospace" }}>
                                     {post.sections[0]?.content?.substring(0, 100)}...
                                 </p>
