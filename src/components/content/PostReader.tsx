@@ -22,7 +22,8 @@ export default function PostReader() {
                     style={{ filter: 'saturate(0.3) brightness(0.5) contrast(1.2)' }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-black/20" />
-                <div className="absolute bottom-0 left-0 right-0 px-8 sm:px-16 lg:px-32 xl:px-48 pb-6 sm:pb-10">
+                <div className="absolute bottom-0 left-0 right-0 pb-6 sm:pb-10 flex justify-center">
+                    <div className="w-full max-w-5xl px-6 sm:px-8">
                     <div>
                         <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-[var(--brand)] text-black text-[6px] font-bold uppercase tracking-[0.12em] mb-4"
                             style={{ fontFamily: "'Press Start 2P', monospace" }}>
@@ -46,11 +47,13 @@ export default function PostReader() {
                             </span>
                         </div>
                     </div>
+                    </div>
                 </div>
             </motion.div>
 
             {/* Content */}
-            <div className="px-8 sm:px-16 lg:px-32 xl:px-48 pt-10">
+            <div className="flex justify-center w-full">
+            <div className="w-full max-w-5xl px-6 sm:px-8 pt-10">
                 {/* Back button */}
                 <motion.div
                     initial={{ opacity: 0, x: -12 }}
@@ -140,6 +143,7 @@ export default function PostReader() {
                         — TRANSMISSION COMPLETE —
                     </span>
                 </div>
+            </div>
             </div>
         </article>
     );
