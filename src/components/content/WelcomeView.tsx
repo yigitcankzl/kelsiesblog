@@ -57,15 +57,16 @@ export default function WelcomeView() {
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.1, duration: 0.5 }}
                             onClick={() => handlePostClick(santorini)}
-                            className="group cursor-pointer flex flex-col"
+                            className="group cursor-pointer flex flex-col transition-transform duration-500 hover:-translate-y-1"
                         >
-                            <div className="relative overflow-hidden aspect-[3/4] mb-7">
+                            <div className="relative overflow-hidden aspect-[3/4] mb-7 rounded-lg">
                                 <img
                                     src={santorini.coverImage}
                                     alt={santorini.title}
                                     className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
                                 />
-                                <span className="absolute top-4 left-4 bg-[#1a2e35] text-white text-[10px] font-bold uppercase tracking-widest px-3.5 py-1.5 rounded-sm">
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                                <span className="absolute top-4 left-4 bg-white/20 backdrop-blur-md text-white text-[10px] font-bold uppercase tracking-widest px-3.5 py-1.5 rounded-full border border-white/30">
                                     {santorini.country}
                                 </span>
                             </div>
@@ -84,9 +85,12 @@ export default function WelcomeView() {
                                 {santorini.sections[0]?.content}
                             </p>
                             <span
-                                className="text-sm font-medium text-gray-900 dark:text-white border-b border-gray-900 dark:border-white pb-0.5 self-start hover:text-[var(--brand)] hover:border-[var(--brand)] transition-colors cursor-pointer"
+                                className="text-sm font-medium text-gray-900 dark:text-white self-start hover:text-[var(--brand)] transition-colors cursor-pointer inline-flex items-center gap-2 group/link"
                             >
                                 Read Story
+                                <svg className="w-4 h-4 transition-transform duration-300 group-hover/link:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                                </svg>
                             </span>
                         </motion.article>
                     )}
@@ -100,15 +104,16 @@ export default function WelcomeView() {
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: 0.2, duration: 0.5 }}
                                 onClick={() => handlePostClick(istanbul)}
-                                className="group cursor-pointer"
+                                className="group cursor-pointer transition-transform duration-500 hover:-translate-y-1"
                             >
-                                <div className="relative overflow-hidden aspect-[16/10] mb-7">
+                                <div className="relative overflow-hidden aspect-[16/10] mb-7 rounded-lg">
                                     <img
                                         src={istanbul.coverImage}
                                         alt={istanbul.title}
                                         className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
                                     />
-                                    <span className="absolute top-4 left-4 bg-[#1a2e35] text-white text-[10px] font-bold uppercase tracking-widest px-3.5 py-1.5 rounded-sm">
+                                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                                    <span className="absolute top-4 left-4 bg-white/20 backdrop-blur-md text-white text-[10px] font-bold uppercase tracking-widest px-3.5 py-1.5 rounded-full border border-white/30">
                                         {istanbul.country}
                                     </span>
                                 </div>
@@ -141,7 +146,7 @@ export default function WelcomeView() {
                                 onClick={() => handlePostClick(tokyo)}
                                 className="group cursor-pointer flex gap-5 items-start"
                             >
-                                <div className="relative overflow-hidden w-28 h-24 flex-shrink-0">
+                                <div className="relative overflow-hidden w-28 h-24 flex-shrink-0 rounded-lg">
                                     <img
                                         src={tokyo.coverImage}
                                         alt={tokyo.title}
@@ -173,15 +178,16 @@ export default function WelcomeView() {
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: 0.25, duration: 0.5 }}
                                 onClick={() => handlePostClick(cinqueTerre)}
-                                className="group cursor-pointer"
+                                className="group cursor-pointer transition-transform duration-500 hover:-translate-y-1"
                             >
-                                <div className="relative overflow-hidden aspect-[3/4] mb-7">
+                                <div className="relative overflow-hidden aspect-[3/4] mb-7 rounded-lg">
                                     <img
                                         src={cinqueTerre.coverImage}
                                         alt={cinqueTerre.title}
                                         className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
                                     />
-                                    <span className="absolute top-4 left-4 bg-[#1a2e35] text-white text-[10px] font-bold uppercase tracking-widest px-3.5 py-1.5 rounded-sm">
+                                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                                    <span className="absolute top-4 left-4 bg-white/20 backdrop-blur-md text-white text-[10px] font-bold uppercase tracking-widest px-3.5 py-1.5 rounded-full border border-white/30">
                                         {cinqueTerre.country}
                                     </span>
                                 </div>
@@ -207,7 +213,7 @@ export default function WelcomeView() {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.4, duration: 0.5 }}
-                            className="bg-gray-50 dark:bg-gray-900 p-10"
+                            className="bg-gray-50/80 dark:bg-gray-900/80 backdrop-blur-sm p-10 rounded-2xl border border-gray-100 dark:border-gray-800"
                         >
                             <Mail className="w-7 h-7 text-[var(--brand)] mb-5" strokeWidth={1.5} />
                             <h4
@@ -223,9 +229,9 @@ export default function WelcomeView() {
                                 <input
                                     type="email"
                                     placeholder="Email address"
-                                    className="w-full text-sm px-4 py-3 border border-gray-200 dark:border-gray-700 bg-white dark:bg-black focus:ring-1 focus:ring-[var(--brand)] outline-none"
+                                    className="w-full text-sm px-4 py-3 border border-gray-200 dark:border-gray-700 bg-white dark:bg-black focus:ring-2 focus:ring-[var(--brand)]/30 focus:border-[var(--brand)] outline-none transition-all rounded-lg"
                                 />
-                                <button className="bg-gray-900 dark:bg-white text-white dark:text-black font-medium text-sm py-3 px-4 hover:bg-[var(--brand)] transition-colors uppercase tracking-wider w-full cursor-pointer">
+                                <button className="bg-gray-900 dark:bg-white text-white dark:text-black font-medium text-sm py-3 px-4 hover:bg-[var(--brand)] transition-all hover:shadow-lg cursor-pointer uppercase tracking-wider w-full rounded-lg">
                                     Subscribe
                                 </button>
                             </div>
