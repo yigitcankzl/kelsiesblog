@@ -59,25 +59,28 @@ export default function WelcomeView() {
                             onClick={() => handlePostClick(santorini)}
                             className="group cursor-pointer flex flex-col"
                         >
-                            <div className="relative overflow-hidden aspect-[3/4] mb-6">
+                            <div className="relative overflow-hidden aspect-[3/4] mb-7">
                                 <img
                                     src={santorini.coverImage}
                                     alt={santorini.title}
                                     className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
                                 />
+                                <span className="absolute top-4 left-4 bg-[#1a2e35] text-white text-[10px] font-bold uppercase tracking-widest px-3.5 py-1.5 rounded-sm">
+                                    {santorini.country}
+                                </span>
                             </div>
-                            <div className="flex items-center text-[10px] font-medium text-gray-400 mb-3 space-x-3 uppercase tracking-wider">
+                            <div className="flex items-center text-[11px] font-medium text-gray-400 mb-4 gap-3 uppercase tracking-wider">
                                 <span>{santorini.date}</span>
-                                <span className="w-1 h-1 bg-gray-300 rounded-full" />
+                                <span className="text-gray-300">•</span>
                                 <span>{santorini.category}</span>
                             </div>
                             <h3
-                                className="text-lg md:text-xl font-bold text-gray-900 dark:text-white mb-4 group-hover:text-[var(--brand)] transition-colors leading-snug"
+                                className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white mb-5 group-hover:text-[var(--brand)] transition-colors leading-snug"
                                 style={{ fontFamily: 'Playfair Display, serif' }}
                             >
                                 {santorini.title}
                             </h3>
-                            <p className="text-gray-500 dark:text-gray-400 text-sm font-light leading-relaxed mb-6 flex-1">
+                            <p className="text-gray-500 dark:text-gray-400 text-sm font-light leading-[1.8] mb-8 flex-1">
                                 {santorini.sections[0]?.content}
                             </p>
                             <span
@@ -99,25 +102,28 @@ export default function WelcomeView() {
                                 onClick={() => handlePostClick(istanbul)}
                                 className="group cursor-pointer"
                             >
-                                <div className="relative overflow-hidden aspect-[16/10] mb-6">
+                                <div className="relative overflow-hidden aspect-[16/10] mb-7">
                                     <img
                                         src={istanbul.coverImage}
                                         alt={istanbul.title}
                                         className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
                                     />
+                                    <span className="absolute top-4 left-4 bg-[#1a2e35] text-white text-[10px] font-bold uppercase tracking-widest px-3.5 py-1.5 rounded-sm">
+                                        {istanbul.country}
+                                    </span>
                                 </div>
-                                <div className="flex items-center text-[10px] font-medium text-gray-400 mb-3 space-x-3 uppercase tracking-wider">
+                                <div className="flex items-center text-[11px] font-medium text-gray-400 mb-4 gap-3 uppercase tracking-wider">
                                     <span>{istanbul.date}</span>
-                                    <span className="w-1 h-1 bg-gray-300 rounded-full" />
+                                    <span className="text-gray-300">•</span>
                                     <span>{istanbul.category}</span>
                                 </div>
                                 <h3
-                                    className="text-lg md:text-xl font-bold text-gray-900 dark:text-white mb-3 group-hover:text-[var(--brand)] transition-colors leading-snug"
+                                    className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white mb-4 group-hover:text-[var(--brand)] transition-colors leading-snug"
                                     style={{ fontFamily: 'Playfair Display, serif' }}
                                 >
                                     {istanbul.title}
                                 </h3>
-                                <p className="text-gray-500 dark:text-gray-400 text-sm font-light line-clamp-2 leading-relaxed">
+                                <p className="text-gray-500 dark:text-gray-400 text-sm font-light line-clamp-2 leading-[1.8]">
                                     {istanbul.sections[0]?.content}
                                 </p>
                             </motion.article>
@@ -133,9 +139,9 @@ export default function WelcomeView() {
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: 0.3, duration: 0.5 }}
                                 onClick={() => handlePostClick(tokyo)}
-                                className="group cursor-pointer flex gap-4 items-start"
+                                className="group cursor-pointer flex gap-5 items-start"
                             >
-                                <div className="relative overflow-hidden w-24 h-20 flex-shrink-0">
+                                <div className="relative overflow-hidden w-28 h-24 flex-shrink-0">
                                     <img
                                         src={tokyo.coverImage}
                                         alt={tokyo.title}
@@ -143,12 +149,12 @@ export default function WelcomeView() {
                                     />
                                 </div>
                                 <div className="flex-1 min-w-0">
-                                    <div className="flex items-center text-[10px] font-medium text-gray-400 mb-1.5 space-x-2 uppercase tracking-wider">
+                                    <div className="flex items-center text-[11px] font-medium text-gray-400 mb-2 gap-3 uppercase tracking-wider">
                                         <span className="text-[var(--brand)] font-bold">{tokyo.country}</span>
                                         <span>{tokyo.date}</span>
                                     </div>
                                     <h3
-                                        className="text-base font-bold text-gray-900 dark:text-white group-hover:text-[var(--brand)] transition-colors leading-snug"
+                                        className="text-lg font-bold text-gray-900 dark:text-white group-hover:text-[var(--brand)] transition-colors leading-snug"
                                         style={{ fontFamily: 'Playfair Display, serif' }}
                                     >
                                         {tokyo.title}
@@ -169,25 +175,28 @@ export default function WelcomeView() {
                                 onClick={() => handlePostClick(cinqueTerre)}
                                 className="group cursor-pointer"
                             >
-                                <div className="relative overflow-hidden aspect-[3/4] mb-6">
+                                <div className="relative overflow-hidden aspect-[3/4] mb-7">
                                     <img
                                         src={cinqueTerre.coverImage}
                                         alt={cinqueTerre.title}
                                         className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
                                     />
+                                    <span className="absolute top-4 left-4 bg-[#1a2e35] text-white text-[10px] font-bold uppercase tracking-widest px-3.5 py-1.5 rounded-sm">
+                                        {cinqueTerre.country}
+                                    </span>
                                 </div>
-                                <div className="flex items-center text-[10px] font-medium text-gray-400 mb-3 space-x-3 uppercase tracking-wider">
+                                <div className="flex items-center text-[11px] font-medium text-gray-400 mb-4 gap-3 uppercase tracking-wider">
                                     <span>{cinqueTerre.date}</span>
-                                    <span className="w-1 h-1 bg-gray-300 rounded-full" />
+                                    <span className="text-gray-300">•</span>
                                     <span>{cinqueTerre.category}</span>
                                 </div>
                                 <h3
-                                    className="text-lg md:text-xl font-bold text-gray-900 dark:text-white mb-3 group-hover:text-[var(--brand)] transition-colors leading-snug"
+                                    className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white mb-4 group-hover:text-[var(--brand)] transition-colors leading-snug"
                                     style={{ fontFamily: 'Playfair Display, serif' }}
                                 >
                                     {cinqueTerre.title}
                                 </h3>
-                                <p className="text-gray-500 dark:text-gray-400 text-sm font-light line-clamp-2 leading-relaxed">
+                                <p className="text-gray-500 dark:text-gray-400 text-sm font-light line-clamp-2 leading-[1.8]">
                                     {cinqueTerre.sections[0]?.content}
                                 </p>
                             </motion.article>
