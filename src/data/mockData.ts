@@ -7,7 +7,7 @@ export const mockPosts: BlogPost[] = [
         country: 'Greece',
         city: 'Santorini',
         coordinates: [36.3932, 25.4615],
-        coverImage: 'https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?w=1200',
+        coverImage: 'https://images.unsplash.com/photo-1613395877344-13d4a8e0d49e?w=1200',
         date: 'OCT 12, 2023',
         category: '5 Min Read',
         sections: [
@@ -85,7 +85,7 @@ export const mockPosts: BlogPost[] = [
         country: 'Italy',
         city: 'Cinque Terre',
         coordinates: [44.1461, 9.6439],
-        coverImage: 'https://images.unsplash.com/photo-1498307833015-e7b400441eb8?w=1200',
+        coverImage: 'https://images.unsplash.com/photo-1516483638261-f4dbaf036963?w=1200',
         date: 'JUL 04, 2023',
         category: 'Coastal',
         sections: [
