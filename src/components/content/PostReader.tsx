@@ -13,7 +13,7 @@ export default function PostReader() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.5 }}
-                className="relative h-72 sm:h-[420px] overflow-hidden border-b-2 border-[var(--brand)]"
+                className="relative h-72 sm:h-[420px] overflow-hidden"
                 style={{ maxWidth: '1024px', margin: '0 auto' }}
             >
                 <img
