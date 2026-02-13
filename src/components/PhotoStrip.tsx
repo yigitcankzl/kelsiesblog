@@ -25,9 +25,9 @@ export default function PhotoStrip() {
             location: 'London',
         },
         {
-            src: 'https://images.unsplash.com/photo-1531210483974-4f8205f49e36?w=600',
+            src: 'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=600',
             alt: 'Matterhorn mountain peak',
-            location: 'Zermatt',
+            location: 'Switzerland',
         },
         {
             src: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600',

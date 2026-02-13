@@ -159,6 +159,26 @@ export default function MapPage() {
                         </div>
                     </div>
 
+
+                    {/* Featured destinations — bottom-right */}
+                    <div className="absolute bottom-10 right-8 z-[1000] hidden md:flex flex-col gap-3 items-end bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm p-5 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-xl">
+                        <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500 mb-1">
+                            Featured Destinations
+                        </span>
+                        <div className="flex flex-col gap-3 items-end">
+                            {countriesWithPosts.slice(0, 3).map((country) => (
+                                <button
+                                    key={country}
+                                    onClick={() => { setSelectedPost(null); setSelectedCountry(country); }}
+                                    className="flex items-center gap-3 text-sm font-medium text-gray-900 dark:text-white hover:text-[var(--brand)] transition-colors cursor-pointer group/dest"
+                                    style={{ fontFamily: 'Playfair Display, serif' }}
+                                >
+                                    {country}
+                                    <span className="w-1.5 h-1.5 rounded-full bg-[var(--brand)] ring-2 ring-[var(--brand-surface)] group-hover:scale-125 transition-transform" />
+                                </button>
+                            ))}
+                        </div>
+                    </div>
                     {/* Bottom fade */}
                     <div className="map-bottom-fade" />
 

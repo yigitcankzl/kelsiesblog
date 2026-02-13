@@ -98,7 +98,7 @@ export default function WelcomeView() {
                                 onClick={() => handlePostClick(istanbul)}
                                 className="group cursor-pointer transition-transform duration-500 hover:-translate-y-1"
                             >
-                                <div className="relative overflow-hidden aspect-[16/10] mb-7 rounded-lg">
+                                <div className="relative overflow-hidden aspect-[4/3] mb-7 rounded-lg">
                                     <img
                                         src={istanbul.coverImage}
                                         alt={istanbul.title}
@@ -117,7 +117,7 @@ export default function WelcomeView() {
                                 <h3 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white mb-4 group-hover:text-[var(--brand)] transition-colors leading-snug font-display">
                                     {istanbul.title}
                                 </h3>
-                                <p className="text-gray-500 dark:text-gray-400 text-sm font-light line-clamp-2 leading-[1.8]">
+                                <p className="text-gray-500 dark:text-gray-400 text-sm font-light line-clamp-4 leading-[1.8]">
                                     {istanbul.sections[0]?.content}
                                 </p>
                             </motion.article>
@@ -226,6 +226,6 @@ export default function WelcomeView() {
                     </button>
                 </div>
             </div>
-        </section>
+        </section >
     );
 }
