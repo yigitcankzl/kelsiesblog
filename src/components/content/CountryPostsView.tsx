@@ -30,13 +30,15 @@ export default function CountryPostsView() {
                     <div className="flex items-center gap-4">
                         <div className="w-px h-10 bg-[var(--brand)]" style={{ opacity: 0.3 }} />
                         <div>
-                            <h2 className="text-base sm:text-xl font-medium text-white leading-tight"
-                                style={{ fontFamily: "'Press Start 2P', monospace" }}>
+                            <h2 className="text-base sm:text-xl font-medium text-white leading-tight relative text-glitch"
+                                style={{ fontFamily: "'Press Start 2P', monospace" }}
+                                data-text={selectedCountry}>
                                 {selectedCountry}
                             </h2>
-                            <p className="text-[6px] text-[var(--brand)] mt-2 uppercase tracking-wider font-medium"
+                            <p className="text-[6px] mt-2 uppercase tracking-wider font-medium"
                                 style={{ fontFamily: "'Press Start 2P', monospace" }}>
-                                {countryPosts.length} {countryPosts.length === 1 ? 'STORY' : 'STORIES'} FOUND
+                                <span className="text-[var(--neon-cyan)]">{countryPosts.length}</span>
+                                <span className="text-gray-500"> {countryPosts.length === 1 ? 'STORY' : 'STORIES'} FOUND</span>
                             </p>
                         </div>
                     </div>
@@ -53,8 +55,9 @@ export default function CountryPostsView() {
                             onClick={() => setSelectedPost(post)}
                             className="group cursor-pointer transition-all duration-500 hover:-translate-y-1"
                         >
-                            <div className="relative overflow-hidden aspect-[4/3] mb-5 border-2 border-[var(--brand)]"
+                            <div className="relative overflow-hidden aspect-[4/3] mb-5 retro-corners hover-glitch"
                                 style={{ boxShadow: '0 0 10px rgba(0, 255, 65, 0.15)' }}>
+                                <span className="rc-extra absolute inset-0" />
                                 <img
                                     src={post.coverImage}
                                     alt={post.title}
@@ -72,12 +75,13 @@ export default function CountryPostsView() {
                             </div>
                             <div className="flex items-center text-[6px] font-medium text-gray-500 mb-2 space-x-3 uppercase tracking-wider"
                                 style={{ fontFamily: "'Press Start 2P', monospace" }}>
-                                <span>{post.city}, {post.country}</span>
-                                <span className="w-1.5 h-1.5 bg-[var(--brand)]" />
-                                <span>{post.sections.length * 3} MIN</span>
+                                <span className="text-[var(--neon-cyan)]">{post.city}, {post.country}</span>
+                                <span className="w-1.5 h-1.5 bg-[var(--neon-magenta)]" />
+                                <span className="text-[var(--neon-amber)]">{post.sections.length * 3} MIN</span>
                             </div>
-                            <h3 className="text-[9px] font-medium text-white mb-1.5 group-hover:text-[var(--brand)] transition-colors leading-relaxed"
-                                style={{ fontFamily: "'Press Start 2P', monospace" }}>
+                            <h3 className="text-[9px] font-medium text-white mb-1.5 group-hover:text-[var(--brand)] transition-colors leading-relaxed text-glitch"
+                                style={{ fontFamily: "'Press Start 2P', monospace" }}
+                                data-text={post.title}>
                                 {post.title}
                             </h3>
                             <p className="text-gray-500 text-[7px] line-clamp-2 leading-[2]"
