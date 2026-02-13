@@ -1,5 +1,14 @@
 import { useState } from 'react';
 
+const TINT_COLORS = [
+    'rgba(0, 255, 65, 0.15)',   // green
+    'rgba(0, 255, 255, 0.12)',  // cyan
+    'rgba(255, 184, 0, 0.1)',   // amber
+    'rgba(255, 0, 228, 0.1)',   // magenta
+    'rgba(0, 255, 65, 0.15)',   // green
+    'rgba(0, 255, 255, 0.12)',  // cyan
+];
+
 export default function PhotoStrip() {
     const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
@@ -43,7 +52,7 @@ export default function PhotoStrip() {
                 {images.map((img, index) => (
                     <div
                         key={index}
-                        className="relative w-1/3 sm:w-1/6 aspect-square overflow-hidden cursor-pointer"
+                        className="relative w-1/3 sm:w-1/6 aspect-square overflow-hidden cursor-pointer hover-glitch"
                         style={{
                             borderRight: index < images.length - 1 ? '1px solid #00FF4144' : 'none',
                         }}
@@ -62,6 +71,21 @@ export default function PhotoStrip() {
                                 imageRendering: hoveredIndex === index ? 'pixelated' as any : 'auto',
                             }}
                         />
+
+                        {/* Color tint overlay */}
+                        <div
+                            className="absolute inset-0 pointer-events-none"
+                            style={{ background: TINT_COLORS[index] }}
+                        />
+
+                        {/* Scanline overlay per cell */}
+                        <div
+                            className="absolute inset-0 pointer-events-none"
+                            style={{
+                                background: 'repeating-linear-gradient(to bottom, transparent 0px, transparent 1px, rgba(0,0,0,0.08) 1px, rgba(0,0,0,0.08) 2px)',
+                            }}
+                        />
+
                         {/* Neon green gradient overlay on hover */}
                         <div
                             className="absolute inset-0 transition-opacity duration-500"
@@ -70,6 +94,21 @@ export default function PhotoStrip() {
                                 background: 'linear-gradient(to top, rgba(0,255,65,0.3) 0%, rgba(0,0,0,0) 60%)',
                             }}
                         />
+
+                        {/* Channel number */}
+                        <span
+                            className="absolute top-2 left-2 text-[var(--neon-cyan)] opacity-40 transition-opacity duration-300"
+                            style={{
+                                fontFamily: "'Press Start 2P', monospace",
+                                fontSize: '5px',
+                                letterSpacing: '0.1em',
+                                opacity: hoveredIndex === index ? 0.8 : 0.3,
+                                textShadow: hoveredIndex === index ? '0 0 4px rgba(0,255,255,0.5)' : 'none',
+                            }}
+                        >
+                            CH-{String(index + 1).padStart(2, '0')}
+                        </span>
+
                         {/* Location label on hover */}
                         <span
                             className="absolute bottom-3 left-0 right-0 text-center text-[var(--brand)] transition-all duration-500"
