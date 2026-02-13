@@ -3,6 +3,8 @@ import { useBlogStore } from '@/store/store';
 import WelcomeView from './WelcomeView';
 import CountryPostsView from './CountryPostsView';
 import PostReader from './PostReader';
+import PhotoStrip from '../PhotoStrip';
+import Footer from '../Footer';
 
 export default function ContentArea() {
     const { selectedCountry, selectedPost } = useBlogStore();
@@ -39,9 +41,11 @@ export default function ContentArea() {
                         transition={{ duration: 0.35, ease: 'easeOut' }}
                     >
                         <WelcomeView />
+                        <PhotoStrip />
                     </motion.div>
                 )}
             </AnimatePresence>
+            <Footer />
         </div>
     );
 }

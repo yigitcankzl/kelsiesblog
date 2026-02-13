@@ -36,11 +36,11 @@ export default function MapPage() {
     const getBaseStyle = useCallback((name: string) => {
         const has = countriesWithPosts.includes(name);
         return {
-            fillColor: has ? '#2d6a4f' : '#d1d5db',
-            weight: has ? 2 : 1,
+            fillColor: has ? '#059669' : '#E5E7EB',
+            weight: has ? 1.5 : 0.5,
             opacity: 1,
-            color: has ? '#1a472a' : '#b0b0b0',
-            fillOpacity: has ? 0.65 : 0.35,
+            color: has ? '#047857' : '#ffffff',
+            fillOpacity: has ? 0.7 : 0.4,
         };
     }, [countriesWithPosts]);
 
@@ -57,8 +57,8 @@ export default function MapPage() {
             mouseover: () => {
                 hoveredLayerRef.current = layer;
                 (layer as any).setStyle({
-                    fillColor: has ? '#22c55e' : '#e5e7eb',
-                    fillOpacity: has ? 0.8 : 0.5,
+                    fillColor: has ? '#10B981' : '#d1d5db',
+                    fillOpacity: has ? 0.85 : 0.55,
                 });
             },
             mouseout: () => {
@@ -71,7 +71,6 @@ export default function MapPage() {
         });
     }, [countriesWithPosts, setSelectedCountry, setSelectedPost, getBaseStyle]);
 
-    // Only re-render GeoJSON when the list of countries with posts changes
     const geoJsonKey = useMemo(
         () => countriesWithPosts.join(','),
         [countriesWithPosts]
@@ -79,54 +78,95 @@ export default function MapPage() {
 
     return (
         <>
-            {/* Map hero */}
-            <div className="relative h-[50vh] min-h-[300px] flex-shrink-0">
-                {/* Country label overlay */}
-                <AnimatePresence>
-                    {selectedCountry && (
-                        <motion.div
-                            initial={{ opacity: 0, y: 12 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: 12 }}
-                            className="absolute top-4 left-4 z-[1000]"
-                        >
-                            <div className="flex items-center gap-2 bg-white/90 backdrop-blur-xl px-3 py-2 rounded-lg shadow-lg border border-white/50">
-                                <MapPin className="w-4 h-4 text-[var(--brand)]" />
-                                <div>
-                                    <p className="text-[9px] text-muted-foreground uppercase tracking-[0.15em] font-semibold leading-none">
-                                        Exploring
-                                    </p>
-                                    <p className="text-sm font-bold leading-tight" style={{ fontFamily: 'Playfair Display, serif' }}>
-                                        {selectedCountry}
-                                    </p>
+            {/* Map hero section */}
+            <section className="relative w-full h-[75vh] min-h-[500px] bg-background flex flex-col items-center overflow-hidden">
+                {/* Editorial heading overlay */}
+                <div className="z-10 text-center pt-10 pb-6 relative">
+                    <p className="text-[var(--brand)] text-[10px] font-bold uppercase tracking-[0.2em] mb-3">
+                        Explore The World
+                    </p>
+                    <h1
+                        className="text-4xl md:text-6xl lg:text-7xl text-gray-900 dark:text-white mb-2 tracking-tight"
+                        style={{ fontFamily: 'Playfair Display, serif', fontStyle: 'italic' }}
+                    >
+                        Where to next?
+                    </h1>
+                    <div className="w-16 h-1 bg-[var(--brand)] mx-auto mt-4 rounded-full opacity-60" />
+                </div>
+
+                {/* Map container */}
+                <div className="w-full flex-1 relative">
+                    {/* Country badge */}
+                    <AnimatePresence>
+                        {selectedCountry && (
+                            <motion.div
+                                initial={{ opacity: 0, y: 12 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: 12 }}
+                                className="absolute top-4 left-4 z-[1000]"
+                            >
+                                <div className="flex items-center gap-2 bg-white/95 dark:bg-gray-800/95 backdrop-blur-xl px-4 py-2.5 shadow-lg border border-gray-100 dark:border-gray-700">
+                                    <MapPin className="w-4 h-4 text-[var(--brand)]" />
+                                    <div>
+                                        <p className="text-[9px] text-muted-foreground uppercase tracking-[0.2em] font-bold leading-none">
+                                            Exploring
+                                        </p>
+                                        <p
+                                            className="text-sm font-bold leading-tight text-gray-900 dark:text-white"
+                                            style={{ fontFamily: 'Playfair Display, serif', fontStyle: 'italic' }}
+                                        >
+                                            {selectedCountry}
+                                        </p>
+                                    </div>
                                 </div>
-                            </div>
-                        </motion.div>
-                    )}
-                </AnimatePresence>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
 
-                {/* Bottom gradient fade */}
-                <div className="map-bottom-fade" />
+                    {/* Visited counter */}
+                    <div className="absolute bottom-10 left-8 z-[600] hidden md:flex flex-col gap-1">
+                        <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400">
+                            Total Visited
+                        </span>
+                        <div className="flex items-baseline gap-2">
+                            <span
+                                className="text-3xl text-gray-900 dark:text-white"
+                                style={{ fontFamily: 'Playfair Display, serif' }}
+                            >
+                                {countriesWithPosts.length}
+                            </span>
+                            <span
+                                className="text-sm text-gray-500 italic"
+                                style={{ fontFamily: 'Playfair Display, serif' }}
+                            >
+                                countries
+                            </span>
+                        </div>
+                    </div>
 
-                <MapContainer
-                    center={[20, 0]} zoom={2} minZoom={2} maxZoom={12}
-                    zoomControl={true} scrollWheelZoom={false}
-                    dragging={true}
-                    style={{ width: '100%', height: '100%' }}
-                    maxBounds={[[-85, -180], [85, 180]]}
-                    maxBoundsViscosity={1.0}
-                >
-                    <TileLayer
-                        attribution='&copy; <a href="https://carto.com/">CARTO</a>'
-                        url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
-                    />
-                    <GeoJSON key={geoJsonKey} data={countriesGeoJson as any} style={geoJsonStyle} onEachFeature={onEachCountry} />
-                    <FlyToCountry country={selectedCountry} />
-                    {selectedCountry && <CountryView country={selectedCountry} />}
-                </MapContainer>
-            </div>
+                    {/* Bottom fade */}
+                    <div className="map-bottom-fade" />
 
-            {/* Content */}
+                    <MapContainer
+                        center={[20, 0]} zoom={2} minZoom={2} maxZoom={12}
+                        zoomControl={true} scrollWheelZoom={true}
+                        dragging={true}
+                        style={{ width: '100%', height: '100%' }}
+                        maxBounds={[[-85, -180], [85, 180]]}
+                        maxBoundsViscosity={1.0}
+                    >
+                        <TileLayer
+                            attribution='&copy; <a href="https://carto.com/">CARTO</a>'
+                            url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
+                        />
+                        <GeoJSON key={geoJsonKey} data={countriesGeoJson as any} style={geoJsonStyle} onEachFeature={onEachCountry} />
+                        <FlyToCountry country={selectedCountry} />
+                        {selectedCountry && <CountryView country={selectedCountry} />}
+                    </MapContainer>
+                </div>
+            </section>
+
+            {/* Content below map */}
             <ContentArea />
         </>
     );

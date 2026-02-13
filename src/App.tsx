@@ -5,12 +5,14 @@ import AdminPage from './pages/AdminPage';
 
 function AppContent() {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background flex flex-col">
       <Navbar />
-      <Routes>
-        <Route path="/" element={<MapPage />} />
-        <Route path="/admin" element={<AdminPage />} />
-      </Routes>
+      <main className="flex-grow pt-20">
+        <Routes>
+          <Route path="/" element={<MapPage />} />
+          <Route path="/admin" element={<AdminPage />} />
+        </Routes>
+      </main>
     </div>
   );
 }

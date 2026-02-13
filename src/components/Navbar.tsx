@@ -1,7 +1,6 @@
-import { Globe, Settings, Home } from 'lucide-react';
+import { Settings, Home } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useBlogStore } from '@/store/store';
-import { Button } from '@/components/ui/button';
 
 export default function Navbar() {
     const navigate = useNavigate();
@@ -15,50 +14,67 @@ export default function Navbar() {
     };
 
     return (
-        <nav className="sticky top-0 z-[1000] bg-[#1a472a]/95 backdrop-blur-xl shadow-lg">
+        <nav className="fixed w-full z-[1000] bg-white/95 dark:bg-[#10221c]/95 backdrop-blur-sm border-b border-gray-100 dark:border-gray-800">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="flex items-center justify-between h-14">
+                <div className="flex justify-between items-center h-20">
                     {/* Brand */}
                     <button
                         onClick={goHome}
-                        className="flex items-center gap-3 cursor-pointer group"
+                        className="flex-shrink-0 cursor-pointer"
                     >
-                        <div className="w-8 h-8 bg-white/15 rounded-lg flex items-center justify-center group-hover:bg-white/25 transition-colors">
-                            <Globe className="w-4 h-4 text-white" />
-                        </div>
-                        <div className="text-left">
-                            <h1
-                                className="text-base font-bold text-white leading-tight tracking-tight"
-                                style={{ fontFamily: 'Playfair Display, serif' }}
-                            >
-                                Kelsie Sharp
-                            </h1>
-                            <p className="text-[9px] text-white/50 uppercase tracking-[0.2em] font-medium leading-none">
-                                Travel Journal
-                            </p>
-                        </div>
+                        <span
+                            className="text-2xl sm:text-3xl font-bold tracking-tight text-gray-900 dark:text-white"
+                            style={{ fontFamily: 'Playfair Display, serif' }}
+                        >
+                            Kelsie Sharp
+                            <span className="text-[var(--brand)] text-3xl sm:text-4xl">.</span>
+                        </span>
                     </button>
 
                     {/* Links */}
-                    <div className="flex items-center gap-1">
-                        <Button
-                            variant="ghost"
-                            size="sm"
+                    <div className="hidden sm:flex items-center space-x-8">
+                        <button
                             onClick={goHome}
-                            className="text-white/70 hover:text-white hover:bg-white/10 cursor-pointer gap-1.5 text-xs font-medium"
+                            className="text-xs font-medium tracking-[0.15em] text-gray-500 dark:text-gray-300 hover:text-[var(--brand)] transition-colors uppercase cursor-pointer flex items-center gap-1.5"
                         >
                             <Home className="w-3.5 h-3.5" />
                             Home
-                        </Button>
-                        <Button
-                            variant="ghost"
-                            size="sm"
+                        </button>
+                        <button
+                            onClick={goHome}
+                            className="text-xs font-medium tracking-[0.15em] text-gray-500 dark:text-gray-300 hover:text-[var(--brand)] transition-colors uppercase cursor-pointer"
+                        >
+                            Destinations
+                        </button>
+                        <button
                             onClick={() => navigate('/admin')}
-                            className="text-white/70 hover:text-white hover:bg-white/10 cursor-pointer gap-1.5 text-xs font-medium"
+                            className="text-xs font-medium tracking-[0.15em] text-gray-500 dark:text-gray-300 hover:text-[var(--brand)] transition-colors uppercase cursor-pointer flex items-center gap-1.5"
                         >
                             <Settings className="w-3.5 h-3.5" />
                             Admin
-                        </Button>
+                        </button>
+                        <button
+                            onClick={goHome}
+                            className="px-6 py-2.5 text-xs font-medium text-white bg-gray-900 dark:bg-white dark:text-gray-900 hover:bg-[var(--brand)] transition-all hover:shadow-lg cursor-pointer uppercase tracking-[0.12em]"
+                        >
+                            Subscribe
+                        </button>
+                    </div>
+
+                    {/* Mobile menu button */}
+                    <div className="sm:hidden flex items-center gap-2">
+                        <button
+                            onClick={goHome}
+                            className="p-2 text-gray-500 hover:text-[var(--brand)] cursor-pointer"
+                        >
+                            <Home className="w-5 h-5" />
+                        </button>
+                        <button
+                            onClick={() => navigate('/admin')}
+                            className="p-2 text-gray-500 hover:text-[var(--brand)] cursor-pointer"
+                        >
+                            <Settings className="w-5 h-5" />
+                        </button>
                     </div>
                 </div>
             </div>

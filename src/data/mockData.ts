@@ -79,7 +79,7 @@ export const mockPosts: BlogPost[] = [
         country: 'Italy',
         city: 'Florence',
         coordinates: [43.7696, 11.2558],
-        coverImage: 'https://images.unsplash.com/photo-1543429258-bce5fa4f5f86?w=1200',
+        coverImage: 'https://images.unsplash.com/photo-1541370976299-4d24ebbc9077?w=1200',
         sections: [
             {
                 heading: 'The Uffizi Gallery',
