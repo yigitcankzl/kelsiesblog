@@ -76,23 +76,31 @@ export default function MapPage() {
         [countriesWithPosts]
     );
 
+    // XP percentage — max 10 countries as "100%"
+    const xpPercent = Math.min((countriesWithPosts.length / 10) * 100, 100);
+
     return (
         <>
             {/* Map hero section */}
             <section className="relative w-full h-[75vh] min-h-[500px] bg-black flex flex-col items-center overflow-hidden scanlines">
                 {/* Retro heading overlay */}
                 <div className="z-[500] text-center py-8 sm:py-10 relative px-4">
-                    <p className="text-[var(--brand)] text-[8px] font-bold uppercase tracking-[0.3em] mb-4 neon-glow"
+                    <p className="text-[var(--neon-cyan)] text-[8px] font-bold uppercase tracking-[0.3em] mb-4 neon-glow-cyan"
                         style={{ fontFamily: "'Press Start 2P', monospace" }}>
                         ▸ EXPLORE THE WORLD ◂
                     </p>
-                    <h1 className="text-xl md:text-3xl lg:text-4xl text-white mb-2 tracking-tight"
-                        style={{ fontFamily: "'Press Start 2P', monospace" }}>
+                    <h1 className="text-xl md:text-3xl lg:text-4xl text-white mb-2 tracking-tight relative text-glitch-always"
+                        style={{ fontFamily: "'Press Start 2P', monospace" }}
+                        data-text="Where to next?">
                         Where to next?
                     </h1>
                     <div className="flex justify-center mt-4 gap-1">
                         {Array.from({ length: 8 }).map((_, i) => (
-                            <div key={i} className="w-2 h-1 bg-[var(--brand)]" style={{ opacity: 0.6 }} />
+                            <div key={i} className="w-2 h-1"
+                                style={{
+                                    backgroundColor: i % 2 === 0 ? '#00FF41' : '#00FFFF',
+                                    opacity: 0.5,
+                                }} />
                         ))}
                     </div>
                 </div>
@@ -111,8 +119,9 @@ export default function MapPage() {
                                     exit={{ opacity: 0, y: 12, scale: 0.95 }}
                                     className="absolute top-4 right-4 z-[1000] w-64"
                                 >
-                                    <div className="bg-black border-2 border-[var(--brand)] overflow-hidden"
+                                    <div className="bg-black retro-corners overflow-hidden"
                                         style={{ boxShadow: '0 0 15px rgba(0, 255, 65, 0.25)' }}>
+                                        <span className="rc-extra absolute inset-0 z-10" />
                                         {mainPost && (
                                             <div className="relative h-28 overflow-hidden">
                                                 <img
@@ -135,7 +144,7 @@ export default function MapPage() {
                                                     style={{ fontFamily: "'Press Start 2P', monospace" }}>
                                                     {selectedCountry}
                                                 </h3>
-                                                <span className="text-[8px] text-[var(--brand)]"
+                                                <span className="text-[8px] text-[var(--neon-cyan)]"
                                                     style={{ fontFamily: "'Press Start 2P', monospace" }}>
                                                     {countryPosts.length}→
                                                 </span>
@@ -159,7 +168,7 @@ export default function MapPage() {
                         })()}
                     </AnimatePresence>
 
-                    {/* Visited counter */}
+                    {/* Visited counter + XP bar */}
                     <div className="absolute bottom-10 left-8 z-[600] hidden md:flex flex-col gap-1">
                         <span className="text-[7px] font-bold uppercase tracking-[0.2em] text-gray-500"
                             style={{ fontFamily: "'Press Start 2P', monospace" }}>
@@ -170,32 +179,48 @@ export default function MapPage() {
                                 style={{ fontFamily: "'Press Start 2P', monospace" }}>
                                 {countriesWithPosts.length}
                             </span>
-                            <span className="text-[8px] text-gray-500"
+                            <span className="text-[8px] text-[var(--neon-amber)]"
                                 style={{ fontFamily: "'Press Start 2P', monospace" }}>
                                 LVL
                             </span>
                         </div>
+                        {/* XP Bar */}
+                        <div className="xp-bar w-24 mt-2">
+                            <div className="xp-bar-fill" style={{ width: `${xpPercent}%` }} />
+                        </div>
+                        <span className="text-[5px] text-gray-600 mt-1"
+                            style={{ fontFamily: "'Press Start 2P', monospace" }}>
+                            {countriesWithPosts.length}/10 XP
+                        </span>
                     </div>
 
 
                     {/* Featured destinations — bottom-right */}
-                    <div className="absolute bottom-10 right-8 z-[1000] hidden md:flex flex-col gap-3 items-end bg-black border-2 border-[var(--brand)] p-5"
+                    <div className="absolute bottom-10 right-8 z-[1000] hidden md:flex flex-col gap-3 items-end bg-black retro-corners p-5"
                         style={{ boxShadow: '0 0 12px rgba(0, 255, 65, 0.2)' }}>
-                        <span className="text-[6px] font-bold uppercase tracking-[0.2em] text-gray-500 mb-1"
+                        <span className="rc-extra absolute inset-0" />
+                        <span className="text-[6px] font-bold uppercase tracking-[0.2em] text-[var(--neon-amber)] mb-1"
                             style={{ fontFamily: "'Press Start 2P', monospace" }}>
                             ★ TOP DESTINATIONS
                         </span>
                         <div className="flex flex-col gap-3 items-end">
-                            {countriesWithPosts.slice(0, 3).map((country) => (
+                            {countriesWithPosts.slice(0, 3).map((country, i) => (
                                 <button
                                     key={country}
                                     onClick={() => { setSelectedPost(null); setSelectedCountry(country); }}
                                     className="flex items-center gap-3 text-[8px] font-medium text-white hover:text-[var(--brand)] transition-colors cursor-pointer group/dest"
                                     style={{ fontFamily: "'Press Start 2P', monospace" }}
                                 >
+                                    <span className="text-[5px] text-gray-600"
+                                        style={{ fontFamily: "'Press Start 2P', monospace" }}>
+                                        {String(i + 1).padStart(2, '0')}
+                                    </span>
                                     {country}
-                                    <span className="w-2 h-2 bg-[var(--brand)]"
-                                        style={{ boxShadow: '0 0 6px rgba(0, 255, 65, 0.5)' }} />
+                                    <span className="w-2 h-2"
+                                        style={{
+                                            backgroundColor: i === 0 ? '#00FF41' : i === 1 ? '#00FFFF' : '#FFB800',
+                                            boxShadow: `0 0 6px ${i === 0 ? 'rgba(0,255,65,0.5)' : i === 1 ? 'rgba(0,255,255,0.5)' : 'rgba(255,184,0,0.5)'}`,
+                                        }} />
                                 </button>
                             ))}
                         </div>
