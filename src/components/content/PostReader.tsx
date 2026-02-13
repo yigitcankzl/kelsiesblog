@@ -7,32 +7,36 @@ export default function PostReader() {
     if (!selectedPost) return null;
 
     return (
-        <article className="pb-20">
+        <article className="pb-20 bg-black">
             {/* Cover hero — full bleed */}
             <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.5 }}
-                className="relative h-72 sm:h-[420px] w-full overflow-hidden"
+                className="relative h-72 sm:h-[420px] w-full overflow-hidden border-b-2 border-[var(--brand)]"
             >
                 <img
                     src={selectedPost.coverImage}
                     alt={selectedPost.title}
                     className="w-full h-full object-cover"
+                    style={{ filter: 'saturate(0.3) brightness(0.5) contrast(1.2)' }}
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-black/10" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-black/20" />
                 <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-10">
                     <div className="max-w-3xl mx-auto">
-                        <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-white/20 backdrop-blur-md text-white text-xs font-bold uppercase tracking-[0.12em] mb-4">
+                        <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-[var(--brand)] text-black text-[6px] font-bold uppercase tracking-[0.12em] mb-4"
+                            style={{ fontFamily: "'Press Start 2P', monospace" }}>
                             <MapPin className="w-3 h-3" />
                             {selectedPost.city}, {selectedPost.country}
                         </span>
-                        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white leading-tight font-display">
+                        <h1 className="text-base sm:text-xl lg:text-2xl font-bold text-white leading-relaxed"
+                            style={{ fontFamily: "'Press Start 2P', monospace" }}>
                             {selectedPost.title}
                         </h1>
-                        <div className="flex items-center gap-3 mt-3 text-white/60 text-sm">
+                        <div className="flex items-center gap-3 mt-3 text-[var(--brand)] text-[7px]"
+                            style={{ fontFamily: "'Press Start 2P', monospace" }}>
                             <Clock className="w-3.5 h-3.5" />
-                            <span>{selectedPost.sections.length * 3} min read</span>
+                            <span>{selectedPost.sections.length * 3} MIN READ</span>
                         </div>
                     </div>
                 </div>
@@ -49,10 +53,14 @@ export default function PostReader() {
                 >
                     <button
                         onClick={() => setSelectedPost(null)}
-                        className="flex items-center gap-2 text-xs font-medium text-gray-900 dark:text-white px-5 py-2.5 border border-gray-200 dark:border-gray-700 rounded-full hover:bg-[var(--brand)] hover:text-white hover:border-[var(--brand)] transition-all duration-300 cursor-pointer uppercase tracking-[0.12em] group"
+                        className="flex items-center gap-2 text-[7px] font-medium text-[var(--brand)] px-4 py-2 border-2 border-[var(--brand)] hover:bg-[var(--brand)] hover:text-black transition-all duration-300 cursor-pointer uppercase tracking-[0.12em] group"
+                        style={{
+                            fontFamily: "'Press Start 2P', monospace",
+                            boxShadow: '0 0 8px rgba(0, 255, 65, 0.2)',
+                        }}
                     >
-                        <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-0.5 transition-transform" />
-                        Back to {selectedCountry || 'Posts'}
+                        <ArrowLeft className="w-3 h-3 group-hover:-translate-x-0.5 transition-transform" />
+                        ◂ {selectedCountry || 'POSTS'}
                     </button>
                 </motion.div>
 
@@ -65,30 +73,35 @@ export default function PostReader() {
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.15 + index * 0.08, duration: 0.4 }}
                         >
-                            {/* Section divider */}
+                            {/* Section pixel divider */}
                             {index > 0 && (
-                                <div className="flex items-center gap-4 mb-12 opacity-40">
-                                    <div className="flex-1 h-px bg-gradient-to-r from-transparent via-gray-300 dark:via-gray-600 to-transparent" />
-                                    <div className="w-1.5 h-1.5 rotate-45 bg-[var(--brand)]" />
-                                    <div className="flex-1 h-px bg-gradient-to-r from-transparent via-gray-300 dark:via-gray-600 to-transparent" />
+                                <div className="flex items-center gap-2 mb-12 justify-center">
+                                    {Array.from({ length: 5 }).map((_, i) => (
+                                        <div key={i} className="w-2 h-2 bg-[var(--brand)]"
+                                            style={{ opacity: i === 2 ? 1 : 0.4 }} />
+                                    ))}
                                 </div>
                             )}
 
-                            <h2 className="text-xl sm:text-2xl font-bold mb-4 leading-snug text-gray-900 dark:text-white font-display">
-                                {section.heading}
+                            <h2 className="text-[10px] sm:text-xs font-bold mb-4 leading-relaxed text-[var(--brand)]"
+                                style={{ fontFamily: "'Press Start 2P', monospace" }}>
+                                {'> '}{section.heading}
                             </h2>
 
                             {section.image && (
-                                <div className="mb-5 overflow-hidden shadow-md">
+                                <div className="mb-5 overflow-hidden border-2 border-[var(--brand)]"
+                                    style={{ boxShadow: '0 0 10px rgba(0, 255, 65, 0.15)' }}>
                                     <img
                                         src={section.image}
                                         alt={section.heading}
                                         className="w-full h-52 sm:h-72 object-cover"
+                                        style={{ filter: 'saturate(0.4) brightness(0.7)' }}
                                     />
                                 </div>
                             )}
 
-                            <p className="text-lg text-gray-600 dark:text-gray-300 leading-relaxed font-light">
+                            <p className="text-[9px] text-gray-300 leading-[2.5]"
+                                style={{ fontFamily: "'Press Start 2P', monospace" }}>
                                 {section.content}
                             </p>
                         </motion.section>
@@ -97,11 +110,23 @@ export default function PostReader() {
 
                 {/* End marker */}
                 <div className="flex justify-center pt-14">
-                    <div className="flex items-center gap-3">
-                        <div className="w-8 h-px bg-[var(--brand)]" />
-                        <div className="w-2 h-2 rotate-45 bg-[var(--brand)]" />
-                        <div className="w-8 h-px bg-[var(--brand)]" />
+                    <div className="flex items-center gap-2">
+                        {Array.from({ length: 7 }).map((_, i) => (
+                            <div key={i} className="w-2 h-2"
+                                style={{
+                                    backgroundColor: '#00FF41',
+                                    opacity: i === 3 ? 1 : 0.3,
+                                }} />
+                        ))}
                     </div>
+                </div>
+
+                {/* GAME OVER text */}
+                <div className="text-center mt-6 mb-8">
+                    <span className="text-[8px] text-gray-600 uppercase tracking-[0.3em]"
+                        style={{ fontFamily: "'Press Start 2P', monospace" }}>
+                        — END OF STORY —
+                    </span>
                 </div>
             </div>
         </article>
