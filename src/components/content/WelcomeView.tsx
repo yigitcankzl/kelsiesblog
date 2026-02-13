@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Mail, ArrowRight, Clock } from 'lucide-react';
+import { ArrowRight, Clock } from 'lucide-react';
 import { useBlogStore } from '@/store/store';
 
 export default function WelcomeView() {
@@ -170,46 +170,6 @@ export default function WelcomeView() {
                     </div>
                 )}
 
-                {/* Newsletter — centered below stories */}
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.5, duration: 0.5 }}
-                    className="mt-20 bg-black p-8 sm:p-10 retro-corners text-center"
-                    style={{ boxShadow: '0 0 12px rgba(0, 255, 65, 0.2)' }}
-                >
-                    <span className="rc-extra absolute inset-0" style={{ position: 'relative' }} />
-                    <div className="flex items-center justify-center gap-3 mb-5">
-                        <Mail className="w-5 h-5 text-[var(--neon-cyan)]" strokeWidth={1.5} />
-                        <span className="text-[5px] text-[var(--neon-amber)] uppercase tracking-[0.3em]"
-                            style={{ fontFamily: "'Press Start 2P', monospace" }}>
-                            INCOMING TRANSMISSION
-                        </span>
-                    </div>
-                    <h4 className="text-[10px] font-bold text-white mb-3"
-                        style={{ fontFamily: "'Press Start 2P', monospace" }}>
-                        JOIN THE PARTY
-                    </h4>
-                    <p className="text-[6px] text-gray-500 mb-8 leading-[2.5]"
-                        style={{ fontFamily: "'Press Start 2P', monospace" }}>
-                        15,000+ PLAYERS GET WEEKLY UPDATES AND TRAVEL TIPS.
-                    </p>
-                    <div className="flex flex-col sm:flex-row gap-4">
-                        <input
-                            type="email"
-                            placeholder="EMAIL_ADDRESS"
-                            className="flex-1 text-[8px] px-4 py-3 border-2 border-[var(--brand)] bg-black text-[var(--brand)] focus:ring-2 focus:ring-[var(--brand)]/30 outline-none transition-all placeholder-gray-600"
-                            style={{ fontFamily: "'Press Start 2P', monospace" }}
-                        />
-                        <button className="bg-[var(--brand)] text-black font-medium text-[8px] py-3 px-6 hover:bg-[#00cc33] transition-all cursor-pointer uppercase tracking-wider border-2 border-[var(--brand)] whitespace-nowrap"
-                            style={{
-                                fontFamily: "'Press Start 2P', monospace",
-                                boxShadow: '0 0 10px rgba(0, 255, 65, 0.3)',
-                            }}>
-                            ▶ SUBSCRIBE
-                        </button>
-                    </div>
-                </motion.div>
             </div>
         </section>
     );
