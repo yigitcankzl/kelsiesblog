@@ -1,7 +1,5 @@
 import { useCallback, useMemo, useRef } from 'react';
 import { MapContainer, TileLayer, GeoJSON, useMap } from 'react-leaflet';
-import { AnimatePresence, motion } from 'framer-motion';
-import { ArrowRight } from 'lucide-react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { useBlogStore } from '@/store/store';
@@ -86,65 +84,6 @@ export default function MapPage() {
 
                 {/* Map container */}
                 <div className="flex-1 relative" style={{ maxWidth: '1024px', width: '100%', paddingLeft: '24px', paddingRight: '24px' }}>
-                    {/* Country popup card */}
-                    <AnimatePresence>
-                        {selectedCountry && (() => {
-                            const countryPosts = posts.filter(p => p.country === selectedCountry);
-                            const mainPost = countryPosts[0];
-                            return (
-                                <motion.div
-                                    initial={{ opacity: 0, y: 12, scale: 0.95 }}
-                                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                                    exit={{ opacity: 0, y: 12, scale: 0.95 }}
-                                    className="absolute top-4 right-4 z-[1000] w-64"
-                                >
-                                    <div className="bg-black retro-corners overflow-hidden"
-                                        style={{ boxShadow: '0 0 15px rgba(0, 255, 65, 0.25)' }}>
-                                        <span className="rc-extra absolute inset-0 z-10" />
-                                        {mainPost && (
-                                            <div className="relative h-28 overflow-hidden">
-                                                <img
-                                                    src={mainPost.coverImage}
-                                                    alt={selectedCountry}
-                                                    className="w-full h-full object-cover"
-                                                />
-                                                <div className="absolute top-3 left-3">
-                                                    <span className="inline-block px-2.5 py-1 bg-[var(--brand)] text-black text-[6px] font-bold tracking-[0.15em] uppercase"
-                                                        style={{ fontFamily: "'Press Start 2P', monospace" }}>
-                                                        GUIDE
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        )}
-                                        <div className="p-4">
-                                            <div className="flex items-center justify-between mb-2">
-                                                <h3 className="text-[10px] font-bold text-white"
-                                                    style={{ fontFamily: "'Press Start 2P', monospace" }}>
-                                                    {selectedCountry}
-                                                </h3>
-                                                <span className="text-[8px] text-[var(--neon-cyan)]"
-                                                    style={{ fontFamily: "'Press Start 2P', monospace" }}>
-                                                    {countryPosts.length}→
-                                                </span>
-                                            </div>
-                                            <p className="text-[7px] text-gray-400 mb-3 line-clamp-2 leading-relaxed"
-                                                style={{ fontFamily: "'Press Start 2P', monospace" }}>
-                                                {mainPost ? `${mainPost.city} adventures...` : `Explore ${selectedCountry}`}
-                                            </p>
-                                            <button
-                                                onClick={() => { setSelectedPost(null); setSelectedCountry(selectedCountry); }}
-                                                className="text-[var(--brand)] text-[7px] font-bold uppercase tracking-[0.12em] hover:underline cursor-pointer flex items-center gap-1"
-                                                style={{ fontFamily: "'Press Start 2P', monospace" }}
-                                            >
-                                                ▶ READ
-                                                <ArrowRight className="w-3 h-3" />
-                                            </button>
-                                        </div>
-                                    </div>
-                                </motion.div>
-                            );
-                        })()}
-                    </AnimatePresence>
 
                     {/* Visited counter + XP bar */}
                     <div className="absolute bottom-10 left-8 z-[600] hidden md:flex items-end gap-5">
