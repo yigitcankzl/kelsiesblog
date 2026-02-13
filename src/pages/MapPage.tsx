@@ -33,6 +33,19 @@ export default function MapPage() {
 
     const getBaseStyle = useCallback((name: string) => {
         const has = countriesWithPosts.includes(name);
+        const isSelected = selectedCountry === name;
+
+        // When a country is selected, make it just an outline so city polygons stand out
+        if (isSelected) {
+            return {
+                fillColor: '#00FF41',
+                weight: 1,
+                opacity: 0.6,
+                color: '#00cc33',
+                fillOpacity: 0.08,
+            };
+        }
+
         return {
             fillColor: has ? '#00FF41' : '#222222',
             weight: has ? 1.5 : 0.5,
@@ -40,7 +53,7 @@ export default function MapPage() {
             color: has ? '#00cc33' : '#333333',
             fillOpacity: has ? 0.5 : 0.3,
         };
-    }, [countriesWithPosts]);
+    }, [countriesWithPosts, selectedCountry]);
 
     const geoJsonStyle = useCallback((feature: any) => {
         const name = feature?.properties?.ADMIN || feature?.properties?.name || '';
@@ -70,8 +83,8 @@ export default function MapPage() {
     }, [countriesWithPosts, setSelectedCountry, setSelectedPost, getBaseStyle]);
 
     const geoJsonKey = useMemo(
-        () => countriesWithPosts.join(','),
-        [countriesWithPosts]
+        () => `${countriesWithPosts.join(',')}-${selectedCountry || 'none'}`,
+        [countriesWithPosts, selectedCountry]
     );
 
     // XP percentage — max 10 countries as "100%"
