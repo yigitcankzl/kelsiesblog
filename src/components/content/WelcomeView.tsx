@@ -41,9 +41,9 @@ export default function WelcomeView() {
                             Latest Stories
                         </h2>
                     </div>
-                    <button className="hidden sm:flex items-center text-sm font-medium text-gray-900 dark:text-white border-b border-gray-900 dark:border-white pb-1 hover:text-[var(--brand)] hover:border-[var(--brand)] transition-all group cursor-pointer">
+                    <button className="hidden sm:flex items-center gap-2 text-xs font-medium text-gray-900 dark:text-white px-5 py-2.5 border border-gray-200 dark:border-gray-700 rounded-full hover:bg-[var(--brand)] hover:text-white hover:border-[var(--brand)] transition-all duration-300 cursor-pointer uppercase tracking-[0.12em] group">
                         View Archive
-                        <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                        <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
                     </button>
                 </motion.div>
 
@@ -85,12 +85,10 @@ export default function WelcomeView() {
                                 {santorini.sections[0]?.content}
                             </p>
                             <span
-                                className="text-sm font-medium text-gray-900 dark:text-white self-start hover:text-[var(--brand)] transition-colors cursor-pointer inline-flex items-center gap-2 group/link"
+                                className="text-sm font-semibold text-[var(--brand)] self-start cursor-pointer inline-flex items-center gap-2 group/link hover:gap-3 transition-all duration-300 uppercase tracking-wider"
                             >
                                 Read Story
-                                <svg className="w-4 h-4 transition-transform duration-300 group-hover/link:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                                </svg>
+                                <ArrowRight className="w-4 h-4" />
                             </span>
                         </motion.article>
                     )}

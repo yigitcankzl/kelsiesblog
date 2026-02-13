@@ -108,7 +108,7 @@ export default function MapPage() {
                                     exit={{ opacity: 0, y: 12, scale: 0.95 }}
                                     className="absolute top-4 right-4 z-[1000] w-64"
                                 >
-                                    <div className="bg-white dark:bg-gray-800 shadow-xl border border-gray-100 dark:border-gray-700 overflow-hidden">
+                                    <div className="bg-white dark:bg-gray-800 shadow-2xl border border-gray-100 dark:border-gray-700 overflow-hidden rounded-xl">
                                         {mainPost && (
                                             <div className="relative h-28 overflow-hidden">
                                                 <img
@@ -168,6 +168,26 @@ export default function MapPage() {
                             >
                                 countries
                             </span>
+                        </div>
+                    </div>
+
+                    {/* Featured destinations — bottom-right */}
+                    <div className="absolute bottom-10 right-8 z-[600] hidden md:flex flex-col gap-3 items-end">
+                        <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400">
+                            Featured Destinations
+                        </span>
+                        <div className="flex flex-col gap-2 items-end">
+                            {countriesWithPosts.slice(0, 3).map((country) => (
+                                <button
+                                    key={country}
+                                    onClick={() => { setSelectedPost(null); setSelectedCountry(country); }}
+                                    className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300 hover:text-[var(--brand)] transition-colors cursor-pointer group/dest"
+                                    style={{ fontFamily: 'Playfair Display, serif' }}
+                                >
+                                    {country}
+                                    <span className="w-1.5 h-1.5 rounded-full bg-[var(--brand)]" />
+                                </button>
+                            ))}
                         </div>
                     </div>
 
