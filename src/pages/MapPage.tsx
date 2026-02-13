@@ -81,7 +81,7 @@ export default function MapPage() {
             {/* Map hero section */}
             <section className="relative w-full h-[75vh] min-h-[500px] bg-background flex flex-col items-center overflow-hidden">
                 {/* Editorial heading overlay */}
-                <div className="z-10 text-center py-8 sm:py-10 relative px-4">
+                <div className="z-[500] text-center py-8 sm:py-10 relative px-4">
                     <p className="text-[var(--brand)] text-[10px] font-bold uppercase tracking-[0.2em] mb-3">
                         Explore The World
                     </p>
