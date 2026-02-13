@@ -5,13 +5,13 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
-  --radius-2xl: calc(var(--radius) + 8px);
-  --radius-3xl: calc(var(--radius) + 12px);
-  --radius-4xl: calc(var(--radius) + 16px);
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+  --radius-xl: 0px;
+  --radius-2xl: 0px;
+  --radius-3xl: 0px;
+  --radius-4xl: 0px;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -43,76 +43,76 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
-  --font-sans: 'Inter', sans-serif;
-  --font-display: 'Playfair Display', serif;
+  --font-sans: 'Press Start 2P', monospace;
+  --font-display: 'Press Start 2P', monospace;
 }
 
 :root {
-  --radius: 0.25rem;
-  --background: #ffffff;
-  --foreground: #1f2937;
-  --card: #ffffff;
-  --card-foreground: #1f2937;
-  --popover: #ffffff;
-  --popover-foreground: #1f2937;
-  --primary: #10B981;
-  --primary-foreground: #ffffff;
-  --secondary: #f9fafb;
-  --secondary-foreground: #374151;
-  --muted: #f3f4f6;
-  --muted-foreground: #6b7280;
-  --accent: #f0fdf9;
-  --accent-foreground: #115e59;
-  --destructive: #ef4444;
-  --border: #f3f4f6;
-  --input: #e5e7eb;
-  --ring: #10B981;
-  --chart-1: #10B981;
-  --chart-2: #059669;
-  --chart-3: #047857;
-  --chart-4: #065f46;
-  --chart-5: #064e3b;
-  --sidebar: #ffffff;
-  --sidebar-foreground: #1f2937;
-  --sidebar-primary: #10B981;
-  --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #f0fdf9;
-  --sidebar-accent-foreground: #115e59;
-  --sidebar-border: #f3f4f6;
-  --sidebar-ring: #10B981;
+  --radius: 0px;
+  --background: #000000;
+  --foreground: #ffffff;
+  --card: #0a0a0a;
+  --card-foreground: #ffffff;
+  --popover: #0a0a0a;
+  --popover-foreground: #ffffff;
+  --primary: #00FF41;
+  --primary-foreground: #000000;
+  --secondary: #111111;
+  --secondary-foreground: #ffffff;
+  --muted: #1a1a1a;
+  --muted-foreground: #888888;
+  --accent: #111111;
+  --accent-foreground: #00FF41;
+  --destructive: #ff0000;
+  --border: #00FF41;
+  --input: #1a1a1a;
+  --ring: #00FF41;
+  --chart-1: #00FF41;
+  --chart-2: #00cc33;
+  --chart-3: #009926;
+  --chart-4: #00661a;
+  --chart-5: #00330d;
+  --sidebar: #000000;
+  --sidebar-foreground: #ffffff;
+  --sidebar-primary: #00FF41;
+  --sidebar-primary-foreground: #000000;
+  --sidebar-accent: #111111;
+  --sidebar-accent-foreground: #00FF41;
+  --sidebar-border: #00FF41;
+  --sidebar-ring: #00FF41;
 
   /* Brand tokens */
-  --brand: #10B981;
-  --brand-dark: #059669;
-  --brand-deep: #047857;
-  --brand-surface: #f0fdf9;
-  --map-unvisited: #E5E7EB;
+  --brand: #00FF41;
+  --brand-dark: #00cc33;
+  --brand-deep: #009926;
+  --brand-surface: #001a0a;
+  --map-unvisited: #222222;
 
   /* Semantic tokens */
-  --tag-bg: #1a2e35;
-  --footer-bg: #0f1f1a;
-  --admin-bg: #faf8f5;
+  --tag-bg: #001a0a;
+  --footer-bg: #000000;
+  --admin-bg: #0a0a0a;
 }
 
 .dark {
-  --background: #10221c;
-  --foreground: #f3f4f6;
-  --card: #1f2937;
-  --card-foreground: #f3f4f6;
-  --popover: #1f2937;
-  --popover-foreground: #f3f4f6;
-  --primary: #10B981;
-  --primary-foreground: #ffffff;
-  --secondary: #374151;
-  --secondary-foreground: #f3f4f6;
-  --muted: #374151;
-  --muted-foreground: #9ca3af;
-  --accent: #374151;
-  --accent-foreground: #f3f4f6;
-  --destructive: #ef4444;
-  --border: rgba(255, 255, 255, 0.1);
-  --input: rgba(255, 255, 255, 0.15);
-  --ring: #10B981;
+  --background: #000000;
+  --foreground: #ffffff;
+  --card: #0a0a0a;
+  --card-foreground: #ffffff;
+  --popover: #0a0a0a;
+  --popover-foreground: #ffffff;
+  --primary: #00FF41;
+  --primary-foreground: #000000;
+  --secondary: #111111;
+  --secondary-foreground: #ffffff;
+  --muted: #1a1a1a;
+  --muted-foreground: #888888;
+  --accent: #111111;
+  --accent-foreground: #00FF41;
+  --destructive: #ff0000;
+  --border: rgba(0, 255, 65, 0.3);
+  --input: rgba(0, 255, 65, 0.15);
+  --ring: #00FF41;
 }
 
 @layer base {
@@ -131,7 +131,8 @@
   padding: 0;
   box-sizing: border-box;
   scrollbar-width: thin;
-  scrollbar-color: #d1d5db transparent;
+  scrollbar-color: #00FF41 #000000;
+  border-radius: 0 !important;
 }
 
 html {
@@ -150,35 +151,85 @@ body,
   overflow-x: hidden;
 }
 
+/* ── Retro glow effect ── */
+@keyframes neon-flicker {
+  0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+    text-shadow: 0 0 4px #00FF41, 0 0 11px #00FF41, 0 0 19px #00FF41;
+  }
+  20%, 24%, 55% {
+    text-shadow: none;
+  }
+}
+
+.neon-glow {
+  text-shadow: 0 0 4px #00FF41, 0 0 11px #00FF41, 0 0 19px #00FF41;
+}
+
+.neon-flicker {
+  animation: neon-flicker 3s infinite alternate;
+}
+
+/* ── Scanline overlay ── */
+@keyframes scanline {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(4px); }
+}
+
+.scanlines::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0px,
+    transparent 2px,
+    rgba(0, 0, 0, 0.15) 2px,
+    rgba(0, 0, 0, 0.15) 4px
+  );
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* ── Pixel border helper ── */
+.pixel-border {
+  border: 2px solid #00FF41;
+  box-shadow: 0 0 6px rgba(0, 255, 65, 0.3);
+}
+
+.pixel-border-white {
+  border: 2px solid #ffffff;
+}
+
 /* ── Leaflet overrides ── */
 .leaflet-container {
   width: 100%;
   height: 100%;
-  background: #e8e4df !important;
+  background: #000000 !important;
   font-family: var(--font-sans) !important;
 }
 
 .leaflet-control-zoom {
-  border: none !important;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12) !important;
+  border: 2px solid #00FF41 !important;
+  box-shadow: 0 0 10px rgba(0, 255, 65, 0.3) !important;
   border-radius: 0 !important;
   overflow: hidden !important;
 }
 
 .leaflet-control-zoom a {
-  background: rgba(255, 255, 255, 0.95) !important;
-  color: var(--foreground) !important;
+  background: #000000 !important;
+  color: #00FF41 !important;
   border: none !important;
+  border-bottom: 1px solid #00FF4133 !important;
   width: 36px !important;
   height: 36px !important;
   line-height: 36px !important;
   font-size: 16px !important;
-  backdrop-filter: blur(10px);
+  font-family: 'Press Start 2P', monospace !important;
 }
 
 .leaflet-control-zoom a:hover {
-  background: var(--brand) !important;
-  color: white !important;
+  background: #00FF41 !important;
+  color: #000000 !important;
 }
 
 /* ── Marker pulse ── */
@@ -209,30 +260,29 @@ body,
 }
 
 ::-webkit-scrollbar-track {
-  background: transparent;
+  background: #000000;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #d1d5db;
-  border-radius: 3px;
+  background: #00FF41;
+  border-radius: 0;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #9ca3af;
+  background: #00cc33;
 }
 
 /* ── Leaflet tooltip ── */
 .leaflet-tooltip {
-  background: rgba(26, 26, 46, 0.88) !important;
-  color: #f8f9fa !important;
-  border: none !important;
+  background: #000000 !important;
+  color: #00FF41 !important;
+  border: 2px solid #00FF41 !important;
   border-radius: 0 !important;
   padding: 6px 14px !important;
-  font-family: var(--font-sans) !important;
-  font-size: 13px !important;
-  font-weight: 500 !important;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2) !important;
-  backdrop-filter: blur(8px);
+  font-family: 'Press Start 2P', monospace !important;
+  font-size: 8px !important;
+  font-weight: 400 !important;
+  box-shadow: 0 0 10px rgba(0, 255, 65, 0.3) !important;
 }
 
 .leaflet-tooltip::before {
@@ -250,7 +300,7 @@ body,
   left: 0;
   right: 0;
   height: 80px;
-  background: linear-gradient(to bottom, transparent, var(--background));
+  background: linear-gradient(to bottom, transparent, #000000);
   pointer-events: none;
   z-index: 500;
 }
@@ -262,5 +312,20 @@ img {
 
 img[src=""],
 img:not([src]) {
-  background: linear-gradient(135deg, #e5e7eb, #f3f4f6);
+  background: linear-gradient(135deg, #111111, #1a1a1a);
+}
+
+/* ── Leaflet popup retro override ── */
+.leaflet-popup-content-wrapper {
+  background: #000000 !important;
+  border: 2px solid #00FF41 !important;
+  border-radius: 0 !important;
+  box-shadow: 0 0 10px rgba(0, 255, 65, 0.3) !important;
+  color: #ffffff !important;
+}
+
+.leaflet-popup-tip {
+  background: #000000 !important;
+  border: 1px solid #00FF41 !important;
+  box-shadow: none !important;
 }
