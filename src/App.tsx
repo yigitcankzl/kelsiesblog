@@ -7,7 +7,7 @@ function AppContent() {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <Navbar />
-      <main className="flex-grow" style={{ paddingTop: '5rem' }}>
+      <main className="flex-grow pt-20">
         <Routes>
           <Route path="/" element={<MapPage />} />
           <Route path="/admin" element={<AdminPage />} />

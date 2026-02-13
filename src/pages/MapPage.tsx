@@ -36,10 +36,10 @@ export default function MapPage() {
     const getBaseStyle = useCallback((name: string) => {
         const has = countriesWithPosts.includes(name);
         return {
-            fillColor: has ? 'var(--brand-dark)' : 'var(--map-unvisited)',
+            fillColor: has ? '#059669' : '#E5E7EB',
             weight: has ? 1.5 : 0.5,
             opacity: 1,
-            color: has ? 'var(--brand-deep)' : '#ffffff',
+            color: has ? '#047857' : '#ffffff',
             fillOpacity: has ? 0.7 : 0.4,
         };
     }, [countriesWithPosts]);
@@ -156,25 +156,6 @@ export default function MapPage() {
                             <span className="text-sm text-gray-500 italic font-display">
                                 countries
                             </span>
-                        </div>
-                    </div>
-
-                    {/* Featured destinations — bottom-right */}
-                    <div className="absolute bottom-10 right-8 z-[600] hidden md:flex flex-col gap-3 items-end">
-                        <span className="text-xs font-bold uppercase tracking-[0.2em] text-gray-400">
-                            Featured Destinations
-                        </span>
-                        <div className="flex flex-col gap-2 items-end">
-                            {countriesWithPosts.slice(0, 3).map((country) => (
-                                <button
-                                    key={country}
-                                    onClick={() => { setSelectedPost(null); setSelectedCountry(country); }}
-                                    className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300 hover:text-[var(--brand)] transition-colors cursor-pointer font-display"
-                                >
-                                    {country}
-                                    <span className="w-1.5 h-1.5 rounded-full bg-[var(--brand)]" />
-                                </button>
-                            ))}
                         </div>
                     </div>
 
