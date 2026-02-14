@@ -1,3 +1,4 @@
+import { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowLeft, MapPin } from 'lucide-react';
 import { useBlogStore } from '@/store/store';
@@ -6,12 +7,23 @@ export default function CountryPostsView() {
     const { selectedCountry, posts, setSelectedCountry, setSelectedPost } = useBlogStore();
     const countryPosts = posts.filter(p => p.country === selectedCountry);
 
+    const [activeCategory, setActiveCategory] = useState<string | null>(null);
+
+    const categories = useMemo(() => {
+        const cats = new Set(countryPosts.map(p => p.category));
+        return Array.from(cats);
+    }, [countryPosts]);
+
+    const filteredPosts = activeCategory
+        ? countryPosts.filter(p => p.category === activeCategory)
+        : countryPosts;
+
     return (
         <section className="py-16 bg-black">
             <div style={{ maxWidth: '1024px', margin: '0 auto', paddingLeft: '24px', paddingRight: '24px' }}>
                 {/* Header */}
                 <motion.div
-                    className="flex items-end gap-6 mb-12"
+                    className="flex items-end gap-6 mb-8"
                     initial={{ opacity: 0, x: -12 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.3 }}
@@ -37,16 +49,66 @@ export default function CountryPostsView() {
                             </h2>
                             <p className="text-[6px] mt-2 uppercase tracking-wider font-medium"
                                 style={{ fontFamily: "'Press Start 2P', monospace" }}>
-                                <span className="text-[var(--neon-cyan)]">{countryPosts.length}</span>
-                                <span className="text-gray-500"> {countryPosts.length === 1 ? 'STORY' : 'STORIES'} FOUND</span>
+                                <span className="text-[var(--neon-cyan)]">{filteredPosts.length}</span>
+                                <span className="text-gray-500"> {filteredPosts.length === 1 ? 'STORY' : 'STORIES'} FOUND</span>
                             </p>
                         </div>
                     </div>
                 </motion.div>
 
+                {/* Category filters */}
+                {categories.length > 1 && (
+                    <motion.div
+                        className="flex flex-wrap gap-4 mb-12"
+                        initial={{ opacity: 0, y: 8 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.1, duration: 0.3 }}
+                    >
+                        <button
+                            onClick={() => setActiveCategory(null)}
+                            className="cursor-pointer transition-all duration-300"
+                            style={{
+                                fontFamily: "'Press Start 2P', monospace",
+                                fontSize: '9px',
+                                padding: '10px 20px',
+                                letterSpacing: '0.15em',
+                                textTransform: 'uppercase',
+                                border: '2px solid',
+                                borderColor: !activeCategory ? 'var(--brand)' : '#444',
+                                backgroundColor: !activeCategory ? 'var(--brand)' : 'transparent',
+                                color: !activeCategory ? '#000' : '#888',
+                                boxShadow: !activeCategory ? '0 0 12px rgba(0, 255, 65, 0.4)' : 'none',
+                            }}
+                        >
+                            ALL
+                        </button>
+                        {categories.map(cat => (
+                            <button
+                                key={cat}
+                                onClick={() => setActiveCategory(activeCategory === cat ? null : cat)}
+                                className="cursor-pointer transition-all duration-300"
+                                style={{
+                                    fontFamily: "'Press Start 2P', monospace",
+                                    fontSize: '9px',
+                                    padding: '10px 20px',
+                                    letterSpacing: '0.15em',
+                                    textTransform: 'uppercase',
+                                    border: '2px solid',
+                                    borderColor: activeCategory === cat ? 'var(--neon-magenta)' : '#444',
+                                    backgroundColor: activeCategory === cat ? 'var(--neon-magenta)' : 'transparent',
+                                    color: activeCategory === cat ? '#000' : '#888',
+                                    boxShadow: activeCategory === cat ? '0 0 12px rgba(255, 0, 228, 0.4)' : 'none',
+                                }}
+                            >
+                                {cat}
+                            </button>
+                        ))}
+                    </motion.div>
+                )}
+
                 {/* Grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-10">
-                    {countryPosts.map((post, index) => (
+                    {filteredPosts.map((post, index) => (
                         <motion.article
                             key={post.id}
                             initial={{ opacity: 0, y: 20 }}
