@@ -20,7 +20,7 @@ export default function Footer() {
                     </span>
                     <span className="text-[7px] text-gray-500"
                         style={{ fontFamily: "'Press Start 2P', monospace" }}>
-                        &copy; 2024
+                        &copy; 2026
                     </span>
                 </div>
 
@@ -59,18 +59,22 @@ export default function Footer() {
                 </div>
             </div>
 
-            {/* ASCII art bottom border */}
-            <div className="text-center pb-3 overflow-hidden">
-                <span className="text-[5px] text-gray-600 tracking-[0.5em] block mb-2"
+            {/* Dedication */}
+            <div className="text-center pb-4 pt-2 overflow-hidden">
+                <span className="text-[5px] text-[var(--neon-magenta)] tracking-[0.3em] block mb-2"
+                    style={{ fontFamily: "'Press Start 2P', monospace", textShadow: '0 0 8px rgba(255, 0, 228, 0.4)' }}>
+                    ♥ CRAFTED WITH LOVE BY YIGITCAN KIZIL ♥
+                </span>
+                <span className="text-[5px] text-gray-500 tracking-[0.2em] block mb-3"
                     style={{ fontFamily: "'Press Start 2P', monospace" }}>
-                    {'<'} BUILT WITH PIXELS AND LOVE {'>'}
+                    FOR THE MOST BEAUTIFUL ADVENTURER I KNOW
                 </span>
                 <div className="flex justify-center gap-0.5">
                     {Array.from({ length: 30 }).map((_, i) => (
                         <div key={i} className="w-1.5 h-1.5"
                             style={{
-                                backgroundColor: i % 3 === 0 ? '#00FF41' : i % 3 === 1 ? '#00FFFF' : 'transparent',
-                                opacity: 0.3,
+                                backgroundColor: i % 5 === 2 ? '#FF00E4' : i % 3 === 0 ? '#00FF41' : i % 3 === 1 ? '#00FFFF' : 'transparent',
+                                opacity: i % 5 === 2 ? 0.6 : 0.3,
                             }}
                         />
                     ))}
