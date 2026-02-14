@@ -38,6 +38,7 @@ export default function Navbar() {
                         {[
                             { label: 'Stories', page: 'stories' as const },
                             { label: 'Gallery', page: 'gallery' as const },
+                            { label: 'About', page: 'about' as const },
                         ].map((item) => (
                             <button
                                 key={item.label}

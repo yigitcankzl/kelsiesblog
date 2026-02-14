@@ -6,7 +6,7 @@ interface BlogStore {
     posts: BlogPost[];
     selectedCountry: string | null;
     selectedPost: BlogPost | null;
-    activePage: 'map' | 'stories' | 'gallery';
+    activePage: 'map' | 'stories' | 'gallery' | 'about';
     galleryItems: GalleryItem[];
     isAuthenticated: boolean;
 
@@ -16,7 +16,7 @@ interface BlogStore {
     deletePost: (id: string) => void;
     setSelectedCountry: (country: string | null) => void;
     setSelectedPost: (post: BlogPost | null) => void;
-    setActivePage: (page: 'map' | 'stories' | 'gallery') => void;
+    setActivePage: (page: 'map' | 'stories' | 'gallery' | 'about') => void;
     addGalleryItem: (item: GalleryItem) => void;
     updateGalleryItem: (id: string, item: Partial<GalleryItem>) => void;
     deleteGalleryItem: (id: string) => void;

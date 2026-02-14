@@ -8,6 +8,7 @@ import CountryView from '@/components/map/CountryView';
 import ContentArea from '@/components/content/ContentArea';
 import AllStoriesPage from '@/pages/AllStoriesPage';
 import GalleryPage from '@/pages/GalleryPage';
+import AboutPage from '@/pages/AboutPage';
 import countriesGeoJson from '@/data/countries.geo.json';
 
 import icon from 'leaflet/dist/images/marker-icon.png';
@@ -98,6 +99,10 @@ export default function MapPage() {
 
     if (activePage === 'gallery') {
         return <GalleryPage />;
+    }
+
+    if (activePage === 'about') {
+        return <AboutPage />;
     }
 
     return (
