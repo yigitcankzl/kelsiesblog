@@ -4,7 +4,7 @@ import { Save, X, Plus, Trash2, ChevronUp, ChevronDown, Type } from 'lucide-reac
 import { useBlogStore } from '../../store/store';
 import type { BlogPost, Section } from '../../types';
 import { countryBounds } from '../../data/countryBounds';
-import citiesGeoJson from '../../data/cities.geo.json';
+import { worldCities } from '../../data/worldCities';
 
 const font = { fontFamily: "'Press Start 2P', monospace" } as const;
 
@@ -41,24 +41,7 @@ interface PostFormProps {
 
 const emptySection: Section = { heading: '', content: '', image: '' };
 
-function getCentroid(feature: any): [number, number] {
-    const coords: number[][] = [];
-    const geometry = feature.geometry;
-    if (geometry.type === 'Polygon') {
-        coords.push(...geometry.coordinates[0]);
-    } else if (geometry.type === 'MultiPolygon') {
-        for (const poly of geometry.coordinates) {
-            coords.push(...poly[0]);
-        }
-    }
-    if (coords.length === 0) return [0, 0];
-    let latSum = 0, lngSum = 0;
-    for (const c of coords) {
-        lngSum += c[0];
-        latSum += c[1];
-    }
-    return [latSum / coords.length, lngSum / coords.length];
-}
+
 
 export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
     const { addPost, updatePost } = useBlogStore();
@@ -86,18 +69,13 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
 
     const citiesForCountry = useMemo(() => {
         if (!country) return [];
-        return citiesGeoJson.features
-            .filter((f: any) => f.properties.country === country)
-            .map((f: any) => f.properties.name)
-            .sort();
+        return (worldCities[country] || []).map(c => c.name);
     }, [country]);
 
     const getCoordinates = (): [number, number] => {
         if (!country || !city) return [0, 0];
-        const feature = citiesGeoJson.features.find(
-            (f: any) => f.properties.country === country && f.properties.name === city
-        );
-        if (feature) return getCentroid(feature);
+        const cityData = (worldCities[country] || []).find(c => c.name === city);
+        if (cityData) return [cityData.lat, cityData.lng];
         return post?.coordinates || [0, 0];
     };
 
