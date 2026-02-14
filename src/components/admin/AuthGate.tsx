@@ -1,7 +1,22 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Lock, Globe, Eye, EyeOff } from 'lucide-react';
+import { Lock, Eye, EyeOff } from 'lucide-react';
 import { useBlogStore } from '../../store/store';
+
+const font = { fontFamily: "'Press Start 2P', monospace" } as const;
+
+const inputStyle: React.CSSProperties = {
+    ...font,
+    fontSize: '10px',
+    width: '100%',
+    padding: '14px 16px 14px 42px',
+    backgroundColor: '#0a0a0a',
+    border: '2px solid #333',
+    color: 'var(--brand)',
+    outline: 'none',
+    transition: 'all 0.3s',
+    letterSpacing: '0.2em',
+};
 
 export default function AuthGate() {
     const [password, setPassword] = useState('');
@@ -19,45 +34,57 @@ export default function AuthGate() {
     };
 
     return (
-        <div className="min-h-screen bg-[var(--admin-bg)] flex items-center justify-center px-4">
+        <div style={{ minHeight: '100vh', backgroundColor: '#000', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px' }}>
             <motion.div
-                initial={{ opacity: 0, y: 30, scale: 0.95 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                transition={{ duration: 0.5, ease: 'easeOut' }}
-                className="w-full max-w-md"
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+                style={{ width: '100%', maxWidth: '420px' }}
             >
-                <div className="bg-white rounded-3xl shadow-xl border border-gray-100 p-8">
-                    {/* Logo */}
-                    <div className="flex justify-center mb-6">
-                        <div className="w-16 h-16 bg-gradient-to-br from-[var(--brand-deep)] to-[var(--brand-dark)] rounded-2xl flex items-center justify-center shadow-lg">
-                            <Globe className="w-8 h-8 text-white" />
-                        </div>
+                <div style={{
+                    border: '2px solid #1a1a1a',
+                    padding: '40px 32px',
+                    backgroundColor: '#050505',
+                    boxShadow: '0 0 30px rgba(0, 255, 65, 0.05)',
+                }}>
+                    {/* Terminal header */}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '32px' }}>
+                        <div style={{ width: '8px', height: '8px', backgroundColor: 'var(--brand)', boxShadow: '0 0 6px rgba(0,255,65,0.5)' }} />
+                        <div style={{ width: '8px', height: '8px', backgroundColor: 'var(--neon-amber)' }} />
+                        <div style={{ width: '8px', height: '8px', backgroundColor: '#333' }} />
+                        <span style={{ ...font, fontSize: '6px', color: '#444', marginLeft: '8px', letterSpacing: '0.2em' }}>
+                            TERMINAL v1.0
+                        </span>
                     </div>
 
-                    <h2 className="text-2xl font-bold text-center mb-1 font-display">
-                        Admin Access
+                    <h2 style={{ ...font, fontSize: '14px', color: '#fff', marginBottom: '8px', textTransform: 'uppercase' }}>
+                        ACCESS DENIED
                     </h2>
-                    <p className="text-center text-gray-500 text-sm mb-8">
-                        Enter the admin password to manage posts
+                    <p style={{ ...font, fontSize: '7px', color: '#555', marginBottom: '32px', lineHeight: '2' }}>
+                        {'>'} ENTER CREDENTIALS TO PROCEED_
                     </p>
 
                     <form onSubmit={handleSubmit}>
-                        <div className="relative mb-4">
-                            <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                        <div style={{ position: 'relative', marginBottom: '16px' }}>
+                            <Lock style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', width: '14px', height: '14px', color: '#444' }} />
                             <input
                                 type={showPassword ? 'text' : 'password'}
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
-                                placeholder="Password"
-                                className={`w-full pl-11 pr-12 py-3.5 rounded-xl border-2 transition-all outline-none text-sm ${error
-                                        ? 'border-red-300 bg-red-50 shake'
-                                        : 'border-gray-200 focus:border-[var(--brand-dark)] bg-gray-50 focus:bg-white'
-                                    }`}
+                                placeholder="PASSWORD"
+                                style={{
+                                    ...inputStyle,
+                                    borderColor: error ? '#FF00E4' : '#333',
+                                    boxShadow: error ? '0 0 10px rgba(255,0,228,0.2)' : 'none',
+                                }}
+                                onFocus={e => { if (!error) e.currentTarget.style.borderColor = 'var(--brand)'; e.currentTarget.style.boxShadow = '0 0 10px rgba(0,255,65,0.15)'; }}
+                                onBlur={e => { if (!error) e.currentTarget.style.borderColor = '#333'; e.currentTarget.style.boxShadow = 'none'; }}
                             />
                             <button
                                 type="button"
                                 onClick={() => setShowPassword(!showPassword)}
-                                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 cursor-pointer"
+                                className="cursor-pointer"
+                                style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', color: '#444', padding: '4px' }}
                             >
                                 {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                             </button>
@@ -65,27 +92,39 @@ export default function AuthGate() {
 
                         {error && (
                             <motion.p
-                                initial={{ opacity: 0, y: -5 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                className="text-red-500 text-xs mb-3 text-center"
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                style={{ ...font, fontSize: '7px', color: '#FF00E4', marginBottom: '12px', textAlign: 'center' }}
                             >
-                                Incorrect password. Please try again.
+                                ✗ ACCESS DENIED — INVALID KEY
                             </motion.p>
                         )}
 
-                        <motion.button
-                            whileHover={{ scale: 1.01 }}
-                            whileTap={{ scale: 0.99 }}
+                        <button
                             type="submit"
-                            className="w-full bg-gradient-to-r from-[var(--brand-deep)] to-[var(--brand-dark)] text-white py-3.5 rounded-xl font-medium text-sm shadow-lg hover:shadow-xl transition-shadow cursor-pointer"
+                            className="cursor-pointer"
+                            style={{
+                                ...font,
+                                fontSize: '9px',
+                                width: '100%',
+                                padding: '14px',
+                                backgroundColor: 'var(--brand)',
+                                color: '#000',
+                                border: 'none',
+                                letterSpacing: '0.15em',
+                                boxShadow: '0 0 15px rgba(0, 255, 65, 0.3)',
+                                transition: 'all 0.3s',
+                            }}
+                            onMouseEnter={e => { e.currentTarget.style.boxShadow = '0 0 25px rgba(0, 255, 65, 0.5)'; }}
+                            onMouseLeave={e => { e.currentTarget.style.boxShadow = '0 0 15px rgba(0, 255, 65, 0.3)'; }}
                         >
-                            Sign In
-                        </motion.button>
+                            AUTHENTICATE
+                        </button>
                     </form>
                 </div>
 
-                <p className="text-center text-gray-400 text-xs mt-6">
-                    Kelsie Sharp Blog &middot; Admin Panel
+                <p style={{ ...font, fontSize: '5px', textAlign: 'center', color: '#333', marginTop: '20px', letterSpacing: '0.2em' }}>
+                    SYSTEM ONLINE — ADMIN PORTAL
                 </p>
             </motion.div>
         </div>
