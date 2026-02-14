@@ -51,7 +51,8 @@ export default function WelcomeView() {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.1, duration: 0.5 }}
                         onClick={() => handlePostClick(featured)}
-                        className="group cursor-pointer mb-16 transition-all duration-500 hover:-translate-y-1"
+                        className="group cursor-pointer transition-all duration-500 hover:-translate-y-1"
+                        style={{ marginBottom: '80px' }}
                     >
                         <div className="grid grid-cols-1 md:grid-cols-[3fr_2fr] gap-0 retro-corners overflow-hidden md:min-h-[420px]"
                             style={{ boxShadow: '0 0 20px rgba(0, 255, 65, 0.15)' }}>
@@ -107,7 +108,8 @@ export default function WelcomeView() {
                 )}
 
                 {/* Pixel divider */}
-                <div className="flex items-center justify-center gap-1 mb-16">
+                <div className="flex items-center justify-center gap-1"
+                    style={{ marginBottom: '80px' }}>
                     {Array.from({ length: 25 }).map((_, i) => (
                         <div key={i} className="w-1 h-1"
                             style={{
@@ -119,7 +121,7 @@ export default function WelcomeView() {
 
                 {/* Stories grid — dynamic, centered */}
                 {rest.length > 0 && (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-10">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-10" style={{ paddingBottom: '20px' }}>
                         {rest.map((post, index) => (
                             <motion.article
                                 key={post.id}
