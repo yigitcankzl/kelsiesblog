@@ -35,7 +35,7 @@ interface BlogStore {
     updateGalleryItem: (id: string, item: Partial<GalleryItem>) => void;
     deleteGalleryItem: (id: string) => void;
     updateAboutContent: (content: Partial<AboutContent>) => void;
-    authenticate: (password: string) => boolean;
+    setAuthenticated: (value: boolean) => void;
     logout: () => void;
 
     // Derived
@@ -44,7 +44,6 @@ interface BlogStore {
     getPostsForCity: (country: string, city: string) => BlogPost[];
 }
 
-const ADMIN_PASSWORD = 'kelsie2024';
 
 const defaultAbout: AboutContent = {
     name: 'Kelsie',
@@ -145,11 +144,7 @@ export const useBlogStore = create<BlogStore>((set, get) => ({
         updateAboutDoc(fullContent).catch(console.error);
     },
 
-    authenticate: (password) => {
-        const isValid = password === ADMIN_PASSWORD;
-        if (isValid) set({ isAuthenticated: true });
-        return isValid;
-    },
+    setAuthenticated: (value) => set({ isAuthenticated: value }),
 
     logout: () => set({ isAuthenticated: false }),
 

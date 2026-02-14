@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Plus, LogOut, Globe } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { signOut } from 'firebase/auth';
+import { auth } from '../lib/firebase';
 import { useBlogStore } from '../store/store';
 import AuthGate from '../components/admin/AuthGate';
 import PostList from '../components/admin/PostList';
@@ -20,6 +22,11 @@ export default function AdminPage() {
     const [editingPost, setEditingPost] = useState<BlogPost | null>(null);
     const [isCreating, setIsCreating] = useState(false);
     const [activeTab, setActiveTab] = useState<AdminTab>('posts');
+
+    const handleLogout = () => {
+        signOut(auth);
+        logout();
+    };
 
 
     if (!isAuthenticated) {
@@ -99,7 +106,7 @@ export default function AdminPage() {
                         )}
 
                         <button
-                            onClick={logout}
+                            onClick={handleLogout}
                             className="cursor-pointer"
                             style={{
                                 ...font,
