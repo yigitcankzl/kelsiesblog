@@ -29,3 +29,10 @@ export interface GalleryItem {
     city: string;
     country: string;
 }
+
+export interface AboutContent {
+    name: string;
+    bio1: string;
+    bio2: string;
+    quests: { title: string; desc: string }[];
+}

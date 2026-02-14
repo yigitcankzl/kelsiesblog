@@ -7,11 +7,12 @@ import AuthGate from '../components/admin/AuthGate';
 import PostList from '../components/admin/PostList';
 import PostForm from '../components/admin/PostForm';
 import GalleryManager from '../components/admin/GalleryManager';
+import AboutManager from '../components/admin/AboutManager';
 import type { BlogPost } from '../types';
 
 const font = { fontFamily: "'Press Start 2P', monospace" } as const;
 
-type AdminTab = 'posts' | 'gallery';
+type AdminTab = 'posts' | 'gallery' | 'about';
 
 export default function AdminPage() {
     const navigate = useNavigate();
@@ -125,6 +126,7 @@ export default function AdminPage() {
                         {([
                             { key: 'posts' as AdminTab, label: 'POSTS' },
                             { key: 'gallery' as AdminTab, label: 'GALLERY' },
+                            { key: 'about' as AdminTab, label: 'ABOUT' },
                         ]).map(tab => (
                             <button
                                 key={tab.key}
@@ -188,7 +190,7 @@ export default function AdminPage() {
                                 <PostList onEdit={setEditingPost} />
                             </motion.div>
                         )
-                    ) : (
+                    ) : activeTab === 'gallery' ? (
                         <motion.div
                             key="gallery"
                             initial={{ opacity: 0, y: 20 }}
@@ -197,6 +199,16 @@ export default function AdminPage() {
                             transition={{ duration: 0.3 }}
                         >
                             <GalleryManager />
+                        </motion.div>
+                    ) : (
+                        <motion.div
+                            key="about"
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -20 }}
+                            transition={{ duration: 0.3 }}
+                        >
+                            <AboutManager />
                         </motion.div>
                     )}
                 </AnimatePresence>

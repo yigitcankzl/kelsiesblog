@@ -5,7 +5,7 @@ import { useBlogStore } from '@/store/store';
 const font = { fontFamily: "'Press Start 2P', monospace" } as const;
 
 export default function AboutPage() {
-    const { setActivePage, posts, getCountriesWithPosts } = useBlogStore();
+    const { setActivePage, posts, getCountriesWithPosts, aboutContent } = useBlogStore();
     const countriesVisited = getCountriesWithPosts().length;
     const totalPosts = posts.length;
 
@@ -85,7 +85,7 @@ export default function AboutPage() {
                         </div>
 
                         <h2 style={{ ...font, fontSize: '18px', color: '#fff', marginBottom: '20px', lineHeight: 1.8 }}>
-                            Hey, I'm <span style={{ color: 'var(--brand)', textShadow: '0 0 10px rgba(0,255,65,0.4)' }}>Kelsie</span>
+                            Hey, I'm <span style={{ color: 'var(--brand)', textShadow: '0 0 10px rgba(0,255,65,0.4)' }}>{aboutContent.name}</span>
                         </h2>
 
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
@@ -97,8 +97,7 @@ export default function AboutPage() {
                                 borderLeft: '2px solid var(--brand)',
                                 paddingLeft: '16px',
                             }}>
-                                A traveler, photographer, and storyteller exploring the world one city at a time.
-                                This blog is my digital journal — a collection of moments, places, and the stories they hold.
+                                {aboutContent.bio1}
                             </p>
 
                             <p style={{
@@ -109,8 +108,7 @@ export default function AboutPage() {
                                 borderLeft: '2px solid var(--neon-cyan)',
                                 paddingLeft: '16px',
                             }}>
-                                Every destination is an adventure, every photo a memory frozen in time.
-                                I believe in slow travel, connecting with locals, and finding beauty in the unexpected.
+                                {aboutContent.bio2}
                             </p>
                         </div>
                     </motion.div>
@@ -187,12 +185,7 @@ export default function AboutPage() {
                         </div>
 
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
-                            {[
-                                { title: '📷 Photography', desc: 'Capturing authentic moments through the lens' },
-                                { title: '✍️ Storytelling', desc: 'Writing about cultures, people, and places' },
-                                { title: '🗺️ Exploration', desc: 'Seeking hidden gems off the beaten path' },
-                                { title: '🎒 Slow Travel', desc: 'Living like a local, not a tourist' },
-                            ].map((item, i) => (
+                            {aboutContent.quests.map((item, i) => (
                                 <motion.div
                                     key={item.title}
                                     initial={{ opacity: 0, x: -10 }}

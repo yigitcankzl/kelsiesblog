@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import type { BlogPost, GalleryItem } from '../types';
+import type { BlogPost, GalleryItem, AboutContent } from '../types';
 import { mockPosts } from '../data/mockData';
 
 interface BlogStore {
@@ -8,6 +8,7 @@ interface BlogStore {
     selectedPost: BlogPost | null;
     activePage: 'map' | 'stories' | 'gallery' | 'about';
     galleryItems: GalleryItem[];
+    aboutContent: AboutContent;
     isAuthenticated: boolean;
 
     // Actions
@@ -20,6 +21,7 @@ interface BlogStore {
     addGalleryItem: (item: GalleryItem) => void;
     updateGalleryItem: (id: string, item: Partial<GalleryItem>) => void;
     deleteGalleryItem: (id: string) => void;
+    updateAboutContent: (content: Partial<AboutContent>) => void;
     authenticate: (password: string) => boolean;
     logout: () => void;
 
@@ -37,6 +39,17 @@ export const useBlogStore = create<BlogStore>((set, get) => ({
     selectedPost: null,
     activePage: 'map',
     galleryItems: [],
+    aboutContent: {
+        name: 'Kelsie',
+        bio1: 'A traveler, photographer, and storyteller exploring the world one city at a time. This blog is my digital journal — a collection of moments, places, and the stories they hold.',
+        bio2: 'Every destination is an adventure, every photo a memory frozen in time. I believe in slow travel, connecting with locals, and finding beauty in the unexpected.',
+        quests: [
+            { title: '📷 Photography', desc: 'Capturing authentic moments through the lens' },
+            { title: '✍️ Storytelling', desc: 'Writing about cultures, people, and places' },
+            { title: '🗺️ Exploration', desc: 'Seeking hidden gems off the beaten path' },
+            { title: '🎒 Slow Travel', desc: 'Living like a local, not a tourist' },
+        ],
+    },
     isAuthenticated: false,
 
     addPost: (post) =>
@@ -70,6 +83,11 @@ export const useBlogStore = create<BlogStore>((set, get) => ({
     deleteGalleryItem: (id) =>
         set((state) => ({
             galleryItems: state.galleryItems.filter((g) => g.id !== id),
+        })),
+
+    updateAboutContent: (updates) =>
+        set((state) => ({
+            aboutContent: { ...state.aboutContent, ...updates },
         })),
 
     authenticate: (password) => {
