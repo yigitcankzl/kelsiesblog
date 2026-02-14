@@ -2,6 +2,8 @@ import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import MapPage from './pages/MapPage';
 import AdminPage from './pages/AdminPage';
+import AllStoriesPage from './pages/AllStoriesPage';
+import GalleryPage from './pages/GalleryPage';
 
 function AppContent() {
   const location = useLocation();
@@ -13,6 +15,8 @@ function AppContent() {
       <main className={isAdmin ? "flex-grow" : "flex-grow pt-20"}>
         <Routes>
           <Route path="/" element={<MapPage />} />
+          <Route path="/stories" element={<AllStoriesPage />} />
+          <Route path="/gallery" element={<GalleryPage />} />
           <Route path="/admin" element={<AdminPage />} />
         </Routes>
       </main>

@@ -34,14 +34,18 @@ export default function Navbar() {
 
                     {/* Links */}
                     <div className="hidden sm:flex items-center gap-6">
-                        {['Destinations', 'Guides', 'About'].map((item) => (
+                        {[
+                            { label: 'Stories', path: '/stories' },
+                            { label: 'Gallery', path: '/gallery' },
+                            { label: 'About', path: '/' },
+                        ].map((item) => (
                             <button
-                                key={item}
-                                onClick={goHome}
+                                key={item.label}
+                                onClick={() => navigate(item.path)}
                                 className="relative text-[8px] font-medium tracking-[0.15em] text-gray-400 hover:text-[var(--brand)] transition-colors uppercase cursor-pointer group"
                                 style={{ fontFamily: "'Press Start 2P', monospace" }}
                             >
-                                {item}
+                                {item.label}
                                 <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-[var(--brand)] transition-all duration-300 group-hover:w-full"
                                     style={{ boxShadow: '0 0 6px rgba(0, 255, 65, 0.5)' }} />
                             </button>

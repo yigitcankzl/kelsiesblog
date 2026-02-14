@@ -1,8 +1,10 @@
 import { motion } from 'framer-motion';
 import { ArrowRight, Clock } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { useBlogStore } from '@/store/store';
 
 export default function WelcomeView() {
+    const navigate = useNavigate();
     const { posts, setSelectedCountry, setSelectedPost } = useBlogStore();
 
     const handlePostClick = (post: typeof posts[0]) => {
@@ -169,6 +171,56 @@ export default function WelcomeView() {
                         ))}
                     </div>
                 )}
+
+                {/* ALL STORIES button */}
+                <motion.div
+                    className="text-center mt-20"
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.4, duration: 0.5 }}
+                >
+                    <div className="flex items-center justify-center gap-1 mb-8">
+                        {Array.from({ length: 25 }).map((_, i) => (
+                            <div key={i} className="w-1 h-1"
+                                style={{
+                                    backgroundColor: i % 3 === 0 ? '#00FF41' : i % 3 === 1 ? '#00FFFF' : '#FF00E4',
+                                    opacity: i % 2 === 0 ? 0.4 : 0.15,
+                                }} />
+                        ))}
+                    </div>
+                    <button
+                        onClick={() => navigate('/stories')}
+                        className="cursor-pointer group"
+                        style={{
+                            fontFamily: "'Press Start 2P', monospace",
+                            fontSize: '10px',
+                            padding: '16px 40px',
+                            border: '2px solid var(--brand)',
+                            backgroundColor: 'transparent',
+                            color: 'var(--brand)',
+                            letterSpacing: '0.15em',
+                            textTransform: 'uppercase' as const,
+                            boxShadow: '0 0 12px rgba(0, 255, 65, 0.2)',
+                            transition: 'all 0.3s',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '12px',
+                        }}
+                        onMouseEnter={e => {
+                            e.currentTarget.style.backgroundColor = 'var(--brand)';
+                            e.currentTarget.style.color = '#000';
+                            e.currentTarget.style.boxShadow = '0 0 24px rgba(0, 255, 65, 0.5)';
+                        }}
+                        onMouseLeave={e => {
+                            e.currentTarget.style.backgroundColor = 'transparent';
+                            e.currentTarget.style.color = 'var(--brand)';
+                            e.currentTarget.style.boxShadow = '0 0 12px rgba(0, 255, 65, 0.2)';
+                        }}
+                    >
+                        ALL STORIES ▸
+                        <ArrowRight className="w-4 h-4" />
+                    </button>
+                </motion.div>
 
             </div>
         </section>
