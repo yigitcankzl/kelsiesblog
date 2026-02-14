@@ -48,12 +48,52 @@ function clipToLand(cityFeature: GeoJSON.Feature, country: string): GeoJSON.Feat
     return cityFeature;
 }
 
+/**
+ * Simplify geometry by reducing coordinate precision and limiting point count.
+ * Keeps data small enough for Firestore's 1MB document limit.
+ */
+function simplifyGeometry(geometry: GeoJSON.Geometry): GeoJSON.Geometry {
+    const round = (n: number) => Math.round(n * 10000) / 10000; // 4 decimal places (~11m)
+
+    function simplifyCoords(coords: number[][]): number[][] {
+        // Keep every Nth point if there are too many
+        const maxPoints = 300;
+        if (coords.length <= maxPoints) {
+            return coords.map(c => [round(c[0]), round(c[1])]);
+        }
+        const step = Math.ceil(coords.length / maxPoints);
+        const simplified: number[][] = [];
+        for (let i = 0; i < coords.length; i += step) {
+            simplified.push([round(coords[i][0]), round(coords[i][1])]);
+        }
+        // Always include the last point to close the ring
+        const last = coords[coords.length - 1];
+        simplified.push([round(last[0]), round(last[1])]);
+        return simplified;
+    }
+
+    if (geometry.type === 'Polygon') {
+        return {
+            type: 'Polygon',
+            coordinates: geometry.coordinates.map(ring => simplifyCoords(ring)),
+        };
+    }
+    if (geometry.type === 'MultiPolygon') {
+        return {
+            type: 'MultiPolygon',
+            coordinates: geometry.coordinates.map(poly =>
+                poly.map(ring => simplifyCoords(ring))
+            ),
+        };
+    }
+    return geometry;
+}
+
 async function fetchFromNominatim(city: string, country: string): Promise<GeoJSON.Feature | null> {
-    // Use q= with multiple results so we can pick the admin boundary (relation),
-    // not a point node. Relations (osm_type=R) contain full city boundary polygons.
+    // polygon_threshold=0.005 tells Nominatim to simplify the polygon server-side
     const url = `https://nominatim.openstreetmap.org/search?` +
         `q=${encodeURIComponent(city + ', ' + country)}` +
-        `&format=json&polygon_geojson=1&limit=5`;
+        `&format=json&polygon_geojson=1&polygon_threshold=0.005&limit=5`;
 
     try {
         const res = await fetch(url, {
@@ -65,7 +105,6 @@ async function fetchFromNominatim(city: string, country: string): Promise<GeoJSO
         if (!data.length) return null;
 
         // Prefer results that are OSM relations (R) — these have admin boundary polygons
-        // Then ways (W), and finally nodes (N) as last resort
         const preferred = data.find(
             (r: any) =>
                 r.osm_type === 'R' &&
@@ -82,10 +121,13 @@ async function fetchFromNominatim(city: string, country: string): Promise<GeoJSO
         const result = preferred || fallback;
         if (!result) return null;
 
+        // Simplify the geometry to keep data small
+        const simplifiedGeometry = simplifyGeometry(result.geojson);
+
         let feature: GeoJSON.Feature = {
             type: 'Feature',
             properties: { name: city, country },
-            geometry: result.geojson,
+            geometry: simplifiedGeometry,
         };
 
         // Clip against country land boundary to remove maritime areas

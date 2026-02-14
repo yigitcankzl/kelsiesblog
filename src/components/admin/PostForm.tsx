@@ -128,7 +128,6 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
             date: date.trim(),
             category: categories,
             sections: cleanSections,
-            ...(post?.cityBoundary ? { cityBoundary: post.cityBoundary } : {}),
         };
 
         // Save post immediately
@@ -139,17 +138,15 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
         }
 
         // Fetch boundary in background (non-blocking) and update post if successful
-        const needsBoundary = !post?.cityBoundary || post?.city !== cityTrimmed || post?.country !== countryTrimmed;
-        if (needsBoundary) {
-            const timeoutPromise = new Promise<null>((resolve) => setTimeout(() => resolve(null), 10000));
-            Promise.race([fetchCityBoundary(cityTrimmed, countryTrimmed), timeoutPromise])
-                .then(feature => {
-                    if (feature) {
-                        updatePost(postData.id, { cityBoundary: feature.geometry });
-                    }
-                })
-                .catch(err => console.error('Failed to fetch city boundary:', err));
-        }
+        const timeoutPromise = new Promise<null>((resolve) => setTimeout(() => resolve(null), 10000));
+        Promise.race([fetchCityBoundary(cityTrimmed, countryTrimmed), timeoutPromise])
+            .then(feature => {
+                if (feature) {
+                    console.log('[Boundary] Saving boundary for', cityTrimmed, '- geometry size:', JSON.stringify(feature.geometry).length, 'bytes');
+                    updatePost(postData.id, { cityBoundary: feature.geometry });
+                }
+            })
+            .catch(err => console.error('Failed to fetch city boundary:', err));
 
         onSave();
     };
