@@ -1,40 +1,8 @@
-import { useMemo, useCallback } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { GeoJSON, Marker } from 'react-leaflet';
 import L from 'leaflet';
 import { useBlogStore } from '../../store/store';
-import citiesGeoJson from '../../data/cities.geo.json';
-
-// Label coordinates for cities without posts (for positioning text labels)
-const notableCities: Record<string, { city: string; coordinates: [number, number] }[]> = {
-    'Greece': [
-        { city: 'Athens', coordinates: [37.9838, 23.7275] },
-        { city: 'Thessaloniki', coordinates: [40.6401, 22.9444] },
-        { city: 'Mykonos', coordinates: [37.4467, 25.3289] },
-        { city: 'Crete', coordinates: [35.2401, 24.4709] },
-        { city: 'Rhodes', coordinates: [36.4349, 28.2176] },
-    ],
-    'Turkey': [
-        { city: 'Cappadocia', coordinates: [38.6431, 34.8289] },
-        { city: 'Antalya', coordinates: [36.8969, 30.7133] },
-        { city: 'Bodrum', coordinates: [37.0344, 27.4305] },
-        { city: 'Izmir', coordinates: [38.4192, 27.1287] },
-        { city: 'Ankara', coordinates: [39.9334, 32.8597] },
-    ],
-    'Japan': [
-        { city: 'Kyoto', coordinates: [35.0116, 135.7681] },
-        { city: 'Osaka', coordinates: [34.6937, 135.5023] },
-        { city: 'Hiroshima', coordinates: [34.3853, 132.4553] },
-        { city: 'Nara', coordinates: [34.6851, 135.8048] },
-        { city: 'Fukuoka', coordinates: [33.5904, 130.4017] },
-    ],
-    'Italy': [
-        { city: 'Rome', coordinates: [41.9028, 12.4964] },
-        { city: 'Venice', coordinates: [45.4408, 12.3155] },
-        { city: 'Milan', coordinates: [45.4642, 9.1900] },
-        { city: 'Naples', coordinates: [40.8518, 14.2681] },
-        { city: 'Amalfi', coordinates: [40.6340, 14.6027] },
-    ],
-};
+import { fetchCityBoundaries } from '../../lib/cityBoundaryCache';
 
 function createCityLabel(cityName: string, hasPosts: boolean): L.DivIcon {
     const color = hasPosts ? '#00FF41' : '#555555';
@@ -73,44 +41,45 @@ interface CountryViewProps {
 export default function CountryView({ country }: CountryViewProps) {
     const { getCitiesForCountry, getPostsForCity, setSelectedPost } = useBlogStore();
     const citiesWithPosts = getCitiesForCountry(country);
-    const cityNamesWithPosts = new Set(citiesWithPosts.map(c => c.city));
 
-    const extraCities = (notableCities[country] || []).filter(
-        c => !cityNamesWithPosts.has(c.city)
-    );
+    const [boundaryFeatures, setBoundaryFeatures] = useState<GeoJSON.Feature[]>([]);
+    const [loading, setLoading] = useState(false);
 
-    // Filter REAL GeoJSON boundaries for cities WITH posts (green)
-    const greenGeoJson = useMemo(() => {
-        const features = (citiesGeoJson as any).features.filter(
-            (f: any) => f.properties.country === country && cityNamesWithPosts.has(f.properties.name)
-        );
-        return { type: 'FeatureCollection' as const, features };
-    }, [country, cityNamesWithPosts]);
+    // Fetch city boundaries from Nominatim for cities that have posts
+    useEffect(() => {
+        if (citiesWithPosts.length === 0) return;
 
-    // Filter REAL GeoJSON boundaries for cities WITHOUT posts (gray)
-    const grayGeoJson = useMemo(() => {
-        const grayCityNames = new Set(extraCities.map(c => c.city));
-        const features = (citiesGeoJson as any).features.filter(
-            (f: any) => f.properties.country === country && grayCityNames.has(f.properties.name)
-        );
-        return { type: 'FeatureCollection' as const, features };
-    }, [country, extraCities]);
+        let cancelled = false;
+        setLoading(true);
 
-    // Style — same as country polygons in MapPage
+        const citiesToFetch = citiesWithPosts.map(c => ({
+            city: c.city,
+            country,
+        }));
+
+        fetchCityBoundaries(citiesToFetch).then(features => {
+            if (!cancelled) {
+                setBoundaryFeatures(features);
+                setLoading(false);
+            }
+        });
+
+        return () => { cancelled = true; };
+    }, [country, citiesWithPosts]);
+
+    // Build GeoJSON FeatureCollection from fetched boundaries
+    const greenGeoJson = useMemo(() => ({
+        type: 'FeatureCollection' as const,
+        features: boundaryFeatures,
+    }), [boundaryFeatures]);
+
+    // Green style for cities with posts
     const greenStyle = useCallback(() => ({
         fillColor: '#00FF41',
         weight: 1.5,
         opacity: 1,
         color: '#00cc33',
         fillOpacity: 0.5,
-    }), []);
-
-    const grayStyle = useCallback(() => ({
-        fillColor: '#555555',
-        weight: 0.8,
-        opacity: 1,
-        color: '#444444',
-        fillOpacity: 0.25,
     }), []);
 
     // Hover + click for green cities
@@ -135,18 +104,9 @@ export default function CountryView({ country }: CountryViewProps) {
         });
     }, [country, getPostsForCity, setSelectedPost]);
 
-    // Tooltip for gray cities
-    const onEachGrayCity = useCallback((feature: any, layer: L.Layer) => {
-        const cityName = feature.properties.name;
-        layer.bindTooltip(cityName, {
-            sticky: true,
-            direction: 'auto',
-        });
-    }, []);
-
-    // Text labels
+    // Text labels for cities with posts
     const labels = useMemo(() => {
-        const greenLabels = citiesWithPosts.map(cityData => (
+        return citiesWithPosts.map(cityData => (
             <Marker
                 key={`label-${cityData.city}`}
                 position={cityData.coordinates}
@@ -159,37 +119,31 @@ export default function CountryView({ country }: CountryViewProps) {
                 }}
             />
         ));
-        const grayLabels = extraCities.map(cityData => (
-            <Marker
-                key={`label-${cityData.city}`}
-                position={cityData.coordinates}
-                icon={createCityLabel(cityData.city, false)}
-            />
-        ));
-        return [...greenLabels, ...grayLabels];
-    }, [citiesWithPosts, extraCities, country, getPostsForCity, setSelectedPost]);
+    }, [citiesWithPosts, country, getPostsForCity, setSelectedPost]);
 
     const geoKey = useMemo(() =>
-        `${country}-${citiesWithPosts.map(c => c.city).join(',')}`,
-        [country, citiesWithPosts]
+        `${country}-${boundaryFeatures.length}-${citiesWithPosts.map(c => c.city).join(',')}`,
+        [country, boundaryFeatures, citiesWithPosts]
     );
 
     return (
         <>
+            {loading && citiesWithPosts.length > 0 && (
+                <Marker
+                    position={citiesWithPosts[0].coordinates}
+                    icon={L.divIcon({
+                        className: 'loading-label',
+                        html: `<span style="font-family:'Press Start 2P',monospace;font-size:6px;color:#00FF41;opacity:0.6">LOADING...</span>`,
+                        iconSize: [0, 0],
+                    })}
+                />
+            )}
             {greenGeoJson.features.length > 0 && (
                 <GeoJSON
                     key={`green-${geoKey}`}
                     data={greenGeoJson as any}
                     style={greenStyle}
                     onEachFeature={onEachGreenCity}
-                />
-            )}
-            {grayGeoJson.features.length > 0 && (
-                <GeoJSON
-                    key={`gray-${geoKey}`}
-                    data={grayGeoJson as any}
-                    style={grayStyle}
-                    onEachFeature={onEachGrayCity}
                 />
             )}
             {labels}
