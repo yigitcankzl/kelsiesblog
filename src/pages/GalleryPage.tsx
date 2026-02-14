@@ -14,46 +14,18 @@ interface GalleryImage {
 }
 
 export default function GalleryPage() {
-    const { posts, galleryItems, setActivePage } = useBlogStore();
+    const { galleryItems, setActivePage } = useBlogStore();
     const [lightbox, setLightbox] = useState<GalleryImage | null>(null);
 
     const allImages = useMemo(() => {
-        const imgs: GalleryImage[] = [];
-        // Images from posts
-        posts.forEach(post => {
-            if (post.coverImage) {
-                imgs.push({
-                    src: post.coverImage,
-                    title: post.title,
-                    city: post.city,
-                    country: post.country,
-                    heading: 'Cover',
-                });
-            }
-            post.sections.forEach(section => {
-                if (section.image) {
-                    imgs.push({
-                        src: section.image,
-                        title: post.title,
-                        city: post.city,
-                        country: post.country,
-                        heading: section.heading,
-                    });
-                }
-            });
-        });
-        // Standalone gallery items
-        galleryItems.forEach(item => {
-            imgs.push({
-                src: item.src,
-                title: item.caption,
-                city: item.city,
-                country: item.country,
-                heading: item.caption,
-            });
-        });
-        return imgs;
-    }, [posts, galleryItems]);
+        return galleryItems.map(item => ({
+            src: item.src,
+            title: item.caption,
+            city: item.city,
+            country: item.country,
+            heading: item.caption,
+        }));
+    }, [galleryItems]);
 
     // Duplicate for seamless marquee
     const marqueeImages = [...allImages, ...allImages];
