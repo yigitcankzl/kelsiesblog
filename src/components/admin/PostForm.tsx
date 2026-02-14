@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { Save, X, Plus, Trash2, ChevronUp, ChevronDown, Type } from 'lucide-react';
+import { Save, X, Plus, Trash2, ChevronUp, ChevronDown, Type, Upload } from 'lucide-react';
 import { useBlogStore } from '../../store/store';
 import type { BlogPost, Section } from '../../types';
 import { countryBounds } from '../../data/countryBounds';
@@ -67,6 +67,7 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
     const [country, setCountry] = useState(post?.country || '');
     const [city, setCity] = useState(post?.city || '');
     const [date, setDate] = useState(post?.date || '');
+    const [coverImage, setCoverImage] = useState(post?.coverImage || '');
     const [categories, setCategories] = useState<string[]>(post?.category || []);
     const [showPreview, setShowPreview] = useState(false);
     const [sections, setSections] = useState<Section[]>(
@@ -141,7 +142,7 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
             country: country.trim(),
             city: city.trim(),
             coordinates: getCoordinates(),
-            coverImage: '',
+            coverImage,
             date: date.trim(),
             category: categories,
             sections: cleanSections,
@@ -325,6 +326,85 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                                 );
                             })}
                         </div>
+                    </div>
+
+                    {/* Cover Image Upload */}
+                    <div>
+                        <label style={labelStyle}>
+                            <Upload style={{ width: '10px', height: '10px' }} />
+                            COVER IMAGE
+                        </label>
+                        <label
+                            className="cursor-pointer"
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                gap: '10px',
+                                padding: coverImage ? '0' : '24px',
+                                border: '1px dashed',
+                                borderColor: coverImage ? 'var(--brand)' : '#333',
+                                backgroundColor: '#0a0a0a',
+                                transition: 'all 0.3s',
+                                overflow: 'hidden',
+                                position: 'relative',
+                            }}
+                            onMouseEnter={e => { if (!coverImage) { e.currentTarget.style.borderColor = 'var(--brand)'; e.currentTarget.style.boxShadow = '0 0 8px rgba(0, 255, 65, 0.15)'; } }}
+                            onMouseLeave={e => { if (!coverImage) { e.currentTarget.style.borderColor = '#333'; e.currentTarget.style.boxShadow = 'none'; } }}
+                        >
+                            <input
+                                type="file"
+                                accept="image/*"
+                                style={{ display: 'none' }}
+                                onChange={(e) => {
+                                    const file = e.target.files?.[0];
+                                    if (!file) return;
+                                    const reader = new FileReader();
+                                    reader.onload = () => {
+                                        setCoverImage(reader.result as string);
+                                    };
+                                    reader.readAsDataURL(file);
+                                }}
+                            />
+                            {coverImage ? (
+                                <div style={{ width: '100%', height: '140px', position: 'relative' }}>
+                                    <img src={coverImage} alt="Cover" style={{ width: '100%', height: '100%', objectFit: 'cover', filter: 'saturate(0.7) brightness(0.85)' }} />
+                                    <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(0,0,0,0.5), transparent)' }} />
+                                    <span style={{ ...font, fontSize: '6px', position: 'absolute', bottom: '8px', left: '10px', color: 'var(--brand)', letterSpacing: '0.1em' }}>
+                                        CLICK TO CHANGE
+                                    </span>
+                                </div>
+                            ) : (
+                                <>
+                                    <Upload style={{ width: '16px', height: '16px', color: '#444' }} />
+                                    <span style={{ ...font, fontSize: '7px', color: '#555', letterSpacing: '0.1em' }}>
+                                        CLICK TO UPLOAD
+                                    </span>
+                                </>
+                            )}
+                        </label>
+                        {coverImage && (
+                            <button
+                                type="button"
+                                onClick={() => setCoverImage('')}
+                                className="cursor-pointer"
+                                style={{
+                                    ...font,
+                                    fontSize: '6px',
+                                    marginTop: '8px',
+                                    background: 'none',
+                                    border: 'none',
+                                    color: '#555',
+                                    padding: '4px 0',
+                                    letterSpacing: '0.1em',
+                                    transition: 'color 0.3s',
+                                }}
+                                onMouseEnter={e => { e.currentTarget.style.color = '#FF00E4'; }}
+                                onMouseLeave={e => { e.currentTarget.style.color = '#555'; }}
+                            >
+                                ✗ REMOVE IMAGE
+                            </button>
+                        )}
                     </div>
 
                 </div>
