@@ -61,7 +61,7 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
 
     const isEditing = post !== null;
 
-    const availableCategories = ['5 Min Read', 'Food & Drink', 'City Break', 'Coastal', 'Art', 'Culture', 'Adventure', 'Nature', 'History', 'Nightlife'];
+    const availableCategories = ['Culture', 'History', 'Tourism', 'Transportation', 'Politic', 'Food'];
 
     const toggleCategory = (cat: string) => {
         setCategories(prev =>
@@ -272,19 +272,6 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                     </div>
 
                     <div>
-                        <label style={labelStyle}>DATE</label>
-                        <input
-                            type="text"
-                            value={date}
-                            onChange={(e) => setDate(e.target.value)}
-                            placeholder="E.G. MARCH 2024"
-                            style={inputStyle}
-                            onFocus={handleInputFocus}
-                            onBlur={handleInputBlur}
-                        />
-                    </div>
-
-                    <div>
                         <label style={labelStyle}>
                             CATEGORIES
                             {categories.length > 0 && (
@@ -331,6 +318,19 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                                 );
                             })}
                         </div>
+                    </div>
+
+                    <div>
+                        <label style={labelStyle}>DATE</label>
+                        <input
+                            type="text"
+                            value={date}
+                            onChange={(e) => setDate(e.target.value)}
+                            placeholder="E.G. MARCH 2024"
+                            style={inputStyle}
+                            onFocus={handleInputFocus}
+                            onBlur={handleInputBlur}
+                        />
                     </div>
 
                     {/* Cover Image URL */}
