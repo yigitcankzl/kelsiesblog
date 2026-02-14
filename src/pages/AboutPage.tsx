@@ -45,11 +45,11 @@ export default function AboutPage() {
                     <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
                         <div style={{ width: '1px', height: '40px', backgroundColor: 'var(--brand)', opacity: 0.3 }} />
                         <div>
-                            <h1 className="text-glitch" style={{ ...font, fontSize: '18px', color: '#fff', lineHeight: 1.4 }}
+                            <h1 className="text-glitch" style={{ ...font, fontSize: '24px', color: '#fff', lineHeight: 1.4 }}
                                 data-text="ABOUT ME">
                                 ABOUT ME
                             </h1>
-                            <p style={{ ...font, fontSize: '6px', marginTop: '8px', textTransform: 'uppercase', letterSpacing: '0.15em' }}>
+                            <p style={{ ...font, fontSize: '9px', marginTop: '8px', textTransform: 'uppercase', letterSpacing: '0.15em' }}>
                                 <span style={{ color: 'var(--neon-cyan)' }}>PLAYER PROFILE</span>
                                 <span style={{ color: '#555' }}> // LOADED</span>
                             </p>
@@ -79,19 +79,19 @@ export default function AboutPage() {
                         {/* Terminal-style header */}
                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '24px' }}>
                             <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: 'var(--brand)', boxShadow: '0 0 8px rgba(0,255,65,0.5)' }} />
-                            <span style={{ ...font, fontSize: '7px', color: 'var(--neon-amber)', letterSpacing: '0.15em', textTransform: 'uppercase' }}>
+                            <span style={{ ...font, fontSize: '10px', color: 'var(--neon-amber)', letterSpacing: '0.15em', textTransform: 'uppercase' }}>
                                 ▸ PLAYER.BIO
                             </span>
                         </div>
 
-                        <h2 style={{ ...font, fontSize: '14px', color: '#fff', marginBottom: '20px', lineHeight: 1.8 }}>
+                        <h2 style={{ ...font, fontSize: '18px', color: '#fff', marginBottom: '20px', lineHeight: 1.8 }}>
                             Hey, I'm <span style={{ color: 'var(--brand)', textShadow: '0 0 10px rgba(0,255,65,0.4)' }}>Kelsie</span>
                         </h2>
 
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                             <p style={{
                                 ...font,
-                                fontSize: '8px',
+                                fontSize: '11px',
                                 color: '#999',
                                 lineHeight: '2.4',
                                 borderLeft: '2px solid var(--brand)',
@@ -103,7 +103,7 @@ export default function AboutPage() {
 
                             <p style={{
                                 ...font,
-                                fontSize: '8px',
+                                fontSize: '11px',
                                 color: '#777',
                                 lineHeight: '2.4',
                                 borderLeft: '2px solid var(--neon-cyan)',
@@ -149,14 +149,14 @@ export default function AboutPage() {
                                 }} />
                                 <p style={{
                                     ...font,
-                                    fontSize: typeof stat.value === 'number' ? '18px' : '10px',
+                                    fontSize: typeof stat.value === 'number' ? '22px' : '13px',
                                     color: stat.color,
                                     textShadow: `0 0 10px ${stat.color}`,
                                     marginBottom: '8px',
                                 }}>
                                     {stat.value}
                                 </p>
-                                <p style={{ ...font, fontSize: '6px', color: '#555', letterSpacing: '0.15em' }}>
+                                <p style={{ ...font, fontSize: '9px', color: '#555', letterSpacing: '0.15em' }}>
                                     {stat.label}
                                 </p>
                             </div>
@@ -181,7 +181,7 @@ export default function AboutPage() {
 
                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '24px' }}>
                             <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: 'var(--neon-cyan)', boxShadow: '0 0 8px rgba(0,255,255,0.5)' }} />
-                            <span style={{ ...font, fontSize: '7px', color: 'var(--neon-amber)', letterSpacing: '0.15em', textTransform: 'uppercase' }}>
+                            <span style={{ ...font, fontSize: '10px', color: 'var(--neon-amber)', letterSpacing: '0.15em', textTransform: 'uppercase' }}>
                                 ▸ QUEST.LOG
                             </span>
                         </div>
@@ -204,10 +204,10 @@ export default function AboutPage() {
                                         borderBottom: '1px solid #1a1a1a',
                                     }}
                                 >
-                                    <p style={{ ...font, fontSize: '8px', color: '#fff', marginBottom: '8px' }}>
+                                    <p style={{ ...font, fontSize: '11px', color: '#fff', marginBottom: '8px' }}>
                                         {item.title}
                                     </p>
-                                    <p style={{ ...font, fontSize: '6px', color: '#666', lineHeight: '2', letterSpacing: '0.05em' }}>
+                                    <p style={{ ...font, fontSize: '9px', color: '#666', lineHeight: '2', letterSpacing: '0.05em' }}>
                                         {item.desc}
                                     </p>
                                 </motion.div>
@@ -222,7 +222,7 @@ export default function AboutPage() {
                         transition={{ delay: 0.5, duration: 0.4 }}
                         style={{ textAlign: 'center', padding: '40px 0' }}
                     >
-                        <p style={{ ...font, fontSize: '7px', color: '#444', letterSpacing: '0.15em', marginBottom: '20px' }}>
+                        <p style={{ ...font, fontSize: '10px', color: '#444', letterSpacing: '0.15em', marginBottom: '20px' }}>
                             ◂ READY TO EXPLORE? ▸
                         </p>
                         <div style={{ display: 'flex', justifyContent: 'center', gap: '16px', flexWrap: 'wrap' }}>
@@ -231,7 +231,7 @@ export default function AboutPage() {
                                 className="cursor-pointer"
                                 style={{
                                     ...font,
-                                    fontSize: '7px',
+                                    fontSize: '10px',
                                     padding: '12px 20px',
                                     border: '2px solid var(--brand)',
                                     backgroundColor: 'transparent',
@@ -252,7 +252,7 @@ export default function AboutPage() {
                                 className="cursor-pointer"
                                 style={{
                                     ...font,
-                                    fontSize: '7px',
+                                    fontSize: '10px',
                                     padding: '12px 20px',
                                     border: '2px solid var(--neon-cyan)',
                                     backgroundColor: 'transparent',
