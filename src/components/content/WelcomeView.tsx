@@ -172,7 +172,8 @@ export default function WelcomeView() {
                 )}
 
                 <motion.div
-                    className="text-center mt-20"
+                    className="text-center"
+                    style={{ marginTop: '160px', marginBottom: '64px' }}
                     initial={{ opacity: 0, y: 12 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.4, duration: 0.5 }}
