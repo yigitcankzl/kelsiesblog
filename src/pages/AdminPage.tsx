@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Plus, LogOut, Globe } from 'lucide-react';
+import { ArrowLeft, Plus, LogOut, Globe, Database } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useBlogStore } from '../store/store';
+import { seedFirestore } from '../lib/seed';
 import AuthGate from '../components/admin/AuthGate';
 import PostList from '../components/admin/PostList';
 import PostForm from '../components/admin/PostForm';
@@ -20,6 +21,21 @@ export default function AdminPage() {
     const [editingPost, setEditingPost] = useState<BlogPost | null>(null);
     const [isCreating, setIsCreating] = useState(false);
     const [activeTab, setActiveTab] = useState<AdminTab>('posts');
+    const [seeding, setSeeding] = useState(false);
+
+    const handleSeed = async () => {
+        if (!confirm('This will push mock data to Firestore. Continue?')) return;
+        setSeeding(true);
+        try {
+            await seedFirestore();
+            alert('✓ Data seeded successfully! Reloading...');
+            window.location.reload();
+        } catch (err) {
+            console.error(err);
+            alert('Failed to seed data. Check console.');
+        }
+        setSeeding(false);
+    };
 
     if (!isAuthenticated) {
         return <AuthGate />;
@@ -96,6 +112,29 @@ export default function AdminPage() {
                                 NEW POST
                             </button>
                         )}
+                        <button
+                            onClick={handleSeed}
+                            disabled={seeding}
+                            className="cursor-pointer"
+                            style={{
+                                ...font,
+                                fontSize: '7px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '6px',
+                                background: 'none',
+                                border: '1px solid #333',
+                                color: seeding ? 'var(--brand)' : '#555',
+                                padding: '10px 12px',
+                                transition: 'all 0.3s',
+                                opacity: seeding ? 0.6 : 1,
+                            }}
+                            onMouseEnter={e => { e.currentTarget.style.color = 'var(--neon-cyan)'; e.currentTarget.style.borderColor = 'var(--neon-cyan)'; }}
+                            onMouseLeave={e => { if (!seeding) { e.currentTarget.style.color = '#555'; e.currentTarget.style.borderColor = '#333'; } }}
+                        >
+                            <Database className="w-3 h-3" />
+                            {seeding ? 'SEEDING...' : 'SEED DB'}
+                        </button>
                         <button
                             onClick={logout}
                             className="cursor-pointer"
