@@ -28,7 +28,7 @@ function deserializePost(raw: Record<string, unknown>): BlogPost {
     if (raw.cityBoundary && typeof raw.cityBoundary === 'string') {
         return { ...raw, cityBoundary: JSON.parse(raw.cityBoundary as string) } as unknown as BlogPost;
     }
-    return raw as BlogPost;
+    return raw as unknown as BlogPost;
 }
 
 export async function fetchPosts(): Promise<BlogPost[]> {
