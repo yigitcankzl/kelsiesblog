@@ -12,7 +12,7 @@ export interface BlogPost {
     coordinates: [number, number];
     coverImage: string;
     date: string;
-    category: string;
+    category: string[];
     sections: Section[];
 }
 

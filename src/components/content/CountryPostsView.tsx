@@ -10,12 +10,12 @@ export default function CountryPostsView() {
     const [activeCategory, setActiveCategory] = useState<string | null>(null);
 
     const categories = useMemo(() => {
-        const cats = new Set(countryPosts.map(p => p.category));
+        const cats = new Set(countryPosts.flatMap(p => p.category));
         return Array.from(cats);
     }, [countryPosts]);
 
     const filteredPosts = activeCategory
-        ? countryPosts.filter(p => p.category === activeCategory)
+        ? countryPosts.filter(p => p.category.includes(activeCategory))
         : countryPosts;
 
     return (

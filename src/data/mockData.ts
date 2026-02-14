@@ -9,7 +9,7 @@ export const mockPosts: BlogPost[] = [
         coordinates: [36.3932, 25.4615],
         coverImage: 'https://images.unsplash.com/photo-1613395877344-13d4a8e0d49e?w=1200',
         date: 'OCT 12, 2023',
-        category: '5 Min Read',
+        category: ['5 Min Read'],
         sections: [
             {
                 heading: 'Arriving in Oia',
@@ -35,7 +35,7 @@ export const mockPosts: BlogPost[] = [
         coordinates: [41.0082, 28.9784],
         coverImage: 'https://images.unsplash.com/photo-1544787219-7f47ccb76574?w=1200',
         date: 'SEP 28, 2023',
-        category: 'Food & Drink',
+        category: ['Food & Drink'],
         sections: [
             {
                 heading: 'Beyoğlu\'s Historic Cafes',
@@ -61,7 +61,7 @@ export const mockPosts: BlogPost[] = [
         coordinates: [35.6762, 139.6503],
         coverImage: 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=1200',
         date: 'AUG 15, 2023',
-        category: 'City Break',
+        category: ['City Break'],
         sections: [
             {
                 heading: 'Shibuya Crossing',
@@ -87,7 +87,7 @@ export const mockPosts: BlogPost[] = [
         coordinates: [44.1461, 9.6439],
         coverImage: 'https://images.unsplash.com/photo-1516483638261-f4dbaf036963?w=1200',
         date: 'JUL 04, 2023',
-        category: 'Coastal',
+        category: ['Coastal'],
         sections: [
             {
                 heading: 'Hiking the Azure Trail',
@@ -113,7 +113,7 @@ export const mockPosts: BlogPost[] = [
         coordinates: [43.7696, 11.2558],
         coverImage: 'https://images.unsplash.com/photo-1541370976299-4d24ebbc9077?w=1200',
         date: 'JUN 20, 2023',
-        category: 'Art',
+        category: ['Art'],
         sections: [
             {
                 heading: 'The Uffizi Gallery',

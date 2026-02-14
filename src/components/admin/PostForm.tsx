@@ -67,13 +67,21 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
     const [country, setCountry] = useState(post?.country || '');
     const [city, setCity] = useState(post?.city || '');
     const [date, setDate] = useState(post?.date || '');
-    const [category, setCategory] = useState(post?.category || '');
+    const [categories, setCategories] = useState<string[]>(post?.category || []);
     const [showPreview, setShowPreview] = useState(false);
     const [sections, setSections] = useState<Section[]>(
         post?.sections?.length ? post.sections : [{ ...emptySection }]
     );
 
     const isEditing = post !== null;
+
+    const availableCategories = ['5 Min Read', 'Food & Drink', 'City Break', 'Coastal', 'Art', 'Culture', 'Adventure', 'Nature', 'History', 'Nightlife'];
+
+    const toggleCategory = (cat: string) => {
+        setCategories(prev =>
+            prev.includes(cat) ? prev.filter(c => c !== cat) : [...prev, cat]
+        );
+    };
 
     const citiesForCountry = useMemo(() => {
         if (!country) return [];
@@ -135,7 +143,7 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
             coordinates: getCoordinates(),
             coverImage: '',
             date: date.trim(),
-            category: category.trim(),
+            category: categories,
             sections: cleanSections,
         };
 
@@ -257,30 +265,65 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                         </div>
                     </div>
 
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-                        <div>
-                            <label style={labelStyle}>DATE</label>
-                            <input
-                                type="text"
-                                value={date}
-                                onChange={(e) => setDate(e.target.value)}
-                                placeholder="E.G. MARCH 2024"
-                                style={inputStyle}
-                                onFocus={handleInputFocus}
-                                onBlur={handleInputBlur}
-                            />
-                        </div>
-                        <div>
-                            <label style={labelStyle}>CATEGORY</label>
-                            <input
-                                type="text"
-                                value={category}
-                                onChange={(e) => setCategory(e.target.value)}
-                                placeholder="E.G. CITY BREAK"
-                                style={inputStyle}
-                                onFocus={handleInputFocus}
-                                onBlur={handleInputBlur}
-                            />
+                    <div>
+                        <label style={labelStyle}>DATE</label>
+                        <input
+                            type="text"
+                            value={date}
+                            onChange={(e) => setDate(e.target.value)}
+                            placeholder="E.G. MARCH 2024"
+                            style={inputStyle}
+                            onFocus={handleInputFocus}
+                            onBlur={handleInputBlur}
+                        />
+                    </div>
+
+                    <div>
+                        <label style={labelStyle}>
+                            CATEGORIES
+                            {categories.length > 0 && (
+                                <span style={{ color: 'var(--neon-cyan)' }}>[ {categories.length} ]</span>
+                            )}
+                        </label>
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                            {availableCategories.map(cat => {
+                                const isActive = categories.includes(cat);
+                                return (
+                                    <button
+                                        key={cat}
+                                        type="button"
+                                        onClick={() => toggleCategory(cat)}
+                                        className="cursor-pointer"
+                                        style={{
+                                            ...font,
+                                            fontSize: '7px',
+                                            padding: '8px 14px',
+                                            letterSpacing: '0.1em',
+                                            textTransform: 'uppercase',
+                                            border: '1px solid',
+                                            borderColor: isActive ? 'var(--neon-magenta)' : '#333',
+                                            backgroundColor: isActive ? 'var(--neon-magenta)' : 'transparent',
+                                            color: isActive ? '#000' : '#666',
+                                            boxShadow: isActive ? '0 0 10px rgba(255, 0, 228, 0.3)' : 'none',
+                                            transition: 'all 0.3s',
+                                        }}
+                                        onMouseEnter={e => {
+                                            if (!isActive) {
+                                                e.currentTarget.style.borderColor = '#555';
+                                                e.currentTarget.style.color = '#aaa';
+                                            }
+                                        }}
+                                        onMouseLeave={e => {
+                                            if (!isActive) {
+                                                e.currentTarget.style.borderColor = '#333';
+                                                e.currentTarget.style.color = '#666';
+                                            }
+                                        }}
+                                    >
+                                        {cat}
+                                    </button>
+                                );
+                            })}
                         </div>
                     </div>
 
@@ -472,12 +515,16 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                         <div style={{ flex: 1, height: '1px', background: 'linear-gradient(to right, rgba(0,255,255,0.3), transparent)' }} />
                     </div>
 
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '8px', marginBottom: '12px' }}>
                         {city && <span style={{ ...font, fontSize: '7px', color: 'var(--neon-cyan)' }}>{city}, {country}</span>}
-                        {category && (
+                        {categories.length > 0 && (
                             <>
                                 <div style={{ width: '4px', height: '4px', backgroundColor: 'var(--neon-magenta)' }} />
-                                <span style={{ ...font, fontSize: '7px', color: 'var(--neon-amber)' }}>{category}</span>
+                                {categories.map(cat => (
+                                    <span key={cat} style={{ ...font, fontSize: '6px', color: '#000', backgroundColor: 'var(--neon-magenta)', padding: '3px 8px' }}>
+                                        {cat}
+                                    </span>
+                                ))}
                             </>
                         )}
                         {date && (
