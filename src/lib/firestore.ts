@@ -14,17 +14,38 @@ import type { BlogPost, GalleryItem, AboutContent } from '../types';
 
 const postsCol = collection(db, 'posts');
 
+// Firestore doesn't support nested arrays (GeoJSON coordinates are number[][][]).
+// Serialize cityBoundary to a JSON string before writing, parse back when reading.
+
+function serializeBoundary(data: Record<string, unknown>): Record<string, unknown> {
+    if (data.cityBoundary && typeof data.cityBoundary === 'object') {
+        return { ...data, cityBoundary: JSON.stringify(data.cityBoundary) };
+    }
+    return data;
+}
+
+function deserializePost(raw: Record<string, unknown>): BlogPost {
+    if (raw.cityBoundary && typeof raw.cityBoundary === 'string') {
+        return { ...raw, cityBoundary: JSON.parse(raw.cityBoundary as string) } as unknown as BlogPost;
+    }
+    return raw as BlogPost;
+}
+
 export async function fetchPosts(): Promise<BlogPost[]> {
     const snap = await getDocs(postsCol);
-    return snap.docs.map((d) => ({ id: d.id, ...d.data() } as BlogPost));
+    return snap.docs.map((d) => deserializePost({ id: d.id, ...d.data() }));
 }
 
 export async function addPostDoc(post: BlogPost): Promise<void> {
-    await setDoc(doc(db, 'posts', post.id), post);
+    await setDoc(doc(db, 'posts', post.id), serializeBoundary(post as unknown as Record<string, unknown>));
 }
 
 export async function updatePostDoc(id: string, data: Partial<BlogPost>): Promise<void> {
-    await updateDoc(doc(db, 'posts', id), data as Record<string, unknown>);
+    await updateDoc(doc(db, 'posts', id), serializeBoundary(data as Record<string, unknown>));
+}
+
+export async function mergePostFields(id: string, data: Partial<BlogPost>): Promise<void> {
+    await setDoc(doc(db, 'posts', id), serializeBoundary(data as Record<string, unknown>), { merge: true });
 }
 
 export async function deletePostDoc(id: string): Promise<void> {

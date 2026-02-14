@@ -6,6 +6,7 @@ import type { BlogPost, Section } from '../../types';
 import { countryBounds } from '../../data/countryBounds';
 import { worldCities } from '../../data/worldCities';
 import { fetchCityBoundary } from '../../lib/cityBoundaryCache';
+import { mergePostFields } from '../../lib/firestore';
 
 const font = { fontFamily: "'Press Start 2P', monospace" } as const;
 
@@ -137,18 +138,28 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
             addPost(postData);
         }
 
-        // Fetch boundary in background (non-blocking) and update post if successful
-        const timeoutPromise = new Promise<null>((resolve) => setTimeout(() => resolve(null), 10000));
-        Promise.race([fetchCityBoundary(cityTrimmed, countryTrimmed), timeoutPromise])
-            .then(feature => {
-                if (feature) {
-                    console.log('[Boundary] Saving boundary for', cityTrimmed, '- geometry size:', JSON.stringify(feature.geometry).length, 'bytes');
-                    updatePost(postData.id, { cityBoundary: feature.geometry });
-                }
-            })
-            .catch(err => console.error('Failed to fetch city boundary:', err));
-
         onSave();
+
+        // Fetch boundary in background (non-blocking) and save to Firestore
+        const postId = postData.id;
+        fetchCityBoundary(cityTrimmed, countryTrimmed)
+            .then(async (feature) => {
+                if (!feature?.geometry) {
+                    console.log('[Boundary] No boundary found for', cityTrimmed);
+                    return;
+                }
+                console.log('[Boundary] Saving boundary for', cityTrimmed, '- geometry size:', JSON.stringify(feature.geometry).length, 'bytes');
+                // Use setDoc with merge — safe for both new and existing documents
+                await mergePostFields(postId, { cityBoundary: feature.geometry });
+                console.log('[Boundary] Saved to Firestore successfully');
+                // Update in-memory store
+                useBlogStore.setState((state) => ({
+                    posts: state.posts.map((p) =>
+                        p.id === postId ? { ...p, cityBoundary: feature.geometry } : p
+                    ),
+                }));
+            })
+            .catch(err => console.error('[Boundary] Failed to save city boundary:', err));
     };
 
     const isValid = title.trim() && country.trim() && city.trim() && sections.some(s => s.heading.trim() && s.content.trim());
