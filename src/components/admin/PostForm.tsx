@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { Save, X, Plus, Trash2, ChevronUp, ChevronDown, Image, MapPin, Type } from 'lucide-react';
+import { Save, X, Plus, Trash2, ChevronUp, ChevronDown, Image, Type } from 'lucide-react';
 import { useBlogStore } from '../../store/store';
 import type { BlogPost, Section } from '../../types';
 import { countryBounds } from '../../data/countryBounds';
+import citiesGeoJson from '../../data/cities.geo.json';
 
 const font = { fontFamily: "'Press Start 2P', monospace" } as const;
 
@@ -40,22 +41,57 @@ interface PostFormProps {
 
 const emptySection: Section = { heading: '', content: '', image: '' };
 
+function getCentroid(feature: any): [number, number] {
+    const coords: number[][] = [];
+    const geometry = feature.geometry;
+    if (geometry.type === 'Polygon') {
+        coords.push(...geometry.coordinates[0]);
+    } else if (geometry.type === 'MultiPolygon') {
+        for (const poly of geometry.coordinates) {
+            coords.push(...poly[0]);
+        }
+    }
+    if (coords.length === 0) return [0, 0];
+    let latSum = 0, lngSum = 0;
+    for (const c of coords) {
+        lngSum += c[0];
+        latSum += c[1];
+    }
+    return [latSum / coords.length, lngSum / coords.length];
+}
+
 export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
     const { addPost, updatePost } = useBlogStore();
 
     const [title, setTitle] = useState(post?.title || '');
     const [country, setCountry] = useState(post?.country || '');
     const [city, setCity] = useState(post?.city || '');
-    const [lat, setLat] = useState(post?.coordinates[0]?.toString() || '');
-    const [lng, setLng] = useState(post?.coordinates[1]?.toString() || '');
     const [coverImage, setCoverImage] = useState(post?.coverImage || '');
     const [date, setDate] = useState(post?.date || '');
     const [category, setCategory] = useState(post?.category || '');
+    const [showPreview, setShowPreview] = useState(false);
     const [sections, setSections] = useState<Section[]>(
         post?.sections?.length ? post.sections : [{ ...emptySection }]
     );
 
     const isEditing = post !== null;
+
+    const citiesForCountry = useMemo(() => {
+        if (!country) return [];
+        return citiesGeoJson.features
+            .filter((f: any) => f.properties.country === country)
+            .map((f: any) => f.properties.name)
+            .sort();
+    }, [country]);
+
+    const getCoordinates = (): [number, number] => {
+        if (!country || !city) return [0, 0];
+        const feature = citiesGeoJson.features.find(
+            (f: any) => f.properties.country === country && f.properties.name === city
+        );
+        if (feature) return getCentroid(feature);
+        return post?.coordinates || [0, 0];
+    };
 
     const addSection = () => {
         setSections([...sections, { ...emptySection }]);
@@ -97,7 +133,7 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
             title: title.trim(),
             country: country.trim(),
             city: city.trim(),
-            coordinates: [parseFloat(lat), parseFloat(lng)],
+            coordinates: getCoordinates(),
             coverImage: coverImage.trim(),
             date: date.trim(),
             category: category.trim(),
@@ -113,7 +149,7 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
         onSave();
     };
 
-    const isValid = title.trim() && country.trim() && city.trim() && lat && lng && sections.some(s => s.heading.trim() && s.content.trim());
+    const isValid = title.trim() && country.trim() && city.trim() && sections.some(s => s.heading.trim() && s.content.trim());
 
     const handleInputFocus = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         e.currentTarget.style.borderColor = 'var(--brand)';
@@ -189,7 +225,7 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                             <label style={labelStyle}>COUNTRY</label>
                             <select
                                 value={country}
-                                onChange={(e) => setCountry(e.target.value)}
+                                onChange={(e) => { setCountry(e.target.value); setCity(''); }}
                                 style={{ ...inputStyle, cursor: 'pointer', appearance: 'none' }}
                                 onFocus={handleInputFocus as any}
                                 onBlur={handleInputBlur as any}
@@ -205,16 +241,20 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                         </div>
                         <div>
                             <label style={labelStyle}>CITY</label>
-                            <input
-                                type="text"
+                            <select
                                 value={city}
                                 onChange={(e) => setCity(e.target.value)}
-                                placeholder="E.G. KYOTO"
-                                style={inputStyle}
-                                onFocus={handleInputFocus}
-                                onBlur={handleInputBlur}
+                                style={{ ...inputStyle, cursor: 'pointer', appearance: 'none', opacity: country ? 1 : 0.4 }}
+                                onFocus={handleInputFocus as any}
+                                onBlur={handleInputBlur as any}
                                 required
-                            />
+                                disabled={!country}
+                            >
+                                <option value="">{country ? 'SELECT CITY...' : 'SELECT COUNTRY FIRST'}</option>
+                                {citiesForCountry.map((c: string) => (
+                                    <option key={c} value={c}>{c}</option>
+                                ))}
+                            </select>
                         </div>
                     </div>
 
@@ -241,43 +281,6 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                                 style={inputStyle}
                                 onFocus={handleInputFocus}
                                 onBlur={handleInputBlur}
-                            />
-                        </div>
-                    </div>
-
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-                        <div>
-                            <label style={labelStyle}>
-                                <MapPin style={{ width: '10px', height: '10px' }} />
-                                LATITUDE
-                            </label>
-                            <input
-                                type="number"
-                                step="any"
-                                value={lat}
-                                onChange={(e) => setLat(e.target.value)}
-                                placeholder="35.0116"
-                                style={inputStyle}
-                                onFocus={handleInputFocus}
-                                onBlur={handleInputBlur}
-                                required
-                            />
-                        </div>
-                        <div>
-                            <label style={labelStyle}>
-                                <MapPin style={{ width: '10px', height: '10px' }} />
-                                LONGITUDE
-                            </label>
-                            <input
-                                type="number"
-                                step="any"
-                                value={lng}
-                                onChange={(e) => setLng(e.target.value)}
-                                placeholder="135.7681"
-                                style={inputStyle}
-                                onFocus={handleInputFocus}
-                                onBlur={handleInputBlur}
-                                required
                             />
                         </div>
                     </div>
