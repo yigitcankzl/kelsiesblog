@@ -30,7 +30,7 @@ function FlyToCountry({ country }: { country: string | null }) {
 }
 
 export default function MapPage() {
-    const { activePage, selectedCountry, setSelectedCountry, setSelectedPost, getCountriesWithPosts, posts } = useBlogStore();
+    const { activePage, selectedCountry, setSelectedCountry, setSelectedPost, getCountriesWithPosts } = useBlogStore();
     const countriesWithPosts = getCountriesWithPosts();
     const hoveredLayerRef = useRef<L.Layer | null>(null);
 
@@ -108,7 +108,7 @@ export default function MapPage() {
     return (
         <>
             {/* Map hero section */}
-            <section className="relative w-full pt-20 h-[75vh] min-h-[500px] bg-black flex flex-col items-center overflow-hidden scanlines">
+            <section className="relative w-full h-[75vh] min-h-[500px] bg-black flex flex-col items-center overflow-hidden scanlines" style={{ paddingTop: '100px' }}>
 
                 {/* Map container */}
                 <div className="flex-1 relative" style={{ maxWidth: '1024px', width: '100%', paddingLeft: '24px', paddingRight: '24px' }}>
@@ -141,36 +141,6 @@ export default function MapPage() {
                     </div>
 
 
-                    {/* Featured destinations — bottom-right */}
-                    <div className="absolute bottom-10 right-8 z-[1000] hidden md:flex flex-col gap-3 items-end bg-black retro-corners p-5"
-                        style={{ boxShadow: '0 0 12px rgba(0, 255, 65, 0.2)' }}>
-                        <span className="rc-extra absolute inset-0" />
-                        <span className="text-[6px] font-bold uppercase tracking-[0.2em] text-[var(--neon-amber)] mb-1"
-                            style={{ fontFamily: "'Press Start 2P', monospace" }}>
-                            ★ TOP DESTINATIONS
-                        </span>
-                        <div className="flex flex-col gap-3 items-end">
-                            {countriesWithPosts.slice(0, 3).map((country, i) => (
-                                <button
-                                    key={country}
-                                    onClick={() => { setSelectedPost(null); setSelectedCountry(country); }}
-                                    className="flex items-center gap-3 text-[8px] font-medium text-white hover:text-[var(--brand)] transition-colors cursor-pointer group/dest"
-                                    style={{ fontFamily: "'Press Start 2P', monospace" }}
-                                >
-                                    <span className="text-[5px] text-gray-600"
-                                        style={{ fontFamily: "'Press Start 2P', monospace" }}>
-                                        {String(i + 1).padStart(2, '0')}
-                                    </span>
-                                    {country}
-                                    <span className="w-2 h-2"
-                                        style={{
-                                            backgroundColor: i === 0 ? '#00FF41' : i === 1 ? '#00FFFF' : '#FFB800',
-                                            boxShadow: `0 0 6px ${i === 0 ? 'rgba(0,255,65,0.5)' : i === 1 ? 'rgba(0,255,255,0.5)' : 'rgba(255,184,0,0.5)'}`,
-                                        }} />
-                                </button>
-                            ))}
-                        </div>
-                    </div>
                     {/* Bottom fade */}
                     <div className="map-bottom-fade" />
 
