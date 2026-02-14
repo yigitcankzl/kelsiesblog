@@ -232,7 +232,7 @@ export default function AboutPage() {
                                 boxShadow: '0 0 20px rgba(255, 0, 128, 0.05)',
                             }}
                         >
-                            <span className="rc-extra" style={{ position: 'absolute', inset: 0 }} />
+                            <span className="rc-extra" style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }} />
 
                             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '24px' }}>
                                 <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: 'var(--neon-magenta, #ff0080)', boxShadow: '0 0 8px rgba(255,0,128,0.5)' }} />
