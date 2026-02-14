@@ -14,11 +14,12 @@ interface GalleryImage {
 }
 
 export default function GalleryPage() {
-    const { posts, setActivePage } = useBlogStore();
+    const { posts, galleryItems, setActivePage } = useBlogStore();
     const [lightbox, setLightbox] = useState<GalleryImage | null>(null);
 
     const allImages = useMemo(() => {
         const imgs: GalleryImage[] = [];
+        // Images from posts
         posts.forEach(post => {
             if (post.coverImage) {
                 imgs.push({
@@ -41,8 +42,18 @@ export default function GalleryPage() {
                 }
             });
         });
+        // Standalone gallery items
+        galleryItems.forEach(item => {
+            imgs.push({
+                src: item.src,
+                title: item.caption,
+                city: item.city,
+                country: item.country,
+                heading: item.caption,
+            });
+        });
         return imgs;
-    }, [posts]);
+    }, [posts, galleryItems]);
 
     // Duplicate for seamless marquee
     const marqueeImages = [...allImages, ...allImages];

@@ -1,11 +1,9 @@
 import { motion } from 'framer-motion';
 import { ArrowRight, Clock } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
 import { useBlogStore } from '@/store/store';
 
 export default function WelcomeView() {
-    const navigate = useNavigate();
-    const { posts, setSelectedCountry, setSelectedPost } = useBlogStore();
+    const { posts, setSelectedCountry, setSelectedPost, setActivePage } = useBlogStore();
 
     const handlePostClick = (post: typeof posts[0]) => {
         setSelectedCountry(post.country);
@@ -137,7 +135,7 @@ export default function WelcomeView() {
                                         src={post.coverImage}
                                         alt={post.title}
                                         className="absolute inset-0 w-full h-full object-cover transition-all duration-1000 group-hover:scale-110"
-                                        />
+                                    />
                                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
                                     <span className="absolute top-4 left-4 bg-[var(--brand)] text-black text-[6px] font-bold uppercase tracking-widest px-3 py-1.5"
                                         style={{ fontFamily: "'Press Start 2P', monospace" }}>
@@ -189,7 +187,7 @@ export default function WelcomeView() {
                         ))}
                     </div>
                     <button
-                        onClick={() => navigate('/stories')}
+                        onClick={() => setActivePage('stories')}
                         className="cursor-pointer group"
                         style={{
                             fontFamily: "'Press Start 2P', monospace",

@@ -6,15 +6,19 @@ import { useBlogStore } from '../store/store';
 import AuthGate from '../components/admin/AuthGate';
 import PostList from '../components/admin/PostList';
 import PostForm from '../components/admin/PostForm';
+import GalleryManager from '../components/admin/GalleryManager';
 import type { BlogPost } from '../types';
 
 const font = { fontFamily: "'Press Start 2P', monospace" } as const;
+
+type AdminTab = 'posts' | 'gallery';
 
 export default function AdminPage() {
     const navigate = useNavigate();
     const { isAuthenticated, logout } = useBlogStore();
     const [editingPost, setEditingPost] = useState<BlogPost | null>(null);
     const [isCreating, setIsCreating] = useState(false);
+    const [activeTab, setActiveTab] = useState<AdminTab>('posts');
 
     if (!isAuthenticated) {
         return <AuthGate />;
@@ -66,7 +70,7 @@ export default function AdminPage() {
                         </div>
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                        {!showForm && (
+                        {activeTab === 'posts' && !showForm && (
                             <button
                                 onClick={() => setIsCreating(true)}
                                 className="cursor-pointer"
@@ -114,40 +118,85 @@ export default function AdminPage() {
                         </button>
                     </div>
                 </div>
+
+                {/* Tabs */}
+                <div style={{ maxWidth: '1024px', margin: '0 auto', padding: '0 24px' }}>
+                    <div style={{ display: 'flex', gap: '0', borderTop: '1px solid #1a1a1a' }}>
+                        {([
+                            { key: 'posts' as AdminTab, label: 'POSTS' },
+                            { key: 'gallery' as AdminTab, label: 'GALLERY' },
+                        ]).map(tab => (
+                            <button
+                                key={tab.key}
+                                onClick={() => {
+                                    setActiveTab(tab.key);
+                                    setEditingPost(null);
+                                    setIsCreating(false);
+                                }}
+                                className="cursor-pointer"
+                                style={{
+                                    ...font,
+                                    fontSize: '7px',
+                                    padding: '14px 24px',
+                                    background: 'none',
+                                    border: 'none',
+                                    borderBottom: activeTab === tab.key ? '2px solid var(--brand)' : '2px solid transparent',
+                                    color: activeTab === tab.key ? 'var(--brand)' : '#555',
+                                    letterSpacing: '0.15em',
+                                    transition: 'all 0.3s',
+                                }}
+                            >
+                                {tab.label}
+                            </button>
+                        ))}
+                    </div>
+                </div>
             </header>
 
             {/* Content */}
             <main style={{ maxWidth: '1024px', margin: '0 auto', padding: '32px 24px' }}>
                 <AnimatePresence mode="wait">
-                    {showForm ? (
-                        <motion.div
-                            key="form"
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -20 }}
-                            transition={{ duration: 0.3 }}
-                        >
-                            <PostForm
-                                post={editingPost}
-                                onSave={() => {
-                                    setEditingPost(null);
-                                    setIsCreating(false);
-                                }}
-                                onCancel={() => {
-                                    setEditingPost(null);
-                                    setIsCreating(false);
-                                }}
-                            />
-                        </motion.div>
+                    {activeTab === 'posts' ? (
+                        showForm ? (
+                            <motion.div
+                                key="form"
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -20 }}
+                                transition={{ duration: 0.3 }}
+                            >
+                                <PostForm
+                                    post={editingPost}
+                                    onSave={() => {
+                                        setEditingPost(null);
+                                        setIsCreating(false);
+                                    }}
+                                    onCancel={() => {
+                                        setEditingPost(null);
+                                        setIsCreating(false);
+                                    }}
+                                />
+                            </motion.div>
+                        ) : (
+                            <motion.div
+                                key="list"
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -20 }}
+                                transition={{ duration: 0.3 }}
+                            >
+                                <PostList onEdit={setEditingPost} />
+                            </motion.div>
+                        )
                     ) : (
                         <motion.div
-                            key="list"
+                            key="gallery"
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: -20 }}
                             transition={{ duration: 0.3 }}
                         >
-                            <PostList onEdit={setEditingPost} />
+                            <GalleryManager />
                         </motion.div>
                     )}
                 </AnimatePresence>
@@ -155,3 +204,4 @@ export default function AdminPage() {
         </div>
     );
 }
+
