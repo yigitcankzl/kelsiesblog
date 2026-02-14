@@ -32,10 +32,6 @@ export default function Footer() {
                         style={{ fontFamily: "'Press Start 2P', monospace" }}>
                         SYS ONLINE
                     </span>
-                    <span className="text-[6px] text-[var(--neon-cyan)] uppercase tracking-[0.15em] opacity-40"
-                        style={{ fontFamily: "'Press Start 2P', monospace" }}>
-                        v2.0.4
-                    </span>
                 </div>
 
                 {/* Retro icons */}

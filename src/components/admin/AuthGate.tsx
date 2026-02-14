@@ -62,7 +62,7 @@ export default function AuthGate() {
                         <div style={{ width: '8px', height: '8px', backgroundColor: 'var(--neon-amber)' }} />
                         <div style={{ width: '8px', height: '8px', backgroundColor: '#333' }} />
                         <span style={{ ...font, fontSize: '6px', color: '#444', marginLeft: '8px', letterSpacing: '0.2em' }}>
-                            TERMINAL v2.0
+                            TERMINAL
                         </span>
                     </div>
 
