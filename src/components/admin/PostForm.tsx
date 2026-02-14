@@ -54,7 +54,6 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
     const [coverImage, setCoverImage] = useState(post?.coverImage || '');
     const [categories, setCategories] = useState<string[]>(post?.category || []);
     const [showPreview, setShowPreview] = useState(false);
-    const [saving, setSaving] = useState(false);
     const [sections, setSections] = useState<Section[]>(
         post?.sections?.length ? post.sections : [{ ...emptySection }]
     );
@@ -105,9 +104,8 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
         setSections(updated);
     };
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        setSaving(true);
 
         const cleanSections = sections
             .filter(s => s.heading.trim() || s.content.trim())
@@ -117,22 +115,8 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                 ...(s.image?.trim() ? { image: s.image.trim() } : {}),
             }));
 
-        // Fetch city boundary from Nominatim
-        let cityBoundary: GeoJSON.Geometry | undefined = post?.cityBoundary;
         const cityTrimmed = city.trim();
         const countryTrimmed = country.trim();
-
-        // Only fetch if city/country changed or no boundary exists yet
-        if (!cityBoundary || post?.city !== cityTrimmed || post?.country !== countryTrimmed) {
-            try {
-                const feature = await fetchCityBoundary(cityTrimmed, countryTrimmed);
-                if (feature) {
-                    cityBoundary = feature.geometry;
-                }
-            } catch (err) {
-                console.error('Failed to fetch city boundary:', err);
-            }
-        }
 
         const postData: BlogPost = {
             id: post?.id || `post-${Date.now()}`,
@@ -144,16 +128,29 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
             date: date.trim(),
             category: categories,
             sections: cleanSections,
-            ...(cityBoundary ? { cityBoundary } : {}),
+            ...(post?.cityBoundary ? { cityBoundary: post.cityBoundary } : {}),
         };
 
+        // Save post immediately
         if (isEditing) {
             updatePost(post.id, postData);
         } else {
             addPost(postData);
         }
 
-        setSaving(false);
+        // Fetch boundary in background (non-blocking) and update post if successful
+        const needsBoundary = !post?.cityBoundary || post?.city !== cityTrimmed || post?.country !== countryTrimmed;
+        if (needsBoundary) {
+            const timeoutPromise = new Promise<null>((resolve) => setTimeout(() => resolve(null), 10000));
+            Promise.race([fetchCityBoundary(cityTrimmed, countryTrimmed), timeoutPromise])
+                .then(feature => {
+                    if (feature) {
+                        updatePost(postData.id, { cityBoundary: feature.geometry });
+                    }
+                })
+                .catch(err => console.error('Failed to fetch city boundary:', err));
+        }
+
         onSave();
     };
 
@@ -639,7 +636,7 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                 </button>
                 <button
                     type="submit"
-                    disabled={!isValid || saving}
+                    disabled={!isValid}
                     className="cursor-pointer"
                     style={{
                         ...font,

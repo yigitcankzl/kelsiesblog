@@ -4,7 +4,6 @@
  * City polygons are clipped against the country land boundary to remove maritime areas.
  */
 import intersect from '@turf/intersect';
-import { polygon, multiPolygon } from '@turf/helpers';
 import countriesGeoJson from '../data/countries.geo.json';
 
 const cache = new Map<string, GeoJSON.Feature | null>();
