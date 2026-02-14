@@ -30,9 +30,16 @@ export interface GalleryItem {
     country: string;
 }
 
+export interface SocialLink {
+    label: string;
+    url: string;
+    icon: string;
+}
+
 export interface AboutContent {
     name: string;
     bio1: string;
     bio2: string;
     quests: { title: string; desc: string }[];
+    socials: SocialLink[];
 }

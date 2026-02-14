@@ -49,6 +49,11 @@ export const useBlogStore = create<BlogStore>((set, get) => ({
             { title: '🗺️ Exploration', desc: 'Seeking hidden gems off the beaten path' },
             { title: '🎒 Slow Travel', desc: 'Living like a local, not a tourist' },
         ],
+        socials: [
+            { label: 'Instagram', url: 'https://instagram.com/', icon: 'instagram' },
+            { label: 'Twitter / X', url: 'https://x.com/', icon: 'twitter' },
+            { label: 'Email', url: 'mailto:hello@example.com', icon: 'mail' },
+        ],
     },
     isAuthenticated: false,
 
