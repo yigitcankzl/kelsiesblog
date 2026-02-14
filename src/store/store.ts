@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import type { BlogPost } from '../types';
+import type { BlogPost, GalleryItem } from '../types';
 import { mockPosts } from '../data/mockData';
 
 interface BlogStore {
@@ -7,6 +7,7 @@ interface BlogStore {
     selectedCountry: string | null;
     selectedPost: BlogPost | null;
     activePage: 'map' | 'stories' | 'gallery';
+    galleryItems: GalleryItem[];
     isAuthenticated: boolean;
 
     // Actions
@@ -16,6 +17,9 @@ interface BlogStore {
     setSelectedCountry: (country: string | null) => void;
     setSelectedPost: (post: BlogPost | null) => void;
     setActivePage: (page: 'map' | 'stories' | 'gallery') => void;
+    addGalleryItem: (item: GalleryItem) => void;
+    updateGalleryItem: (id: string, item: Partial<GalleryItem>) => void;
+    deleteGalleryItem: (id: string) => void;
     authenticate: (password: string) => boolean;
     logout: () => void;
 
@@ -32,6 +36,7 @@ export const useBlogStore = create<BlogStore>((set, get) => ({
     selectedCountry: null,
     selectedPost: null,
     activePage: 'map',
+    galleryItems: [],
     isAuthenticated: false,
 
     addPost: (post) =>
@@ -53,6 +58,19 @@ export const useBlogStore = create<BlogStore>((set, get) => ({
     setSelectedPost: (post) => set({ selectedPost: post }),
 
     setActivePage: (page) => set({ activePage: page, selectedPost: null, selectedCountry: null }),
+
+    addGalleryItem: (item) =>
+        set((state) => ({ galleryItems: [...state.galleryItems, item] })),
+
+    updateGalleryItem: (id, updates) =>
+        set((state) => ({
+            galleryItems: state.galleryItems.map((g) => (g.id === id ? { ...g, ...updates } : g)),
+        })),
+
+    deleteGalleryItem: (id) =>
+        set((state) => ({
+            galleryItems: state.galleryItems.filter((g) => g.id !== id),
+        })),
 
     authenticate: (password) => {
         const isValid = password === ADMIN_PASSWORD;

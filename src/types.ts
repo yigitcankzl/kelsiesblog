@@ -21,3 +21,11 @@ export interface CountryData {
     hasPosts: boolean;
     bounds?: [[number, number], [number, number]];
 }
+
+export interface GalleryItem {
+    id: string;
+    src: string;
+    caption: string;
+    city: string;
+    country: string;
+}
