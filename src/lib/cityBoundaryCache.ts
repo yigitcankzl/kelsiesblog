@@ -1,10 +1,53 @@
 /**
  * Fetches city boundary GeoJSON from Nominatim (OpenStreetMap).
  * Results are cached in-memory so each city is fetched only once per session.
+ * City polygons are clipped against the country land boundary to remove maritime areas.
  */
+import intersect from '@turf/intersect';
+import { polygon, multiPolygon } from '@turf/helpers';
+import countriesGeoJson from '../data/countries.geo.json';
 
 const cache = new Map<string, GeoJSON.Feature | null>();
 const pending = new Map<string, Promise<GeoJSON.Feature | null>>();
+
+/**
+ * Find the country land polygon from countries.geo.json to use for clipping.
+ */
+function getCountryPolygon(country: string): GeoJSON.Feature<GeoJSON.Polygon | GeoJSON.MultiPolygon> | null {
+    const feature = (countriesGeoJson as any).features.find(
+        (f: any) => (f.properties?.ADMIN === country || f.properties?.name === country)
+    );
+    if (!feature) return null;
+    if (feature.geometry.type === 'Polygon' || feature.geometry.type === 'MultiPolygon') {
+        return feature;
+    }
+    return null;
+}
+
+/**
+ * Clip a city boundary against the country land boundary to remove sea areas.
+ */
+function clipToLand(cityFeature: GeoJSON.Feature, country: string): GeoJSON.Feature {
+    try {
+        const countryFeature = getCountryPolygon(country);
+        if (!countryFeature) return cityFeature;
+
+        const result = intersect(
+            // @ts-ignore — turf types are slightly different from GeoJSON types
+            { type: 'FeatureCollection', features: [cityFeature, countryFeature] }
+        );
+
+        if (result) {
+            return {
+                ...cityFeature,
+                geometry: result.geometry,
+            };
+        }
+    } catch (err) {
+        console.warn('Failed to clip city boundary to land:', err);
+    }
+    return cityFeature;
+}
 
 async function fetchFromNominatim(city: string, country: string): Promise<GeoJSON.Feature | null> {
     // Use q= with multiple results so we can pick the admin boundary (relation),
@@ -40,11 +83,16 @@ async function fetchFromNominatim(city: string, country: string): Promise<GeoJSO
         const result = preferred || fallback;
         if (!result) return null;
 
-        return {
+        let feature: GeoJSON.Feature = {
             type: 'Feature',
             properties: { name: city, country },
             geometry: result.geojson,
-        } as GeoJSON.Feature;
+        };
+
+        // Clip against country land boundary to remove maritime areas
+        feature = clipToLand(feature, country);
+
+        return feature;
     } catch {
         return null;
     }
