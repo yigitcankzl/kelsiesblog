@@ -171,7 +171,6 @@ export default function WelcomeView() {
                     </div>
                 )}
 
-                {/* ALL STORIES button */}
                 <motion.div
                     className="text-center mt-20"
                     initial={{ opacity: 0, y: 12 }}
@@ -187,38 +186,72 @@ export default function WelcomeView() {
                                 }} />
                         ))}
                     </div>
-                    <button
-                        onClick={() => setActivePage('stories')}
-                        className="cursor-pointer group"
-                        style={{
-                            fontFamily: "'Press Start 2P', monospace",
-                            fontSize: '10px',
-                            padding: '16px 40px',
-                            border: '2px solid var(--brand)',
-                            backgroundColor: 'transparent',
-                            color: 'var(--brand)',
-                            letterSpacing: '0.15em',
-                            textTransform: 'uppercase' as const,
-                            boxShadow: '0 0 12px rgba(0, 255, 65, 0.2)',
-                            transition: 'all 0.3s',
-                            display: 'inline-flex',
-                            alignItems: 'center',
-                            gap: '12px',
-                        }}
-                        onMouseEnter={e => {
-                            e.currentTarget.style.backgroundColor = 'var(--brand)';
-                            e.currentTarget.style.color = '#000';
-                            e.currentTarget.style.boxShadow = '0 0 24px rgba(0, 255, 65, 0.5)';
-                        }}
-                        onMouseLeave={e => {
-                            e.currentTarget.style.backgroundColor = 'transparent';
-                            e.currentTarget.style.color = 'var(--brand)';
-                            e.currentTarget.style.boxShadow = '0 0 12px rgba(0, 255, 65, 0.2)';
-                        }}
-                    >
-                        ALL STORIES ▸
-                        <ArrowRight className="w-4 h-4" />
-                    </button>
+                    <div style={{ display: 'flex', justifyContent: 'center', gap: '16px', flexWrap: 'wrap' }}>
+                        <button
+                            onClick={() => setActivePage('stories')}
+                            className="cursor-pointer group"
+                            style={{
+                                fontFamily: "'Press Start 2P', monospace",
+                                fontSize: '10px',
+                                padding: '16px 40px',
+                                border: '2px solid var(--brand)',
+                                backgroundColor: 'transparent',
+                                color: 'var(--brand)',
+                                letterSpacing: '0.15em',
+                                textTransform: 'uppercase' as const,
+                                boxShadow: '0 0 12px rgba(0, 255, 65, 0.2)',
+                                transition: 'all 0.3s',
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                gap: '12px',
+                            }}
+                            onMouseEnter={e => {
+                                e.currentTarget.style.backgroundColor = 'var(--brand)';
+                                e.currentTarget.style.color = '#000';
+                                e.currentTarget.style.boxShadow = '0 0 24px rgba(0, 255, 65, 0.5)';
+                            }}
+                            onMouseLeave={e => {
+                                e.currentTarget.style.backgroundColor = 'transparent';
+                                e.currentTarget.style.color = 'var(--brand)';
+                                e.currentTarget.style.boxShadow = '0 0 12px rgba(0, 255, 65, 0.2)';
+                            }}
+                        >
+                            ALL STORIES ▸
+                            <ArrowRight className="w-4 h-4" />
+                        </button>
+                        <button
+                            onClick={() => setActivePage('gallery')}
+                            className="cursor-pointer group"
+                            style={{
+                                fontFamily: "'Press Start 2P', monospace",
+                                fontSize: '10px',
+                                padding: '16px 40px',
+                                border: '2px solid var(--neon-cyan)',
+                                backgroundColor: 'transparent',
+                                color: 'var(--neon-cyan)',
+                                letterSpacing: '0.15em',
+                                textTransform: 'uppercase' as const,
+                                boxShadow: '0 0 12px rgba(0, 255, 255, 0.2)',
+                                transition: 'all 0.3s',
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                gap: '12px',
+                            }}
+                            onMouseEnter={e => {
+                                e.currentTarget.style.backgroundColor = 'var(--neon-cyan)';
+                                e.currentTarget.style.color = '#000';
+                                e.currentTarget.style.boxShadow = '0 0 24px rgba(0, 255, 255, 0.5)';
+                            }}
+                            onMouseLeave={e => {
+                                e.currentTarget.style.backgroundColor = 'transparent';
+                                e.currentTarget.style.color = 'var(--neon-cyan)';
+                                e.currentTarget.style.boxShadow = '0 0 12px rgba(0, 255, 255, 0.2)';
+                            }}
+                        >
+                            ALL GALLERY ▸
+                            <ArrowRight className="w-4 h-4" />
+                        </button>
+                    </div>
                 </motion.div>
 
                 {/* Gallery preview */}
