@@ -80,6 +80,7 @@ export const useBlogStore = create<BlogStore>((set, get) => ({
                 fetchGalleryItems(),
                 fetchAboutContent(),
             ]);
+
             set({
                 posts,
                 galleryItems: gallery,

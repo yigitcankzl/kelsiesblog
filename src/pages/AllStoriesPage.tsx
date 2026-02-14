@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowLeft, MapPin, Clock } from 'lucide-react';
 import { useBlogStore } from '@/store/store';
@@ -11,10 +11,7 @@ export default function AllStoriesPage() {
 
     const [activeCategory, setActiveCategory] = useState<string | null>(null);
 
-    const categories = useMemo(() => {
-        const cats = new Set(posts.flatMap(p => p.category));
-        return Array.from(cats);
-    }, [posts]);
+    const categories = ['Culture', 'History', 'Tourism', 'Transportation', 'Politic', 'Food'];
 
     const filteredPosts = activeCategory
         ? posts.filter(p => p.category.includes(activeCategory))
