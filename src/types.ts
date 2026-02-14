@@ -14,6 +14,7 @@ export interface BlogPost {
     date: string;
     category: string[];
     sections: Section[];
+    cityBoundary?: GeoJSON.Geometry;
 }
 
 export interface CountryData {

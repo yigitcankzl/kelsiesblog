@@ -11,8 +11,6 @@ import {
     updateGalleryDoc,
     deleteGalleryDoc,
     updateAboutDoc,
-    fetchCityBoundaries as fetchBoundaries,
-    type CityBoundaryDoc,
 } from '../lib/firestore';
 
 interface BlogStore {
@@ -22,7 +20,6 @@ interface BlogStore {
     activePage: 'map' | 'stories' | 'gallery' | 'about';
     galleryItems: GalleryItem[];
     aboutContent: AboutContent;
-    cityBoundaries: CityBoundaryDoc[];
     isAuthenticated: boolean;
     loading: boolean;
 
@@ -41,13 +38,11 @@ interface BlogStore {
     setAuthenticated: (value: boolean) => void;
     logout: () => void;
 
-    addCityBoundary: (boundary: CityBoundaryDoc) => void;
-
     // Derived
     getCountriesWithPosts: () => string[];
     getCitiesForCountry: (country: string) => { city: string; coordinates: [number, number]; hasPosts: boolean }[];
     getPostsForCity: (country: string, city: string) => BlogPost[];
-    getCityBoundariesForCountry: (country: string) => CityBoundaryDoc[];
+    getCityBoundariesForCountry: (country: string) => { city: string; country: string; geometry: GeoJSON.Geometry }[];
 }
 
 
@@ -75,23 +70,20 @@ export const useBlogStore = create<BlogStore>((set, get) => ({
     activePage: 'map',
     galleryItems: [],
     aboutContent: defaultAbout,
-    cityBoundaries: [],
     isAuthenticated: false,
     loading: true,
 
     initializeData: async () => {
         try {
-            const [posts, gallery, about, boundaries] = await Promise.all([
+            const [posts, gallery, about] = await Promise.all([
                 fetchPosts(),
                 fetchGalleryItems(),
                 fetchAboutContent(),
-                fetchBoundaries(),
             ]);
             set({
                 posts,
                 galleryItems: gallery,
                 aboutContent: about || defaultAbout,
-                cityBoundaries: boundaries,
                 loading: false,
             });
         } catch (err) {
@@ -178,16 +170,15 @@ export const useBlogStore = create<BlogStore>((set, get) => ({
         return get().posts.filter((p) => p.country === country && p.city === city);
     },
 
-    addCityBoundary: (boundary) => {
-        set((state) => ({
-            cityBoundaries: [
-                ...state.cityBoundaries.filter(b => !(b.city === boundary.city && b.country === boundary.country)),
-                boundary,
-            ],
-        }));
-    },
-
     getCityBoundariesForCountry: (country) => {
-        return get().cityBoundaries.filter((b) => b.country === country);
+        const posts = get().posts.filter((p) => p.country === country && p.cityBoundary);
+        // Deduplicate by city name — one boundary per city
+        const cityMap = new Map<string, { city: string; country: string; geometry: GeoJSON.Geometry }>();
+        posts.forEach((p) => {
+            if (p.cityBoundary && !cityMap.has(p.city)) {
+                cityMap.set(p.city, { city: p.city, country: p.country, geometry: p.cityBoundary });
+            }
+        });
+        return Array.from(cityMap.values());
     },
 }));

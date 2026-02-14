@@ -6,7 +6,6 @@ import type { BlogPost, Section } from '../../types';
 import { countryBounds } from '../../data/countryBounds';
 import { worldCities } from '../../data/worldCities';
 import { fetchCityBoundary } from '../../lib/cityBoundaryCache';
-import { saveCityBoundary } from '../../lib/firestore';
 
 const font = { fontFamily: "'Press Start 2P', monospace" } as const;
 
@@ -46,7 +45,7 @@ const emptySection: Section = { heading: '', content: '', image: '' };
 
 
 export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
-    const { addPost, updatePost, addCityBoundary } = useBlogStore();
+    const { addPost, updatePost } = useBlogStore();
 
     const [title, setTitle] = useState(post?.title || '');
     const [country, setCountry] = useState(post?.country || '');
@@ -55,6 +54,7 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
     const [coverImage, setCoverImage] = useState(post?.coverImage || '');
     const [categories, setCategories] = useState<string[]>(post?.category || []);
     const [showPreview, setShowPreview] = useState(false);
+    const [saving, setSaving] = useState(false);
     const [sections, setSections] = useState<Section[]>(
         post?.sections?.length ? post.sections : [{ ...emptySection }]
     );
@@ -105,8 +105,9 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
         setSections(updated);
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        setSaving(true);
 
         const cleanSections = sections
             .filter(s => s.heading.trim() || s.content.trim())
@@ -116,16 +117,34 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                 ...(s.image?.trim() ? { image: s.image.trim() } : {}),
             }));
 
+        // Fetch city boundary from Nominatim
+        let cityBoundary: GeoJSON.Geometry | undefined = post?.cityBoundary;
+        const cityTrimmed = city.trim();
+        const countryTrimmed = country.trim();
+
+        // Only fetch if city/country changed or no boundary exists yet
+        if (!cityBoundary || post?.city !== cityTrimmed || post?.country !== countryTrimmed) {
+            try {
+                const feature = await fetchCityBoundary(cityTrimmed, countryTrimmed);
+                if (feature) {
+                    cityBoundary = feature.geometry;
+                }
+            } catch (err) {
+                console.error('Failed to fetch city boundary:', err);
+            }
+        }
+
         const postData: BlogPost = {
             id: post?.id || `post-${Date.now()}`,
             title: title.trim(),
-            country: country.trim(),
-            city: city.trim(),
+            country: countryTrimmed,
+            city: cityTrimmed,
             coordinates: getCoordinates(),
             coverImage,
             date: date.trim(),
             category: categories,
             sections: cleanSections,
+            ...(cityBoundary ? { cityBoundary } : {}),
         };
 
         if (isEditing) {
@@ -134,14 +153,7 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
             addPost(postData);
         }
 
-        // Fetch city boundary from Nominatim and save to Firestore (async, non-blocking)
-        fetchCityBoundary(city.trim(), country.trim()).then(feature => {
-            if (feature) {
-                saveCityBoundary(city.trim(), country.trim(), feature.geometry).catch(console.error);
-                addCityBoundary({ city: city.trim(), country: country.trim(), geojson: feature.geometry });
-            }
-        });
-
+        setSaving(false);
         onSave();
     };
 
@@ -627,7 +639,7 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                 </button>
                 <button
                     type="submit"
-                    disabled={!isValid}
+                    disabled={!isValid || saving}
                     className="cursor-pointer"
                     style={{
                         ...font,

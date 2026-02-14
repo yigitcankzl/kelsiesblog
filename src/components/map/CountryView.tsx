@@ -44,7 +44,7 @@ export default function CountryView({ country }: CountryViewProps) {
         features: boundaries.map(b => ({
             type: 'Feature' as const,
             properties: { name: b.city, country: b.country },
-            geometry: b.geojson,
+            geometry: b.geometry,
         })),
     }), [boundaries]);
 
