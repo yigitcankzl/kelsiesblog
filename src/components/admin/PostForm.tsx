@@ -5,6 +5,33 @@ import { useBlogStore } from '../../store/store';
 import type { BlogPost, Section } from '../../types';
 import { countryBounds } from '../../data/countryBounds';
 
+const font = { fontFamily: "'Press Start 2P', monospace" } as const;
+
+const inputStyle: React.CSSProperties = {
+    ...font,
+    fontSize: '9px',
+    width: '100%',
+    padding: '12px 14px',
+    backgroundColor: '#0a0a0a',
+    border: '1px solid #333',
+    color: 'var(--brand)',
+    outline: 'none',
+    transition: 'all 0.3s',
+    letterSpacing: '0.1em',
+};
+
+const labelStyle: React.CSSProperties = {
+    ...font,
+    fontSize: '7px',
+    color: '#888',
+    textTransform: 'uppercase',
+    letterSpacing: '0.15em',
+    marginBottom: '8px',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '6px',
+};
+
 interface PostFormProps {
     post: BlogPost | null;
     onSave: () => void;
@@ -22,6 +49,8 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
     const [lat, setLat] = useState(post?.coordinates[0]?.toString() || '');
     const [lng, setLng] = useState(post?.coordinates[1]?.toString() || '');
     const [coverImage, setCoverImage] = useState(post?.coverImage || '');
+    const [date, setDate] = useState(post?.date || '');
+    const [category, setCategory] = useState(post?.category || '');
     const [sections, setSections] = useState<Section[]>(
         post?.sections?.length ? post.sections : [{ ...emptySection }]
     );
@@ -70,6 +99,8 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
             city: city.trim(),
             coordinates: [parseFloat(lat), parseFloat(lng)],
             coverImage: coverImage.trim(),
+            date: date.trim(),
+            category: category.trim(),
             sections: cleanSections,
         };
 
@@ -84,51 +115,87 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
 
     const isValid = title.trim() && country.trim() && city.trim() && lat && lng && sections.some(s => s.heading.trim() && s.content.trim());
 
+    const handleInputFocus = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+        e.currentTarget.style.borderColor = 'var(--brand)';
+        e.currentTarget.style.boxShadow = '0 0 8px rgba(0, 255, 65, 0.15)';
+    };
+
+    const handleInputBlur = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+        e.currentTarget.style.borderColor = '#333';
+        e.currentTarget.style.boxShadow = 'none';
+    };
+
     return (
-        <form onSubmit={handleSubmit} className="max-w-3xl mx-auto">
-            <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-bold font-display">
-                    {isEditing ? 'Edit Post' : 'Create New Post'}
-                </h2>
+        <form onSubmit={handleSubmit} style={{ maxWidth: '768px', margin: '0 auto' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '32px' }}>
+                <div>
+                    <h2 style={{ ...font, fontSize: '12px', color: '#fff' }}>
+                        {isEditing ? 'EDIT POST' : 'NEW POST'}
+                    </h2>
+                    <p style={{ ...font, fontSize: '6px', color: '#555', marginTop: '6px', letterSpacing: '0.15em' }}>
+                        {'>'} {isEditing ? 'MODIFYING EXISTING ENTRY_' : 'CREATING NEW ENTRY_'}
+                    </p>
+                </div>
                 <button
                     type="button"
                     onClick={onCancel}
-                    className="text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
+                    className="cursor-pointer"
+                    style={{
+                        background: 'none',
+                        border: '1px solid #333',
+                        color: '#555',
+                        padding: '8px',
+                        transition: 'all 0.3s',
+                    }}
+                    onMouseEnter={e => { e.currentTarget.style.color = '#FF00E4'; e.currentTarget.style.borderColor = '#FF00E4'; }}
+                    onMouseLeave={e => { e.currentTarget.style.color = '#555'; e.currentTarget.style.borderColor = '#333'; }}
                 >
-                    <X className="w-5 h-5" />
+                    <X style={{ width: '16px', height: '16px' }} />
                 </button>
             </div>
 
             {/* Basic Info */}
-            <div className="bg-white rounded-2xl border border-gray-100 p-6 mb-4">
-                <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4 flex items-center gap-2">
-                    <Type className="w-4 h-4" />
-                    Basic Information
-                </h3>
+            <div style={{
+                border: '1px solid #1a1a1a',
+                padding: '24px',
+                backgroundColor: '#050505',
+                marginBottom: '16px',
+            }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '24px' }}>
+                    <Type style={{ width: '12px', height: '12px', color: 'var(--brand)' }} />
+                    <h3 style={{ ...font, fontSize: '8px', color: 'var(--neon-amber)', textTransform: 'uppercase', letterSpacing: '0.15em' }}>
+                        BASIC INFO
+                    </h3>
+                    <div style={{ flex: 1, height: '1px', background: 'linear-gradient(to right, #333, transparent)' }} />
+                </div>
 
-                <div className="space-y-4">
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1.5">Title</label>
+                        <label style={labelStyle}>TITLE</label>
                         <input
                             type="text"
                             value={title}
                             onChange={(e) => setTitle(e.target.value)}
-                            placeholder="e.g. Temples & Tea in Kyoto"
-                            className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-[var(--brand-dark)] bg-gray-50 focus:bg-white outline-none transition-all text-sm"
+                            placeholder="ENTER POST TITLE..."
+                            style={inputStyle}
+                            onFocus={handleInputFocus}
+                            onBlur={handleInputBlur}
                             required
                         />
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4">
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1.5">Country</label>
+                            <label style={labelStyle}>COUNTRY</label>
                             <select
                                 value={country}
                                 onChange={(e) => setCountry(e.target.value)}
-                                className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-[var(--brand-dark)] bg-gray-50 focus:bg-white outline-none transition-all text-sm cursor-pointer"
+                                style={{ ...inputStyle, cursor: 'pointer', appearance: 'none' }}
+                                onFocus={handleInputFocus as any}
+                                onBlur={handleInputBlur as any}
                                 required
                             >
-                                <option value="">Select country...</option>
+                                <option value="">SELECT...</option>
                                 {countryBounds.map((c) => (
                                     <option key={c.code} value={c.name}>
                                         {c.name}
@@ -137,23 +204,52 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                             </select>
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1.5">City</label>
+                            <label style={labelStyle}>CITY</label>
                             <input
                                 type="text"
                                 value={city}
                                 onChange={(e) => setCity(e.target.value)}
-                                placeholder="e.g. Kyoto"
-                                className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-[var(--brand-dark)] bg-gray-50 focus:bg-white outline-none transition-all text-sm"
+                                placeholder="E.G. KYOTO"
+                                style={inputStyle}
+                                onFocus={handleInputFocus}
+                                onBlur={handleInputBlur}
                                 required
                             />
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4">
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1.5 flex items-center gap-1">
-                                <MapPin className="w-3.5 h-3.5" />
-                                Latitude
+                            <label style={labelStyle}>DATE</label>
+                            <input
+                                type="text"
+                                value={date}
+                                onChange={(e) => setDate(e.target.value)}
+                                placeholder="E.G. MARCH 2024"
+                                style={inputStyle}
+                                onFocus={handleInputFocus}
+                                onBlur={handleInputBlur}
+                            />
+                        </div>
+                        <div>
+                            <label style={labelStyle}>CATEGORY</label>
+                            <input
+                                type="text"
+                                value={category}
+                                onChange={(e) => setCategory(e.target.value)}
+                                placeholder="E.G. CITY BREAK"
+                                style={inputStyle}
+                                onFocus={handleInputFocus}
+                                onBlur={handleInputBlur}
+                            />
+                        </div>
+                    </div>
+
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                        <div>
+                            <label style={labelStyle}>
+                                <MapPin style={{ width: '10px', height: '10px' }} />
+                                LATITUDE
                             </label>
                             <input
                                 type="number"
@@ -161,14 +257,16 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                                 value={lat}
                                 onChange={(e) => setLat(e.target.value)}
                                 placeholder="35.0116"
-                                className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-[var(--brand-dark)] bg-gray-50 focus:bg-white outline-none transition-all text-sm"
+                                style={inputStyle}
+                                onFocus={handleInputFocus}
+                                onBlur={handleInputBlur}
                                 required
                             />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1.5 flex items-center gap-1">
-                                <MapPin className="w-3.5 h-3.5" />
-                                Longitude
+                            <label style={labelStyle}>
+                                <MapPin style={{ width: '10px', height: '10px' }} />
+                                LONGITUDE
                             </label>
                             <input
                                 type="number"
@@ -176,27 +274,31 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                                 value={lng}
                                 onChange={(e) => setLng(e.target.value)}
                                 placeholder="135.7681"
-                                className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-[var(--brand-dark)] bg-gray-50 focus:bg-white outline-none transition-all text-sm"
+                                style={inputStyle}
+                                onFocus={handleInputFocus}
+                                onBlur={handleInputBlur}
                                 required
                             />
                         </div>
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1.5 flex items-center gap-1">
-                            <Image className="w-3.5 h-3.5" />
-                            Cover Image URL
+                        <label style={labelStyle}>
+                            <Image style={{ width: '10px', height: '10px' }} />
+                            COVER IMAGE URL
                         </label>
                         <input
                             type="url"
                             value={coverImage}
                             onChange={(e) => setCoverImage(e.target.value)}
-                            placeholder="https://images.unsplash.com/photo-..."
-                            className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-[var(--brand-dark)] bg-gray-50 focus:bg-white outline-none transition-all text-sm"
+                            placeholder="HTTPS://IMAGES.UNSPLASH.COM/..."
+                            style={inputStyle}
+                            onFocus={handleInputFocus}
+                            onBlur={handleInputBlur}
                         />
                         {coverImage && (
-                            <div className="mt-2 rounded-xl overflow-hidden h-32">
-                                <img src={coverImage} alt="Cover" className="w-full h-full object-cover" />
+                            <div style={{ marginTop: '12px', overflow: 'hidden', height: '120px', border: '1px solid #1a1a1a' }}>
+                                <img src={coverImage} alt="Cover" style={{ width: '100%', height: '100%', objectFit: 'cover', filter: 'saturate(0.6) brightness(0.8)' }} />
                             </div>
                         )}
                     </div>
@@ -204,85 +306,162 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
             </div>
 
             {/* Sections */}
-            <div className="bg-white rounded-2xl border border-gray-100 p-6 mb-4">
-                <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider">
-                        Content Sections ({sections.length})
-                    </h3>
-                    <motion.button
+            <div style={{
+                border: '1px solid #1a1a1a',
+                padding: '24px',
+                backgroundColor: '#050505',
+                marginBottom: '16px',
+            }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <h3 style={{ ...font, fontSize: '8px', color: 'var(--neon-amber)', textTransform: 'uppercase', letterSpacing: '0.15em' }}>
+                            CONTENT SECTIONS
+                        </h3>
+                        <span style={{ ...font, fontSize: '7px', color: 'var(--neon-cyan)' }}>
+                            [ {sections.length} ]
+                        </span>
+                    </div>
+                    <button
                         type="button"
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
                         onClick={addSection}
-                        className="flex items-center gap-1.5 text-[var(--brand-dark)] hover:text-[var(--brand-deep)] text-sm font-medium px-3 py-1.5 rounded-lg hover:bg-[var(--brand-surface)] transition-colors cursor-pointer"
+                        className="cursor-pointer"
+                        style={{
+                            ...font,
+                            fontSize: '7px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '6px',
+                            color: 'var(--brand)',
+                            background: 'none',
+                            border: '1px solid var(--brand)',
+                            padding: '8px 12px',
+                            letterSpacing: '0.1em',
+                            transition: 'all 0.3s',
+                        }}
+                        onMouseEnter={e => { e.currentTarget.style.backgroundColor = 'var(--brand)'; e.currentTarget.style.color = '#000'; }}
+                        onMouseLeave={e => { e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.color = 'var(--brand)'; }}
                     >
-                        <Plus className="w-4 h-4" />
-                        Add Section
-                    </motion.button>
+                        <Plus style={{ width: '12px', height: '12px' }} />
+                        ADD
+                    </button>
                 </div>
 
-                <div className="space-y-4">
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                     {sections.map((section, index) => (
                         <motion.div
                             key={index}
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
-                            className="border-2 border-gray-100 rounded-xl p-4 relative group hover:border-gray-200 transition-colors"
+                            style={{
+                                border: '1px solid #1a1a1a',
+                                padding: '20px',
+                                position: 'relative',
+                                backgroundColor: '#080808',
+                                transition: 'border-color 0.3s',
+                            }}
+                            onMouseEnter={e => { e.currentTarget.style.borderColor = '#333'; }}
+                            onMouseLeave={e => { e.currentTarget.style.borderColor = '#1a1a1a'; }}
                         >
-                            {/* Section number badge */}
-                            <div className="absolute -top-3 left-4 bg-[var(--brand-dark)] text-white text-xs font-bold w-6 h-6 rounded-full flex items-center justify-center">
-                                {index + 1}
+                            {/* Section header */}
+                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
+                                <span style={{ ...font, fontSize: '7px', color: 'var(--brand)' }}>
+                                    SEC_{String(index + 1).padStart(2, '0')}
+                                </span>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                    <button
+                                        type="button"
+                                        onClick={() => moveSection(index, 'up')}
+                                        disabled={index === 0}
+                                        className="cursor-pointer"
+                                        style={{
+                                            width: '24px',
+                                            height: '24px',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            background: 'none',
+                                            border: '1px solid #333',
+                                            color: '#555',
+                                            opacity: index === 0 ? 0.3 : 1,
+                                        }}
+                                    >
+                                        <ChevronUp style={{ width: '12px', height: '12px' }} />
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => moveSection(index, 'down')}
+                                        disabled={index === sections.length - 1}
+                                        className="cursor-pointer"
+                                        style={{
+                                            width: '24px',
+                                            height: '24px',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            background: 'none',
+                                            border: '1px solid #333',
+                                            color: '#555',
+                                            opacity: index === sections.length - 1 ? 0.3 : 1,
+                                        }}
+                                    >
+                                        <ChevronDown style={{ width: '12px', height: '12px' }} />
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => removeSection(index)}
+                                        disabled={sections.length <= 1}
+                                        className="cursor-pointer"
+                                        style={{
+                                            width: '24px',
+                                            height: '24px',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            background: 'none',
+                                            border: '1px solid #333',
+                                            color: '#555',
+                                            opacity: sections.length <= 1 ? 0.3 : 1,
+                                            transition: 'all 0.3s',
+                                        }}
+                                        onMouseEnter={e => { if (sections.length > 1) { e.currentTarget.style.color = '#FF00E4'; e.currentTarget.style.borderColor = '#FF00E4'; } }}
+                                        onMouseLeave={e => { e.currentTarget.style.color = '#555'; e.currentTarget.style.borderColor = '#333'; }}
+                                    >
+                                        <Trash2 style={{ width: '12px', height: '12px' }} />
+                                    </button>
+                                </div>
                             </div>
 
-                            {/* Section controls */}
-                            <div className="absolute -top-3 right-4 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                <button
-                                    type="button"
-                                    onClick={() => moveSection(index, 'up')}
-                                    disabled={index === 0}
-                                    className="w-6 h-6 bg-white border border-gray-200 rounded-full flex items-center justify-center text-gray-400 hover:text-gray-600 disabled:opacity-30 cursor-pointer"
-                                >
-                                    <ChevronUp className="w-3 h-3" />
-                                </button>
-                                <button
-                                    type="button"
-                                    onClick={() => moveSection(index, 'down')}
-                                    disabled={index === sections.length - 1}
-                                    className="w-6 h-6 bg-white border border-gray-200 rounded-full flex items-center justify-center text-gray-400 hover:text-gray-600 disabled:opacity-30 cursor-pointer"
-                                >
-                                    <ChevronDown className="w-3 h-3" />
-                                </button>
-                                <button
-                                    type="button"
-                                    onClick={() => removeSection(index)}
-                                    disabled={sections.length <= 1}
-                                    className="w-6 h-6 bg-white border border-gray-200 rounded-full flex items-center justify-center text-gray-400 hover:text-red-500 disabled:opacity-30 cursor-pointer"
-                                >
-                                    <Trash2 className="w-3 h-3" />
-                                </button>
-                            </div>
-
-                            <div className="space-y-3 mt-2">
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                                 <input
                                     type="text"
                                     value={section.heading}
                                     onChange={(e) => updateSection(index, 'heading', e.target.value)}
-                                    placeholder="Section Heading"
-                                    className="w-full px-3 py-2.5 rounded-lg border border-gray-200 focus:border-[var(--brand-dark)] bg-gray-50 focus:bg-white outline-none transition-all text-sm font-medium"
+                                    placeholder="SECTION HEADING"
+                                    style={inputStyle}
+                                    onFocus={handleInputFocus}
+                                    onBlur={handleInputBlur}
                                 />
                                 <textarea
                                     value={section.content}
                                     onChange={(e) => updateSection(index, 'content', e.target.value)}
-                                    placeholder="Write your story here..."
+                                    placeholder="WRITE YOUR STORY HERE..."
                                     rows={4}
-                                    className="w-full px-3 py-2.5 rounded-lg border border-gray-200 focus:border-[var(--brand-dark)] bg-gray-50 focus:bg-white outline-none transition-all text-sm resize-y"
+                                    style={{
+                                        ...inputStyle,
+                                        resize: 'vertical',
+                                        lineHeight: '2.2',
+                                    }}
+                                    onFocus={handleInputFocus as any}
+                                    onBlur={handleInputBlur as any}
                                 />
                                 <input
                                     type="url"
                                     value={section.image || ''}
                                     onChange={(e) => updateSection(index, 'image', e.target.value)}
-                                    placeholder="Image URL (optional)"
-                                    className="w-full px-3 py-2.5 rounded-lg border border-gray-200 focus:border-[var(--brand-dark)] bg-gray-50 focus:bg-white outline-none transition-all text-sm"
+                                    placeholder="IMAGE URL (OPTIONAL)"
+                                    style={inputStyle}
+                                    onFocus={handleInputFocus}
+                                    onBlur={handleInputBlur}
                                 />
                             </div>
                         </motion.div>
@@ -291,26 +470,51 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
             </div>
 
             {/* Submit */}
-            <div className="flex items-center gap-3 justify-end">
-                <motion.button
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', justifyContent: 'flex-end' }}>
+                <button
                     type="button"
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
                     onClick={onCancel}
-                    className="px-6 py-3 rounded-xl text-sm font-medium text-gray-500 hover:text-gray-700 hover:bg-gray-100 transition-colors cursor-pointer"
+                    className="cursor-pointer"
+                    style={{
+                        ...font,
+                        fontSize: '8px',
+                        padding: '12px 20px',
+                        background: 'none',
+                        border: '1px solid #333',
+                        color: '#555',
+                        letterSpacing: '0.1em',
+                        transition: 'all 0.3s',
+                    }}
+                    onMouseEnter={e => { e.currentTarget.style.borderColor = '#555'; e.currentTarget.style.color = '#888'; }}
+                    onMouseLeave={e => { e.currentTarget.style.borderColor = '#333'; e.currentTarget.style.color = '#555'; }}
                 >
-                    Cancel
-                </motion.button>
-                <motion.button
+                    CANCEL
+                </button>
+                <button
                     type="submit"
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
                     disabled={!isValid}
-                    className="flex items-center gap-2 bg-gradient-to-r from-[var(--brand-deep)] to-[var(--brand-dark)] text-white px-6 py-3 rounded-xl text-sm font-medium shadow-lg hover:shadow-xl transition-shadow disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                    className="cursor-pointer"
+                    style={{
+                        ...font,
+                        fontSize: '8px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px',
+                        backgroundColor: isValid ? 'var(--brand)' : '#1a1a1a',
+                        color: isValid ? '#000' : '#444',
+                        border: 'none',
+                        padding: '12px 24px',
+                        letterSpacing: '0.1em',
+                        boxShadow: isValid ? '0 0 15px rgba(0, 255, 65, 0.3)' : 'none',
+                        transition: 'all 0.3s',
+                        cursor: isValid ? 'pointer' : 'not-allowed',
+                    }}
+                    onMouseEnter={e => { if (isValid) e.currentTarget.style.boxShadow = '0 0 25px rgba(0, 255, 65, 0.5)'; }}
+                    onMouseLeave={e => { if (isValid) e.currentTarget.style.boxShadow = '0 0 15px rgba(0, 255, 65, 0.3)'; }}
                 >
-                    <Save className="w-4 h-4" />
-                    {isEditing ? 'Update Post' : 'Publish Post'}
-                </motion.button>
+                    <Save style={{ width: '14px', height: '14px' }} />
+                    {isEditing ? 'UPDATE' : 'PUBLISH'}
+                </button>
             </div>
         </form>
     );
