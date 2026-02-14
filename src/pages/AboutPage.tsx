@@ -19,7 +19,7 @@ export default function AboutPage() {
     const totalPosts = posts.length;
 
     return (
-        <section className="bg-black min-h-screen py-16">
+        <section className="bg-black min-h-screen pb-16" style={{ paddingTop: '100px' }}>
             <div style={{ maxWidth: '1024px', margin: '0 auto', paddingLeft: '24px', paddingRight: '24px' }}>
                 {/* Header */}
                 <motion.div

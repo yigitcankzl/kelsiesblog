@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowLeft, MapPin, Clock } from 'lucide-react';
 import { useBlogStore } from '@/store/store';
@@ -10,6 +10,10 @@ export default function AllStoriesPage() {
     const { posts, setSelectedCountry, setSelectedPost, setActivePage } = useBlogStore();
 
     const [activeCategory, setActiveCategory] = useState<string | null>(null);
+
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
 
     const categories = ['Culture', 'History', 'Tourism', 'Transportation', 'Politic', 'Food'];
 
@@ -30,15 +34,10 @@ export default function AllStoriesPage() {
     };
 
     return (
-        <section className="bg-black min-h-screen py-16">
+        <section className="bg-black min-h-screen pb-16" style={{ paddingTop: '100px' }}>
             <div style={{ maxWidth: '1024px', margin: '0 auto', paddingLeft: '24px', paddingRight: '24px' }}>
-                {/* Header */}
-                <motion.div
-                    className="flex items-end gap-6 mb-10"
-                    initial={{ opacity: 0, x: -12 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.3 }}
-                >
+                {/* Header row */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '20px' }}>
                     <button
                         onClick={() => setActivePage('map')}
                         className="cursor-pointer"
@@ -62,72 +61,60 @@ export default function AllStoriesPage() {
                         <ArrowLeft style={{ width: '12px', height: '12px' }} />
                         ◂ BACK
                     </button>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                        <div style={{ width: '1px', height: '40px', backgroundColor: 'var(--brand)', opacity: 0.3 }} />
-                        <div>
-                            <h1 className="text-glitch" style={{ ...font, fontSize: '18px', color: '#fff', lineHeight: 1.4 }}
-                                data-text="ALL STORIES">
-                                ALL STORIES
-                            </h1>
-                            <p style={{ ...font, fontSize: '6px', marginTop: '8px', textTransform: 'uppercase', letterSpacing: '0.15em' }}>
-                                <span style={{ color: 'var(--neon-cyan)' }}>{filteredPosts.length}</span>
-                                <span style={{ color: '#555' }}> {filteredPosts.length === 1 ? 'STORY' : 'STORIES'} FOUND</span>
-                            </p>
-                        </div>
-                    </div>
-                </motion.div>
+                    <div style={{ width: '1px', height: '32px', backgroundColor: 'var(--brand)', opacity: 0.3 }} />
+                    <h1 className="text-glitch" style={{ ...font, fontSize: '16px', color: '#fff', lineHeight: 1.4 }}
+                        data-text="ALL STORIES">
+                        ALL STORIES
+                    </h1>
+                    <span style={{ ...font, fontSize: '6px', color: 'var(--neon-cyan)', textTransform: 'uppercase', letterSpacing: '0.15em' }}>
+                        {filteredPosts.length} {filteredPosts.length === 1 ? 'STORY' : 'STORIES'}
+                    </span>
+                </div>
 
                 {/* Category filters */}
-                {categories.length > 1 && (
-                    <motion.div
-                        style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', marginBottom: '40px' }}
-                        initial={{ opacity: 0, y: 8 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.1, duration: 0.3 }}
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', marginBottom: '32px' }}>
+                    <button
+                        onClick={() => setActiveCategory(null)}
+                        className="cursor-pointer"
+                        style={{
+                            ...font,
+                            fontSize: '8px',
+                            padding: '8px 16px',
+                            letterSpacing: '0.15em',
+                            textTransform: 'uppercase',
+                            border: '2px solid',
+                            borderColor: !activeCategory ? 'var(--brand)' : '#444',
+                            backgroundColor: !activeCategory ? 'var(--brand)' : 'transparent',
+                            color: !activeCategory ? '#000' : '#888',
+                            boxShadow: !activeCategory ? '0 0 12px rgba(0, 255, 65, 0.4)' : 'none',
+                            transition: 'all 0.3s',
+                        }}
                     >
+                        ALL
+                    </button>
+                    {categories.map(cat => (
                         <button
-                            onClick={() => setActiveCategory(null)}
+                            key={cat}
+                            onClick={() => setActiveCategory(activeCategory === cat ? null : cat)}
                             className="cursor-pointer"
                             style={{
                                 ...font,
-                                fontSize: '9px',
-                                padding: '10px 20px',
+                                fontSize: '8px',
+                                padding: '8px 16px',
                                 letterSpacing: '0.15em',
                                 textTransform: 'uppercase',
                                 border: '2px solid',
-                                borderColor: !activeCategory ? 'var(--brand)' : '#444',
-                                backgroundColor: !activeCategory ? 'var(--brand)' : 'transparent',
-                                color: !activeCategory ? '#000' : '#888',
-                                boxShadow: !activeCategory ? '0 0 12px rgba(0, 255, 65, 0.4)' : 'none',
+                                borderColor: activeCategory === cat ? 'var(--neon-magenta)' : '#444',
+                                backgroundColor: activeCategory === cat ? 'var(--neon-magenta)' : 'transparent',
+                                color: activeCategory === cat ? '#000' : '#888',
+                                boxShadow: activeCategory === cat ? '0 0 12px rgba(255, 0, 228, 0.4)' : 'none',
                                 transition: 'all 0.3s',
                             }}
                         >
-                            ALL
+                            {cat}
                         </button>
-                        {categories.map(cat => (
-                            <button
-                                key={cat}
-                                onClick={() => setActiveCategory(activeCategory === cat ? null : cat)}
-                                className="cursor-pointer"
-                                style={{
-                                    ...font,
-                                    fontSize: '9px',
-                                    padding: '10px 20px',
-                                    letterSpacing: '0.15em',
-                                    textTransform: 'uppercase',
-                                    border: '2px solid',
-                                    borderColor: activeCategory === cat ? 'var(--neon-magenta)' : '#444',
-                                    backgroundColor: activeCategory === cat ? 'var(--neon-magenta)' : 'transparent',
-                                    color: activeCategory === cat ? '#000' : '#888',
-                                    boxShadow: activeCategory === cat ? '0 0 12px rgba(255, 0, 228, 0.4)' : 'none',
-                                    transition: 'all 0.3s',
-                                }}
-                            >
-                                {cat}
-                            </button>
-                        ))}
-                    </motion.div>
-                )}
+                    ))}
+                </div>
 
                 {/* Posts grouped by country */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '40px' }}>
