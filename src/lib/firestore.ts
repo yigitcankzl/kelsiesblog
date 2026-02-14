@@ -64,3 +64,23 @@ export async function fetchAboutContent(): Promise<AboutContent | null> {
 export async function updateAboutDoc(data: Partial<AboutContent>): Promise<void> {
     await setDoc(aboutDocRef, data, { merge: true });
 }
+
+// ── City Boundaries ───────────────────────────────────
+
+export interface CityBoundaryDoc {
+    city: string;
+    country: string;
+    geojson: GeoJSON.Geometry;
+}
+
+const boundariesCol = collection(db, 'cityBoundaries');
+
+export async function fetchCityBoundaries(): Promise<CityBoundaryDoc[]> {
+    const snap = await getDocs(boundariesCol);
+    return snap.docs.map((d) => d.data() as CityBoundaryDoc);
+}
+
+export async function saveCityBoundary(city: string, country: string, geojson: GeoJSON.Geometry): Promise<void> {
+    const id = `${country}::${city}`;
+    await setDoc(doc(db, 'cityBoundaries', id), { city, country, geojson });
+}

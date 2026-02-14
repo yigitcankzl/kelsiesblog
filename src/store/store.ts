@@ -11,6 +11,8 @@ import {
     updateGalleryDoc,
     deleteGalleryDoc,
     updateAboutDoc,
+    fetchCityBoundaries as fetchBoundaries,
+    type CityBoundaryDoc,
 } from '../lib/firestore';
 
 interface BlogStore {
@@ -20,6 +22,7 @@ interface BlogStore {
     activePage: 'map' | 'stories' | 'gallery' | 'about';
     galleryItems: GalleryItem[];
     aboutContent: AboutContent;
+    cityBoundaries: CityBoundaryDoc[];
     isAuthenticated: boolean;
     loading: boolean;
 
@@ -38,10 +41,13 @@ interface BlogStore {
     setAuthenticated: (value: boolean) => void;
     logout: () => void;
 
+    addCityBoundary: (boundary: CityBoundaryDoc) => void;
+
     // Derived
     getCountriesWithPosts: () => string[];
     getCitiesForCountry: (country: string) => { city: string; coordinates: [number, number]; hasPosts: boolean }[];
     getPostsForCity: (country: string, city: string) => BlogPost[];
+    getCityBoundariesForCountry: (country: string) => CityBoundaryDoc[];
 }
 
 
@@ -69,20 +75,23 @@ export const useBlogStore = create<BlogStore>((set, get) => ({
     activePage: 'map',
     galleryItems: [],
     aboutContent: defaultAbout,
+    cityBoundaries: [],
     isAuthenticated: false,
     loading: true,
 
     initializeData: async () => {
         try {
-            const [posts, gallery, about] = await Promise.all([
+            const [posts, gallery, about, boundaries] = await Promise.all([
                 fetchPosts(),
                 fetchGalleryItems(),
                 fetchAboutContent(),
+                fetchBoundaries(),
             ]);
             set({
                 posts,
                 galleryItems: gallery,
                 aboutContent: about || defaultAbout,
+                cityBoundaries: boundaries,
                 loading: false,
             });
         } catch (err) {
@@ -167,5 +176,18 @@ export const useBlogStore = create<BlogStore>((set, get) => ({
 
     getPostsForCity: (country, city) => {
         return get().posts.filter((p) => p.country === country && p.city === city);
+    },
+
+    addCityBoundary: (boundary) => {
+        set((state) => ({
+            cityBoundaries: [
+                ...state.cityBoundaries.filter(b => !(b.city === boundary.city && b.country === boundary.country)),
+                boundary,
+            ],
+        }));
+    },
+
+    getCityBoundariesForCountry: (country) => {
+        return get().cityBoundaries.filter((b) => b.country === country);
     },
 }));

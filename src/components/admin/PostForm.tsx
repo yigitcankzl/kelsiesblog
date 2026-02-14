@@ -5,6 +5,8 @@ import { useBlogStore } from '../../store/store';
 import type { BlogPost, Section } from '../../types';
 import { countryBounds } from '../../data/countryBounds';
 import { worldCities } from '../../data/worldCities';
+import { fetchCityBoundary } from '../../lib/cityBoundaryCache';
+import { saveCityBoundary } from '../../lib/firestore';
 
 const font = { fontFamily: "'Press Start 2P', monospace" } as const;
 
@@ -44,7 +46,7 @@ const emptySection: Section = { heading: '', content: '', image: '' };
 
 
 export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
-    const { addPost, updatePost } = useBlogStore();
+    const { addPost, updatePost, addCityBoundary } = useBlogStore();
 
     const [title, setTitle] = useState(post?.title || '');
     const [country, setCountry] = useState(post?.country || '');
@@ -131,6 +133,14 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
         } else {
             addPost(postData);
         }
+
+        // Fetch city boundary from Nominatim and save to Firestore (async, non-blocking)
+        fetchCityBoundary(city.trim(), country.trim()).then(feature => {
+            if (feature) {
+                saveCityBoundary(city.trim(), country.trim(), feature.geometry).catch(console.error);
+                addCityBoundary({ city: city.trim(), country: country.trim(), geojson: feature.geometry });
+            }
+        });
 
         onSave();
     };

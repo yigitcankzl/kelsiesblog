@@ -7,9 +7,11 @@ const cache = new Map<string, GeoJSON.Feature | null>();
 const pending = new Map<string, Promise<GeoJSON.Feature | null>>();
 
 async function fetchFromNominatim(city: string, country: string): Promise<GeoJSON.Feature | null> {
+    // Use q= with multiple results so we can pick the admin boundary (relation),
+    // not a point node. Relations (osm_type=R) contain full city boundary polygons.
     const url = `https://nominatim.openstreetmap.org/search?` +
-        `city=${encodeURIComponent(city)}&country=${encodeURIComponent(country)}` +
-        `&format=json&polygon_geojson=1&limit=1`;
+        `q=${encodeURIComponent(city + ', ' + country)}` +
+        `&format=json&polygon_geojson=1&limit=5`;
 
     try {
         const res = await fetch(url, {
@@ -20,19 +22,29 @@ async function fetchFromNominatim(city: string, country: string): Promise<GeoJSO
         const data = await res.json();
         if (!data.length) return null;
 
-        const result = data[0];
-        // Only use polygon-type geometries (city boundaries)
-        if (
-            result.geojson &&
-            (result.geojson.type === 'Polygon' || result.geojson.type === 'MultiPolygon')
-        ) {
-            return {
-                type: 'Feature',
-                properties: { name: city, country },
-                geometry: result.geojson,
-            } as GeoJSON.Feature;
-        }
-        return null;
+        // Prefer results that are OSM relations (R) — these have admin boundary polygons
+        // Then ways (W), and finally nodes (N) as last resort
+        const preferred = data.find(
+            (r: any) =>
+                r.osm_type === 'R' &&
+                r.geojson &&
+                (r.geojson.type === 'Polygon' || r.geojson.type === 'MultiPolygon')
+        );
+
+        const fallback = data.find(
+            (r: any) =>
+                r.geojson &&
+                (r.geojson.type === 'Polygon' || r.geojson.type === 'MultiPolygon')
+        );
+
+        const result = preferred || fallback;
+        if (!result) return null;
+
+        return {
+            type: 'Feature',
+            properties: { name: city, country },
+            geometry: result.geojson,
+        } as GeoJSON.Feature;
     } catch {
         return null;
     }

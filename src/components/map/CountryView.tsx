@@ -1,14 +1,9 @@
-import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useMemo, useCallback } from 'react';
 import { GeoJSON, Marker } from 'react-leaflet';
 import L from 'leaflet';
 import { useBlogStore } from '../../store/store';
-import { fetchCityBoundaries } from '../../lib/cityBoundaryCache';
 
-function createCityLabel(cityName: string, hasPosts: boolean): L.DivIcon {
-    const color = hasPosts ? '#00FF41' : '#555555';
-    const glow = hasPosts ? 'text-shadow: 0 0 8px rgba(0,255,65,0.6);' : '';
-    const cursor = hasPosts ? 'pointer' : 'default';
-
+function createCityLabel(cityName: string): L.DivIcon {
     return L.divIcon({
         className: 'custom-city-label',
         html: `
@@ -17,15 +12,15 @@ function createCityLabel(cityName: string, hasPosts: boolean): L.DivIcon {
         align-items: center;
         gap: 6px;
         white-space: nowrap;
-        cursor: ${cursor};
+        cursor: pointer;
       ">
         <span style="
           font-family: 'Press Start 2P', monospace;
           font-size: 7px;
-          color: ${color};
+          color: #00FF41;
           letter-spacing: 0.1em;
           text-transform: uppercase;
-          ${glow}
+          text-shadow: 0 0 8px rgba(0,255,65,0.6);
         ">${cityName}</span>
       </div>
     `,
@@ -39,41 +34,20 @@ interface CountryViewProps {
 }
 
 export default function CountryView({ country }: CountryViewProps) {
-    const { getCitiesForCountry, getPostsForCity, setSelectedPost } = useBlogStore();
+    const { getCitiesForCountry, getPostsForCity, setSelectedPost, getCityBoundariesForCountry } = useBlogStore();
     const citiesWithPosts = getCitiesForCountry(country);
+    const boundaries = getCityBoundariesForCountry(country);
 
-    const [boundaryFeatures, setBoundaryFeatures] = useState<GeoJSON.Feature[]>([]);
-    const [loading, setLoading] = useState(false);
-
-    // Fetch city boundaries from Nominatim for cities that have posts
-    useEffect(() => {
-        if (citiesWithPosts.length === 0) return;
-
-        let cancelled = false;
-        setLoading(true);
-
-        const citiesToFetch = citiesWithPosts.map(c => ({
-            city: c.city,
-            country,
-        }));
-
-        fetchCityBoundaries(citiesToFetch).then(features => {
-            if (!cancelled) {
-                setBoundaryFeatures(features);
-                setLoading(false);
-            }
-        });
-
-        return () => { cancelled = true; };
-    }, [country, citiesWithPosts]);
-
-    // Build GeoJSON FeatureCollection from fetched boundaries
+    // Build GeoJSON FeatureCollection from stored boundaries
     const greenGeoJson = useMemo(() => ({
         type: 'FeatureCollection' as const,
-        features: boundaryFeatures,
-    }), [boundaryFeatures]);
+        features: boundaries.map(b => ({
+            type: 'Feature' as const,
+            properties: { name: b.city, country: b.country },
+            geometry: b.geojson,
+        })),
+    }), [boundaries]);
 
-    // Green style for cities with posts
     const greenStyle = useCallback(() => ({
         fillColor: '#00FF41',
         weight: 1.5,
@@ -82,7 +56,6 @@ export default function CountryView({ country }: CountryViewProps) {
         fillOpacity: 0.5,
     }), []);
 
-    // Hover + click for green cities
     const onEachGreenCity = useCallback((feature: any, layer: L.Layer) => {
         const cityName = feature.properties.name;
         layer.bindTooltip(cityName, {
@@ -110,7 +83,7 @@ export default function CountryView({ country }: CountryViewProps) {
             <Marker
                 key={`label-${cityData.city}`}
                 position={cityData.coordinates}
-                icon={createCityLabel(cityData.city, true)}
+                icon={createCityLabel(cityData.city)}
                 eventHandlers={{
                     click: () => {
                         const posts = getPostsForCity(country, cityData.city);
@@ -122,22 +95,12 @@ export default function CountryView({ country }: CountryViewProps) {
     }, [citiesWithPosts, country, getPostsForCity, setSelectedPost]);
 
     const geoKey = useMemo(() =>
-        `${country}-${boundaryFeatures.length}-${citiesWithPosts.map(c => c.city).join(',')}`,
-        [country, boundaryFeatures, citiesWithPosts]
+        `${country}-${boundaries.length}-${citiesWithPosts.map(c => c.city).join(',')}`,
+        [country, boundaries, citiesWithPosts]
     );
 
     return (
         <>
-            {loading && citiesWithPosts.length > 0 && (
-                <Marker
-                    position={citiesWithPosts[0].coordinates}
-                    icon={L.divIcon({
-                        className: 'loading-label',
-                        html: `<span style="font-family:'Press Start 2P',monospace;font-size:6px;color:#00FF41;opacity:0.6">LOADING...</span>`,
-                        iconSize: [0, 0],
-                    })}
-                />
-            )}
             {greenGeoJson.features.length > 0 && (
                 <GeoJSON
                     key={`green-${geoKey}`}
