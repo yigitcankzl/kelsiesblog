@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, Trash2, Edit2, Save, X, Image } from 'lucide-react';
 import { useBlogStore } from '../../store/store';
@@ -38,11 +38,25 @@ interface GalleryFormData {
 const emptyForm: GalleryFormData = { src: '', caption: '', city: '', country: '' };
 
 export default function GalleryManager() {
-    const { galleryItems, addGalleryItem, updateGalleryItem, deleteGalleryItem } = useBlogStore();
+    const { posts, galleryItems, addGalleryItem, updateGalleryItem, deleteGalleryItem } = useBlogStore();
     const [editingId, setEditingId] = useState<string | null>(null);
     const [isAdding, setIsAdding] = useState(false);
     const [form, setForm] = useState<GalleryFormData>(emptyForm);
     const [previewError, setPreviewError] = useState(false);
+
+    // Derive unique countries and cities for datalists
+    const uniqueCountries = useMemo(() => {
+        const countries = new Set(posts.map(p => p.country));
+        galleryItems.forEach(item => countries.add(item.country));
+        return Array.from(countries).sort();
+    }, [posts, galleryItems]);
+
+    const availableCities = useMemo(() => {
+        if (!form.country) return [];
+        const cities = new Set(posts.filter(p => p.country === form.country).map(p => p.city));
+        galleryItems.filter(item => item.country === form.country).forEach(item => cities.add(item.city));
+        return Array.from(cities).sort();
+    }, [posts, galleryItems, form.country]);
 
     const startEdit = (item: GalleryItem) => {
         setEditingId(item.id);
@@ -154,24 +168,37 @@ export default function GalleryManager() {
                                     />
                                 </div>
                                 <div>
-                                    <label style={labelStyle}>City</label>
-                                    <input
-                                        type="text"
-                                        value={form.city}
-                                        onChange={e => setForm({ ...form, city: e.target.value })}
-                                        placeholder="e.g. Tokyo"
-                                        style={inputStyle}
-                                    />
-                                </div>
-                                <div>
                                     <label style={labelStyle}>Country</label>
                                     <input
                                         type="text"
+                                        list="country-list"
                                         value={form.country}
                                         onChange={e => setForm({ ...form, country: e.target.value })}
                                         placeholder="e.g. Japan"
                                         style={inputStyle}
                                     />
+                                    <datalist id="country-list">
+                                        {uniqueCountries.map(country => (
+                                            <option key={country} value={country} />
+                                        ))}
+                                    </datalist>
+                                </div>
+                                <div>
+                                    <label style={labelStyle}>City</label>
+                                    <input
+                                        type="text"
+                                        list="city-list"
+                                        value={form.city}
+                                        onChange={e => setForm({ ...form, city: e.target.value })}
+                                        placeholder="e.g. Tokyo"
+                                        style={inputStyle}
+                                        disabled={!form.country}
+                                    />
+                                    <datalist id="city-list">
+                                        {availableCities.map(city => (
+                                            <option key={city} value={city} />
+                                        ))}
+                                    </datalist>
                                 </div>
                             </div>
 
