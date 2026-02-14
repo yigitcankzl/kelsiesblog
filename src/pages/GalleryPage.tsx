@@ -1,7 +1,6 @@
 import { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowLeft, MapPin, X } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
 import { useBlogStore } from '@/store/store';
 
 const font = { fontFamily: "'Press Start 2P', monospace" } as const;
@@ -15,8 +14,7 @@ interface GalleryImage {
 }
 
 export default function GalleryPage() {
-    const navigate = useNavigate();
-    const { posts } = useBlogStore();
+    const { posts, setActivePage } = useBlogStore();
     const [lightbox, setLightbox] = useState<GalleryImage | null>(null);
 
     const allImages = useMemo(() => {
@@ -60,7 +58,7 @@ export default function GalleryPage() {
                     transition={{ duration: 0.3 }}
                 >
                     <button
-                        onClick={() => navigate('/')}
+                        onClick={() => setActivePage('map')}
                         className="cursor-pointer"
                         style={{
                             ...font,

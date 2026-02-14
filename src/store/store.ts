@@ -6,6 +6,7 @@ interface BlogStore {
     posts: BlogPost[];
     selectedCountry: string | null;
     selectedPost: BlogPost | null;
+    activePage: 'map' | 'stories' | 'gallery';
     isAuthenticated: boolean;
 
     // Actions
@@ -14,6 +15,7 @@ interface BlogStore {
     deletePost: (id: string) => void;
     setSelectedCountry: (country: string | null) => void;
     setSelectedPost: (post: BlogPost | null) => void;
+    setActivePage: (page: 'map' | 'stories' | 'gallery') => void;
     authenticate: (password: string) => boolean;
     logout: () => void;
 
@@ -29,6 +31,7 @@ export const useBlogStore = create<BlogStore>((set, get) => ({
     posts: [...mockPosts],
     selectedCountry: null,
     selectedPost: null,
+    activePage: 'map',
     isAuthenticated: false,
 
     addPost: (post) =>
@@ -48,6 +51,8 @@ export const useBlogStore = create<BlogStore>((set, get) => ({
     setSelectedCountry: (country) => set({ selectedCountry: country, selectedPost: null }),
 
     setSelectedPost: (post) => set({ selectedPost: post }),
+
+    setActivePage: (page) => set({ activePage: page, selectedPost: null, selectedCountry: null }),
 
     authenticate: (password) => {
         const isValid = password === ADMIN_PASSWORD;

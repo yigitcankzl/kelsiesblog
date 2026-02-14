@@ -4,11 +4,12 @@ import { useBlogStore } from '@/store/store';
 export default function Navbar() {
     const navigate = useNavigate();
     const location = useLocation();
-    const { setSelectedCountry, setSelectedPost } = useBlogStore();
+    const { activePage, setActivePage, setSelectedCountry, setSelectedPost } = useBlogStore();
 
     const goHome = () => {
         setSelectedCountry(null);
         setSelectedPost(null);
+        setActivePage('map');
         if (location.pathname !== '/') navigate('/');
     };
 
@@ -35,18 +36,22 @@ export default function Navbar() {
                     {/* Links */}
                     <div className="hidden sm:flex items-center gap-6">
                         {[
-                            { label: 'Stories', path: '/stories' },
-                            { label: 'Gallery', path: '/gallery' },
-                            { label: 'About', path: '/' },
+                            { label: 'Stories', page: 'stories' as const },
+                            { label: 'Gallery', page: 'gallery' as const },
                         ].map((item) => (
                             <button
                                 key={item.label}
-                                onClick={() => navigate(item.path)}
-                                className="relative text-[8px] font-medium tracking-[0.15em] text-gray-400 hover:text-[var(--brand)] transition-colors uppercase cursor-pointer group"
+                                onClick={() => {
+                                    if (location.pathname !== '/') navigate('/');
+                                    setActivePage(item.page);
+                                }}
+                                className={`relative text-[8px] font-medium tracking-[0.15em] transition-colors uppercase cursor-pointer group ${activePage === item.page ? 'text-[var(--brand)]' : 'text-gray-400 hover:text-[var(--brand)]'
+                                    }`}
                                 style={{ fontFamily: "'Press Start 2P', monospace" }}
                             >
                                 {item.label}
-                                <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-[var(--brand)] transition-all duration-300 group-hover:w-full"
+                                <span className={`absolute -bottom-1 left-0 h-[2px] bg-[var(--brand)] transition-all duration-300 ${activePage === item.page ? 'w-full' : 'w-0 group-hover:w-full'
+                                    }`}
                                     style={{ boxShadow: '0 0 6px rgba(0, 255, 65, 0.5)' }} />
                             </button>
                         ))}

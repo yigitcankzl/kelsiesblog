@@ -6,6 +6,8 @@ import { useBlogStore } from '@/store/store';
 import { countryBounds } from '@/data/countryBounds';
 import CountryView from '@/components/map/CountryView';
 import ContentArea from '@/components/content/ContentArea';
+import AllStoriesPage from '@/pages/AllStoriesPage';
+import GalleryPage from '@/pages/GalleryPage';
 import countriesGeoJson from '@/data/countries.geo.json';
 
 import icon from 'leaflet/dist/images/marker-icon.png';
@@ -27,7 +29,7 @@ function FlyToCountry({ country }: { country: string | null }) {
 }
 
 export default function MapPage() {
-    const { selectedCountry, setSelectedCountry, setSelectedPost, getCountriesWithPosts, posts } = useBlogStore();
+    const { activePage, selectedCountry, setSelectedCountry, setSelectedPost, getCountriesWithPosts, posts } = useBlogStore();
     const countriesWithPosts = getCountriesWithPosts();
     const hoveredLayerRef = useRef<L.Layer | null>(null);
 
@@ -89,6 +91,14 @@ export default function MapPage() {
 
     // XP percentage — max 10 countries as "100%"
     const xpPercent = Math.min((countriesWithPosts.length / 10) * 100, 100);
+
+    if (activePage === 'stories') {
+        return <AllStoriesPage />;
+    }
+
+    if (activePage === 'gallery') {
+        return <GalleryPage />;
+    }
 
     return (
         <>

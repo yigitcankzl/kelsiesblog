@@ -1,15 +1,13 @@
 import { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowLeft, MapPin, Clock } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
 import { useBlogStore } from '@/store/store';
 import type { BlogPost } from '@/types';
 
 const font = { fontFamily: "'Press Start 2P', monospace" } as const;
 
 export default function AllStoriesPage() {
-    const navigate = useNavigate();
-    const { posts, setSelectedCountry, setSelectedPost } = useBlogStore();
+    const { posts, setSelectedCountry, setSelectedPost, setActivePage } = useBlogStore();
 
     const [activeCategory, setActiveCategory] = useState<string | null>(null);
 
@@ -29,9 +27,9 @@ export default function AllStoriesPage() {
     }, {});
 
     const handlePostClick = (post: BlogPost) => {
+        setActivePage('map');
         setSelectedCountry(post.country);
         setSelectedPost(post);
-        navigate('/');
     };
 
     return (
@@ -45,7 +43,7 @@ export default function AllStoriesPage() {
                     transition={{ duration: 0.3 }}
                 >
                     <button
-                        onClick={() => navigate('/')}
+                        onClick={() => setActivePage('map')}
                         className="cursor-pointer"
                         style={{
                             ...font,
