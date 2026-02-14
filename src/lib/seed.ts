@@ -6,8 +6,8 @@
  *   seedFirestore();
  */
 import { mockPosts } from '../data/mockData';
-import { addPostDoc, updateAboutDoc } from './firestore';
-import type { AboutContent } from '../types';
+import { addPostDoc, addGalleryDoc, updateAboutDoc } from './firestore';
+import type { AboutContent, GalleryItem } from '../types';
 
 const defaultAbout: AboutContent = {
     name: 'Kelsie',
@@ -26,6 +26,17 @@ const defaultAbout: AboutContent = {
     ],
 };
 
+const mockGallery: GalleryItem[] = [
+    { id: 'gallery-1', src: 'https://images.unsplash.com/photo-1613395877344-13d4a8e0d49e?w=800', caption: 'Golden hour over the caldera', city: 'Santorini', country: 'Greece' },
+    { id: 'gallery-2', src: 'https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?w=800', caption: 'Blue domes at dawn', city: 'Santorini', country: 'Greece' },
+    { id: 'gallery-3', src: 'https://images.unsplash.com/photo-1541167760496-1628856ab772?w=800', caption: 'Turkish coffee ritual', city: 'Istanbul', country: 'Turkey' },
+    { id: 'gallery-4', src: 'https://images.unsplash.com/photo-1527838832700-5059252407fa?w=800', caption: 'Grand Bazaar colors', city: 'Istanbul', country: 'Turkey' },
+    { id: 'gallery-5', src: 'https://images.unsplash.com/photo-1542051841857-5f90071e7989?w=800', caption: 'Shibuya neon lights', city: 'Tokyo', country: 'Japan' },
+    { id: 'gallery-6', src: 'https://images.unsplash.com/photo-1516483638261-f4dbaf036963?w=800', caption: 'Cinque Terre coastline', city: 'Cinque Terre', country: 'Italy' },
+    { id: 'gallery-7', src: 'https://images.unsplash.com/photo-1534308983496-4fabb1a015ee?w=800', caption: 'Manarola at sunset', city: 'Cinque Terre', country: 'Italy' },
+    { id: 'gallery-8', src: 'https://images.unsplash.com/photo-1541370976299-4d24ebbc9077?w=800', caption: 'Florence rooftops', city: 'Florence', country: 'Italy' },
+];
+
 export async function seedFirestore() {
     console.log('🌱 Seeding Firestore...');
 
@@ -35,9 +46,16 @@ export async function seedFirestore() {
         console.log(`  ✓ Post: ${post.title}`);
     }
 
+    // Seed gallery
+    for (const item of mockGallery) {
+        await addGalleryDoc(item);
+        console.log(`  ✓ Gallery: ${item.caption}`);
+    }
+
     // Seed about content
     await updateAboutDoc(defaultAbout);
     console.log('  ✓ About content');
 
     console.log('🌱 Seeding complete!');
 }
+
