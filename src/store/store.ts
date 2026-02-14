@@ -1,6 +1,17 @@
 import { create } from 'zustand';
 import type { BlogPost, GalleryItem, AboutContent } from '../types';
-import { mockPosts } from '../data/mockData';
+import {
+    fetchPosts,
+    fetchGalleryItems,
+    fetchAboutContent,
+    addPostDoc,
+    updatePostDoc,
+    deletePostDoc,
+    addGalleryDoc,
+    updateGalleryDoc,
+    deleteGalleryDoc,
+    updateAboutDoc,
+} from '../lib/firestore';
 
 interface BlogStore {
     posts: BlogPost[];
@@ -10,8 +21,10 @@ interface BlogStore {
     galleryItems: GalleryItem[];
     aboutContent: AboutContent;
     isAuthenticated: boolean;
+    loading: boolean;
 
     // Actions
+    initializeData: () => Promise<void>;
     addPost: (post: BlogPost) => void;
     updatePost: (id: string, post: Partial<BlogPost>) => void;
     deletePost: (id: string) => void;
@@ -33,43 +46,71 @@ interface BlogStore {
 
 const ADMIN_PASSWORD = 'kelsie2024';
 
+const defaultAbout: AboutContent = {
+    name: 'Kelsie',
+    bio1: 'A traveler, photographer, and storyteller exploring the world one city at a time. This blog is my digital journal — a collection of moments, places, and the stories they hold.',
+    bio2: 'Every destination is an adventure, every photo a memory frozen in time. I believe in slow travel, connecting with locals, and finding beauty in the unexpected.',
+    quests: [
+        { title: '📷 Photography', desc: 'Capturing authentic moments through the lens' },
+        { title: '✍️ Storytelling', desc: 'Writing about cultures, people, and places' },
+        { title: '🗺️ Exploration', desc: 'Seeking hidden gems off the beaten path' },
+        { title: '🎒 Slow Travel', desc: 'Living like a local, not a tourist' },
+    ],
+    socials: [
+        { label: 'Instagram', url: 'https://instagram.com/', icon: 'instagram' },
+        { label: 'Twitter / X', url: 'https://x.com/', icon: 'twitter' },
+        { label: 'Email', url: 'mailto:hello@example.com', icon: 'mail' },
+    ],
+};
+
 export const useBlogStore = create<BlogStore>((set, get) => ({
-    posts: [...mockPosts],
+    posts: [],
     selectedCountry: null,
     selectedPost: null,
     activePage: 'map',
     galleryItems: [],
-    aboutContent: {
-        name: 'Kelsie',
-        bio1: 'A traveler, photographer, and storyteller exploring the world one city at a time. This blog is my digital journal — a collection of moments, places, and the stories they hold.',
-        bio2: 'Every destination is an adventure, every photo a memory frozen in time. I believe in slow travel, connecting with locals, and finding beauty in the unexpected.',
-        quests: [
-            { title: '📷 Photography', desc: 'Capturing authentic moments through the lens' },
-            { title: '✍️ Storytelling', desc: 'Writing about cultures, people, and places' },
-            { title: '🗺️ Exploration', desc: 'Seeking hidden gems off the beaten path' },
-            { title: '🎒 Slow Travel', desc: 'Living like a local, not a tourist' },
-        ],
-        socials: [
-            { label: 'Instagram', url: 'https://instagram.com/', icon: 'instagram' },
-            { label: 'Twitter / X', url: 'https://x.com/', icon: 'twitter' },
-            { label: 'Email', url: 'mailto:hello@example.com', icon: 'mail' },
-        ],
-    },
+    aboutContent: defaultAbout,
     isAuthenticated: false,
+    loading: true,
 
-    addPost: (post) =>
-        set((state) => ({ posts: [...state.posts, post] })),
+    initializeData: async () => {
+        try {
+            const [posts, gallery, about] = await Promise.all([
+                fetchPosts(),
+                fetchGalleryItems(),
+                fetchAboutContent(),
+            ]);
+            set({
+                posts,
+                galleryItems: gallery,
+                aboutContent: about || defaultAbout,
+                loading: false,
+            });
+        } catch (err) {
+            console.error('Failed to load data from Firestore:', err);
+            set({ loading: false });
+        }
+    },
 
-    updatePost: (id, updates) =>
+    addPost: (post) => {
+        set((state) => ({ posts: [...state.posts, post] }));
+        addPostDoc(post).catch(console.error);
+    },
+
+    updatePost: (id, updates) => {
         set((state) => ({
             posts: state.posts.map((p) => (p.id === id ? { ...p, ...updates } : p)),
-        })),
+        }));
+        updatePostDoc(id, updates).catch(console.error);
+    },
 
-    deletePost: (id) =>
+    deletePost: (id) => {
         set((state) => ({
             posts: state.posts.filter((p) => p.id !== id),
             selectedPost: state.selectedPost?.id === id ? null : state.selectedPost,
-        })),
+        }));
+        deletePostDoc(id).catch(console.error);
+    },
 
     setSelectedCountry: (country) => set({ selectedCountry: country, selectedPost: null }),
 
@@ -77,23 +118,32 @@ export const useBlogStore = create<BlogStore>((set, get) => ({
 
     setActivePage: (page) => set({ activePage: page, selectedPost: null, selectedCountry: null }),
 
-    addGalleryItem: (item) =>
-        set((state) => ({ galleryItems: [...state.galleryItems, item] })),
+    addGalleryItem: (item) => {
+        set((state) => ({ galleryItems: [...state.galleryItems, item] }));
+        addGalleryDoc(item).catch(console.error);
+    },
 
-    updateGalleryItem: (id, updates) =>
+    updateGalleryItem: (id, updates) => {
         set((state) => ({
             galleryItems: state.galleryItems.map((g) => (g.id === id ? { ...g, ...updates } : g)),
-        })),
+        }));
+        updateGalleryDoc(id, updates).catch(console.error);
+    },
 
-    deleteGalleryItem: (id) =>
+    deleteGalleryItem: (id) => {
         set((state) => ({
             galleryItems: state.galleryItems.filter((g) => g.id !== id),
-        })),
+        }));
+        deleteGalleryDoc(id).catch(console.error);
+    },
 
-    updateAboutContent: (updates) =>
+    updateAboutContent: (updates) => {
         set((state) => ({
             aboutContent: { ...state.aboutContent, ...updates },
-        })),
+        }));
+        const fullContent = { ...get().aboutContent, ...updates };
+        updateAboutDoc(fullContent).catch(console.error);
+    },
 
     authenticate: (password) => {
         const isValid = password === ADMIN_PASSWORD;
