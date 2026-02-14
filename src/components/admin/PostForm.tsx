@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { Save, X, Plus, Trash2, ChevronUp, ChevronDown, Image, Type } from 'lucide-react';
+import { Save, X, Plus, Trash2, ChevronUp, ChevronDown, Type } from 'lucide-react';
 import { useBlogStore } from '../../store/store';
 import type { BlogPost, Section } from '../../types';
 import { countryBounds } from '../../data/countryBounds';
@@ -66,7 +66,6 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
     const [title, setTitle] = useState(post?.title || '');
     const [country, setCountry] = useState(post?.country || '');
     const [city, setCity] = useState(post?.city || '');
-    const [coverImage, setCoverImage] = useState(post?.coverImage || '');
     const [date, setDate] = useState(post?.date || '');
     const [category, setCategory] = useState(post?.category || '');
     const [showPreview, setShowPreview] = useState(false);
@@ -134,7 +133,7 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
             country: country.trim(),
             city: city.trim(),
             coordinates: getCoordinates(),
-            coverImage: coverImage.trim(),
+            coverImage: '',
             date: date.trim(),
             category: category.trim(),
             sections: cleanSections,
@@ -285,26 +284,6 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                         </div>
                     </div>
 
-                    <div>
-                        <label style={labelStyle}>
-                            <Image style={{ width: '10px', height: '10px' }} />
-                            COVER IMAGE URL
-                        </label>
-                        <input
-                            type="url"
-                            value={coverImage}
-                            onChange={(e) => setCoverImage(e.target.value)}
-                            placeholder="HTTPS://IMAGES.UNSPLASH.COM/..."
-                            style={inputStyle}
-                            onFocus={handleInputFocus}
-                            onBlur={handleInputBlur}
-                        />
-                        {coverImage && (
-                            <div style={{ marginTop: '12px', overflow: 'hidden', height: '120px', border: '1px solid #1a1a1a' }}>
-                                <img src={coverImage} alt="Cover" style={{ width: '100%', height: '100%', objectFit: 'cover', filter: 'saturate(0.6) brightness(0.8)' }} />
-                            </div>
-                        )}
-                    </div>
                 </div>
             </div>
 
@@ -472,6 +451,69 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                 </div>
             </div>
 
+            {/* Preview */}
+            {showPreview && (
+                <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    style={{
+                        border: '1px solid var(--neon-cyan)',
+                        padding: '24px',
+                        backgroundColor: '#050505',
+                        marginBottom: '16px',
+                        boxShadow: '0 0 15px rgba(0, 255, 255, 0.1)',
+                    }}
+                >
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '20px' }}>
+                        <div style={{ width: '6px', height: '6px', backgroundColor: 'var(--neon-cyan)' }} />
+                        <h3 style={{ ...font, fontSize: '8px', color: 'var(--neon-cyan)', textTransform: 'uppercase', letterSpacing: '0.15em' }}>
+                            PREVIEW
+                        </h3>
+                        <div style={{ flex: 1, height: '1px', background: 'linear-gradient(to right, rgba(0,255,255,0.3), transparent)' }} />
+                    </div>
+
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
+                        {city && <span style={{ ...font, fontSize: '7px', color: 'var(--neon-cyan)' }}>{city}, {country}</span>}
+                        {category && (
+                            <>
+                                <div style={{ width: '4px', height: '4px', backgroundColor: 'var(--neon-magenta)' }} />
+                                <span style={{ ...font, fontSize: '7px', color: 'var(--neon-amber)' }}>{category}</span>
+                            </>
+                        )}
+                        {date && (
+                            <>
+                                <div style={{ width: '4px', height: '4px', backgroundColor: '#555' }} />
+                                <span style={{ ...font, fontSize: '7px', color: '#555' }}>{date}</span>
+                            </>
+                        )}
+                    </div>
+
+                    <h2 style={{ ...font, fontSize: '14px', color: '#fff', marginBottom: '16px', lineHeight: '2' }}>
+                        {title || 'UNTITLED POST'}
+                    </h2>
+
+                    {sections.filter(s => s.heading || s.content).map((section, i) => (
+                        <div key={i} style={{ marginBottom: '16px' }}>
+                            {section.heading && (
+                                <h3 style={{ ...font, fontSize: '10px', color: 'var(--brand)', marginBottom: '8px' }}>
+                                    {'>'} {section.heading}
+                                </h3>
+                            )}
+                            {section.content && (
+                                <p style={{ ...font, fontSize: '8px', color: '#aaa', lineHeight: '2.4' }}>
+                                    {section.content}
+                                </p>
+                            )}
+                            {section.image && (
+                                <div style={{ marginTop: '12px', overflow: 'hidden', height: '140px', border: '1px solid #1a1a1a' }}>
+                                    <img src={section.image} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                </div>
+                            )}
+                        </div>
+                    ))}
+                </motion.div>
+            )}
+
             {/* Submit */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px', justifyContent: 'flex-end' }}>
                 <button
@@ -492,6 +534,31 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                     onMouseLeave={e => { e.currentTarget.style.borderColor = '#333'; e.currentTarget.style.color = '#555'; }}
                 >
                     CANCEL
+                </button>
+                <button
+                    type="button"
+                    onClick={() => setShowPreview(!showPreview)}
+                    className="cursor-pointer"
+                    style={{
+                        ...font,
+                        fontSize: '8px',
+                        padding: '12px 20px',
+                        background: 'none',
+                        border: '1px solid',
+                        borderColor: showPreview ? 'var(--neon-cyan)' : '#333',
+                        color: showPreview ? 'var(--neon-cyan)' : '#555',
+                        letterSpacing: '0.1em',
+                        transition: 'all 0.3s',
+                        boxShadow: showPreview ? '0 0 8px rgba(0, 255, 255, 0.2)' : 'none',
+                    }}
+                    onMouseEnter={e => {
+                        if (!showPreview) { e.currentTarget.style.borderColor = 'var(--neon-cyan)'; e.currentTarget.style.color = 'var(--neon-cyan)'; }
+                    }}
+                    onMouseLeave={e => {
+                        if (!showPreview) { e.currentTarget.style.borderColor = '#333'; e.currentTarget.style.color = '#555'; }
+                    }}
+                >
+                    {showPreview ? 'HIDE PREVIEW' : 'PREVIEW'}
                 </button>
                 <button
                     type="submit"
