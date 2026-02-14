@@ -56,6 +56,13 @@ export default function Footer() {
                             <circle cx="17.5" cy="6.5" r="1.5" fill="currentColor" stroke="none" />
                         </svg>
                     </a>
+                    <a href="/admin" className="text-gray-500 hover:text-[var(--brand)] transition-colors"
+                        style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '5px', letterSpacing: '0.15em', opacity: 0.4, transition: 'all 0.3s' }}
+                        onMouseEnter={e => { e.currentTarget.style.opacity = '1'; }}
+                        onMouseLeave={e => { e.currentTarget.style.opacity = '0.4'; }}
+                    >
+                        ADMIN
+                    </a>
                 </div>
             </div>
 
