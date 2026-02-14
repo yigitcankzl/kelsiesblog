@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Lock, Eye, EyeOff } from 'lucide-react';
+import { Lock, Mail, Eye, EyeOff } from 'lucide-react';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../../lib/firebase';
 import { useBlogStore } from '../../store/store';
 
 const font = { fontFamily: "'Press Start 2P', monospace" } as const;
@@ -19,18 +21,25 @@ const inputStyle: React.CSSProperties = {
 };
 
 export default function AuthGate() {
+    const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState(false);
+    const [loading, setLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
-    const { authenticate } = useBlogStore();
+    const { setAuthenticated } = useBlogStore();
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        const success = authenticate(password);
-        if (!success) {
+        setLoading(true);
+        setError(false);
+        try {
+            await signInWithEmailAndPassword(auth, email, password);
+            setAuthenticated(true);
+        } catch {
             setError(true);
-            setTimeout(() => setError(false), 2000);
+            setTimeout(() => setError(false), 3000);
         }
+        setLoading(false);
     };
 
     return (
@@ -53,7 +62,7 @@ export default function AuthGate() {
                         <div style={{ width: '8px', height: '8px', backgroundColor: 'var(--neon-amber)' }} />
                         <div style={{ width: '8px', height: '8px', backgroundColor: '#333' }} />
                         <span style={{ ...font, fontSize: '6px', color: '#444', marginLeft: '8px', letterSpacing: '0.2em' }}>
-                            TERMINAL v1.0
+                            TERMINAL v2.0
                         </span>
                     </div>
 
@@ -65,6 +74,21 @@ export default function AuthGate() {
                     </p>
 
                     <form onSubmit={handleSubmit}>
+                        {/* Email */}
+                        <div style={{ position: 'relative', marginBottom: '12px' }}>
+                            <Mail style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', width: '14px', height: '14px', color: '#444' }} />
+                            <input
+                                type="email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                placeholder="EMAIL"
+                                style={inputStyle}
+                                onFocus={e => { e.currentTarget.style.borderColor = 'var(--brand)'; e.currentTarget.style.boxShadow = '0 0 10px rgba(0,255,65,0.15)'; }}
+                                onBlur={e => { e.currentTarget.style.borderColor = '#333'; e.currentTarget.style.boxShadow = 'none'; }}
+                            />
+                        </div>
+
+                        {/* Password */}
                         <div style={{ position: 'relative', marginBottom: '16px' }}>
                             <Lock style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', width: '14px', height: '14px', color: '#444' }} />
                             <input
@@ -96,12 +120,13 @@ export default function AuthGate() {
                                 animate={{ opacity: 1 }}
                                 style={{ ...font, fontSize: '7px', color: '#FF00E4', marginBottom: '12px', textAlign: 'center' }}
                             >
-                                ✗ ACCESS DENIED — INVALID KEY
+                                ✗ ACCESS DENIED — INVALID CREDENTIALS
                             </motion.p>
                         )}
 
                         <button
                             type="submit"
+                            disabled={loading}
                             className="cursor-pointer"
                             style={{
                                 ...font,
@@ -114,11 +139,12 @@ export default function AuthGate() {
                                 letterSpacing: '0.15em',
                                 boxShadow: '0 0 15px rgba(0, 255, 65, 0.3)',
                                 transition: 'all 0.3s',
+                                opacity: loading ? 0.6 : 1,
                             }}
                             onMouseEnter={e => { e.currentTarget.style.boxShadow = '0 0 25px rgba(0, 255, 65, 0.5)'; }}
                             onMouseLeave={e => { e.currentTarget.style.boxShadow = '0 0 15px rgba(0, 255, 65, 0.3)'; }}
                         >
-                            AUTHENTICATE
+                            {loading ? 'AUTHENTICATING...' : 'AUTHENTICATE'}
                         </button>
                     </form>
                 </div>
