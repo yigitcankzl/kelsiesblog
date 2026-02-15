@@ -1,7 +1,8 @@
 export interface Section {
     heading: string;
     content: string;
-    image?: string;
+    image?: string;       // legacy — kept for backward compat with old Firestore docs
+    images?: string[];
 }
 
 export interface BlogPost {

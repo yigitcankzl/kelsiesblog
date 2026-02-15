@@ -87,17 +87,21 @@ export default function PostReader() {
                                 {'> '}{section.heading}
                             </h2>
 
-                            {section.image && (
-                                <div className="mb-5 overflow-hidden retro-corners hover-glitch"
-                                    style={{ boxShadow: '0 0 10px rgba(0, 255, 65, 0.15)' }}>
-                                    <span className="rc-extra absolute inset-0" />
-                                    <img
-                                        src={section.image}
-                                        alt={section.heading}
-                                        className="w-full h-52 sm:h-72 object-cover"
-                                    />
-                                </div>
-                            )}
+                            {/* Section images — supports both legacy `image` and new `images` */}
+                            {(() => {
+                                const imgs = section.images?.length ? section.images : (section.image ? [section.image] : []);
+                                return imgs.map((imgUrl, imgIdx) => (
+                                    <div key={imgIdx} className="mb-5 overflow-hidden retro-corners hover-glitch"
+                                        style={{ boxShadow: '0 0 10px rgba(0, 255, 65, 0.15)' }}>
+                                        <span className="rc-extra absolute inset-0" />
+                                        <img
+                                            src={imgUrl}
+                                            alt={section.heading}
+                                            className="w-full h-52 sm:h-72 object-cover"
+                                        />
+                                    </div>
+                                ));
+                            })()}
 
                             <p className="text-[9px] text-gray-300 leading-[2.5]"
                                 style={{ fontFamily: "'Press Start 2P', monospace" }}>

@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { Save, X, Plus, Trash2, ChevronUp, ChevronDown, Type } from 'lucide-react';
+import { Save, X, Plus, Trash2, ChevronUp, ChevronDown, Type, ImagePlus } from 'lucide-react';
 import { useBlogStore } from '../../store/store';
 import type { BlogPost, Section } from '../../types';
 import { countryBounds } from '../../data/countryBounds';
@@ -41,7 +41,15 @@ interface PostFormProps {
     onCancel: () => void;
 }
 
-const emptySection: Section = { heading: '', content: '', image: '' };
+const emptySection: Section = { heading: '', content: '', images: [] };
+
+// Normalize legacy sections that used `image` (string) into `images` (array)
+function normalizeSections(sections: Section[]): Section[] {
+    return sections.map(s => {
+        const imgs = s.images?.length ? [...s.images] : (s.image ? [s.image] : []);
+        return { heading: s.heading, content: s.content, images: imgs };
+    });
+}
 
 
 
@@ -56,7 +64,7 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
     const [categories, setCategories] = useState<string[]>(post?.category || []);
     const [showPreview, setShowPreview] = useState(false);
     const [sections, setSections] = useState<Section[]>(
-        post?.sections?.length ? post.sections : [{ ...emptySection }]
+        post?.sections?.length ? normalizeSections(post.sections) : [{ ...emptySection }]
     );
 
     const isEditing = post !== null;
@@ -97,6 +105,30 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
         setSections(updated);
     };
 
+    // --- Image helpers for a section ---
+    const addImageToSection = (sectionIndex: number) => {
+        setSections(prev => prev.map((s, i) =>
+            i === sectionIndex ? { ...s, images: [...(s.images || []), ''] } : s
+        ));
+    };
+
+    const updateImageInSection = (sectionIndex: number, imgIndex: number, value: string) => {
+        setSections(prev => prev.map((s, i) => {
+            if (i !== sectionIndex) return s;
+            const imgs = [...(s.images || [])];
+            imgs[imgIndex] = value;
+            return { ...s, images: imgs };
+        }));
+    };
+
+    const removeImageFromSection = (sectionIndex: number, imgIndex: number) => {
+        setSections(prev => prev.map((s, i) => {
+            if (i !== sectionIndex) return s;
+            const imgs = (s.images || []).filter((_, j) => j !== imgIndex);
+            return { ...s, images: imgs };
+        }));
+    };
+
     const moveSection = (index: number, direction: 'up' | 'down') => {
         const newIndex = direction === 'up' ? index - 1 : index + 1;
         if (newIndex < 0 || newIndex >= sections.length) return;
@@ -110,11 +142,14 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
 
         const cleanSections = sections
             .filter(s => s.heading.trim() || s.content.trim())
-            .map(s => ({
-                heading: s.heading.trim(),
-                content: s.content.trim(),
-                ...(s.image?.trim() ? { image: s.image.trim() } : {}),
-            }));
+            .map(s => {
+                const imgs = (s.images || []).map(u => u.trim()).filter(Boolean);
+                return {
+                    heading: s.heading.trim(),
+                    content: s.content.trim(),
+                    ...(imgs.length ? { images: imgs } : {}),
+                };
+            });
 
         const cityTrimmed = city.trim();
         const countryTrimmed = country.trim();
@@ -514,15 +549,76 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                                     onFocus={handleInputFocus as any}
                                     onBlur={handleInputBlur as any}
                                 />
-                                <input
-                                    type="url"
-                                    value={section.image || ''}
-                                    onChange={(e) => updateSection(index, 'image', e.target.value)}
-                                    placeholder="IMAGE URL (OPTIONAL)"
-                                    style={inputStyle}
-                                    onFocus={handleInputFocus}
-                                    onBlur={handleInputBlur}
-                                />
+                                {/* Multiple Image URLs */}
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                                    <label style={{ ...labelStyle, marginBottom: '4px' }}>
+                                        <ImagePlus style={{ width: '10px', height: '10px' }} />
+                                        IMAGES
+                                        {(section.images?.length || 0) > 0 && (
+                                            <span style={{ color: 'var(--neon-cyan)' }}>[ {section.images!.length} ]</span>
+                                        )}
+                                    </label>
+
+                                    {(section.images || []).map((imgUrl, imgIdx) => (
+                                        <div key={imgIdx} style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+                                            <input
+                                                type="url"
+                                                value={imgUrl}
+                                                onChange={(e) => updateImageInSection(index, imgIdx, e.target.value)}
+                                                placeholder={`IMAGE URL ${imgIdx + 1}`}
+                                                style={{ ...inputStyle, flex: 1 }}
+                                                onFocus={handleInputFocus}
+                                                onBlur={handleInputBlur}
+                                            />
+                                            <button
+                                                type="button"
+                                                onClick={() => removeImageFromSection(index, imgIdx)}
+                                                className="cursor-pointer"
+                                                style={{
+                                                    width: '28px',
+                                                    height: '28px',
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'center',
+                                                    background: 'none',
+                                                    border: '1px solid #333',
+                                                    color: '#555',
+                                                    flexShrink: 0,
+                                                    transition: 'all 0.3s',
+                                                }}
+                                                onMouseEnter={e => { e.currentTarget.style.color = '#FF00E4'; e.currentTarget.style.borderColor = '#FF00E4'; }}
+                                                onMouseLeave={e => { e.currentTarget.style.color = '#555'; e.currentTarget.style.borderColor = '#333'; }}
+                                            >
+                                                <X style={{ width: '12px', height: '12px' }} />
+                                            </button>
+                                        </div>
+                                    ))}
+
+                                    <button
+                                        type="button"
+                                        onClick={() => addImageToSection(index)}
+                                        className="cursor-pointer"
+                                        style={{
+                                            ...font,
+                                            fontSize: '6px',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            gap: '4px',
+                                            color: '#555',
+                                            background: 'none',
+                                            border: '1px dashed #333',
+                                            padding: '6px 10px',
+                                            letterSpacing: '0.1em',
+                                            transition: 'all 0.3s',
+                                            alignSelf: 'flex-start',
+                                        }}
+                                        onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--brand)'; e.currentTarget.style.color = 'var(--brand)'; }}
+                                        onMouseLeave={e => { e.currentTarget.style.borderColor = '#333'; e.currentTarget.style.color = '#555'; }}
+                                    >
+                                        <Plus style={{ width: '10px', height: '10px' }} />
+                                        ADD IMAGE
+                                    </button>
+                                </div>
                             </div>
                         </motion.div>
                     ))}
@@ -586,11 +682,11 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                                     {section.content}
                                 </p>
                             )}
-                            {section.image && (
-                                <div style={{ marginTop: '12px', overflow: 'hidden', height: '140px', border: '1px solid #1a1a1a' }}>
-                                    <img src={section.image} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                            {(section.images || []).filter(Boolean).map((img, imgI) => (
+                                <div key={imgI} style={{ marginTop: '12px', overflow: 'hidden', height: '140px', border: '1px solid #1a1a1a' }}>
+                                    <img src={img} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                                 </div>
-                            )}
+                            ))}
                         </div>
                     ))}
                 </motion.div>
