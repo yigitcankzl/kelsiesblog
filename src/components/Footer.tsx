@@ -13,7 +13,7 @@ export default function Footer() {
 
             <div className="flex items-center justify-between" style={{ maxWidth: '1024px', margin: '0 auto', paddingLeft: '24px', paddingRight: '24px', paddingTop: '24px', paddingBottom: '24px' }}>
                 {/* Brand + Copyright */}
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-4 flex-1">
                     <span className="text-[8px] font-bold tracking-tight text-white"
                         style={{ fontFamily: "'Press Start 2P', monospace" }}>
                         Kelsie Sharp<span className="text-[var(--brand)] neon-glow">.</span>
@@ -25,7 +25,7 @@ export default function Footer() {
                 </div>
 
                 {/* System status */}
-                <div className="hidden sm:flex items-center gap-3">
+                <div className="hidden sm:flex items-center justify-center gap-3 flex-1">
                     <div className="w-2 h-2 bg-[var(--brand)]"
                         style={{ boxShadow: '0 0 6px rgba(0, 255, 65, 0.6), 0 0 12px rgba(0, 255, 65, 0.3)' }} />
                     <span className="text-[6px] text-[var(--brand)] uppercase tracking-[0.2em] opacity-60"
@@ -35,7 +35,7 @@ export default function Footer() {
                 </div>
 
                 {/* Retro icons */}
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-4 flex-1 justify-end">
                     <a href="/admin" className="text-gray-500 hover:text-[var(--brand)] transition-colors"
                         style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '5px', letterSpacing: '0.15em', opacity: 0.4, transition: 'all 0.3s' }}
                         onMouseEnter={e => { e.currentTarget.style.opacity = '1'; }}
