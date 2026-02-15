@@ -11,6 +11,26 @@ import GalleryPage from '@/pages/GalleryPage';
 import AboutPage from '@/pages/AboutPage';
 import countriesGeoJson from '@/data/countries.geo.json';
 
+// Mapping from countryBounds names → GeoJSON ADMIN names (for mismatches)
+const countryNameAliases: Record<string, string> = {
+    'United States': 'United States of America',
+    'Czech Republic': 'Czechia',
+    'UAE': 'United Arab Emirates',
+    'Tanzania': 'United Republic of Tanzania',
+};
+
+// Build a reverse map: GeoJSON ADMIN name → countryBounds name
+const reverseAliases: Record<string, string> = {};
+for (const [boundsName, geoName] of Object.entries(countryNameAliases)) {
+    reverseAliases[geoName] = boundsName;
+}
+
+// Given a GeoJSON ADMIN name, return the countryBounds name (or itself if no alias)
+function toPostName(geoJsonName: string): string {
+    return reverseAliases[geoJsonName] || geoJsonName;
+}
+
+
 import icon from 'leaflet/dist/images/marker-icon.png';
 import iconShadow from 'leaflet/dist/images/marker-shadow.png';
 L.Marker.prototype.options.icon = L.icon({
@@ -34,9 +54,10 @@ export default function MapPage() {
     const countriesWithPosts = getCountriesWithPosts();
     const hoveredLayerRef = useRef<L.Layer | null>(null);
 
-    const getBaseStyle = useCallback((name: string) => {
-        const has = countriesWithPosts.includes(name);
-        const isSelected = selectedCountry === name;
+    const getBaseStyle = useCallback((geoJsonName: string) => {
+        const postName = toPostName(geoJsonName);
+        const has = countriesWithPosts.includes(postName);
+        const isSelected = selectedCountry === postName;
 
         // When a country is selected, make it just an outline so city polygons stand out
         if (isSelected) {
@@ -59,14 +80,15 @@ export default function MapPage() {
     }, [countriesWithPosts, selectedCountry]);
 
     const geoJsonStyle = useCallback((feature: any) => {
-        const name = feature?.properties?.ADMIN || feature?.properties?.name || '';
-        return getBaseStyle(name);
+        const geoName = feature?.properties?.ADMIN || feature?.properties?.name || '';
+        return getBaseStyle(geoName);
     }, [getBaseStyle]);
 
     const onEachCountry = useCallback((feature: any, layer: L.Layer) => {
-        const name = feature?.properties?.ADMIN || feature?.properties?.name || '';
-        const has = countriesWithPosts.includes(name);
-        layer.bindTooltip(name, { sticky: true, direction: 'auto' });
+        const geoName = feature?.properties?.ADMIN || feature?.properties?.name || '';
+        const postName = toPostName(geoName);
+        const has = countriesWithPosts.includes(postName);
+        layer.bindTooltip(postName, { sticky: true, direction: 'auto' });
         layer.on({
             mouseover: () => {
                 hoveredLayerRef.current = layer;
@@ -77,10 +99,10 @@ export default function MapPage() {
             },
             mouseout: () => {
                 hoveredLayerRef.current = null;
-                (layer as any).setStyle(getBaseStyle(name));
+                (layer as any).setStyle(getBaseStyle(geoName));
             },
             click: () => {
-                if (has) { setSelectedPost(null); setSelectedCountry(name); }
+                if (has) { setSelectedPost(null); setSelectedCountry(postName); }
             },
         });
     }, [countriesWithPosts, setSelectedCountry, setSelectedPost, getBaseStyle]);
