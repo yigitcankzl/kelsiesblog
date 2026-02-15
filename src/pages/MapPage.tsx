@@ -90,8 +90,8 @@ export default function MapPage() {
         [countriesWithPosts, selectedCountry]
     );
 
-    // XP percentage — max 10 countries as "100%"
-    const xpPercent = Math.min((countriesWithPosts.length / 10) * 100, 100);
+    const totalCountries = countryBounds.length;
+    const xpPercent = Math.min((countriesWithPosts.length / totalCountries) * 100, 100);
 
     if (activePage === 'stories') {
         return <AllStoriesPage />;
@@ -135,7 +135,7 @@ export default function MapPage() {
                             </div>
                             <span className="text-[5px] text-gray-600 mt-1"
                                 style={{ fontFamily: "'Press Start 2P', monospace" }}>
-                                {countriesWithPosts.length}/10 XP
+                                {countriesWithPosts.length}/{totalCountries} XP
                             </span>
                         </div>
                     </div>
