@@ -64,7 +64,7 @@ export default function Navbar() {
                                 boxShadow: '0 0 8px rgba(0, 255, 65, 0.2)',
                             }}
                         >
-                            ▶ START
+                            ▶ HOME
                         </button>
                     </div>
 
