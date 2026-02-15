@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowLeft, MapPin, Clock } from 'lucide-react';
 import { useBlogStore } from '@/store/store';
-import type { BlogPost } from '@/types';
+import { estimateReadTime, type BlogPost } from '@/types';
 
 const font = { fontFamily: "'Press Start 2P', monospace" } as const;
 
@@ -213,7 +213,7 @@ export default function AllStoriesPage() {
                                             <span style={{ width: '4px', height: '4px', backgroundColor: 'var(--neon-magenta)' }} />
                                             <span style={{ color: '#555', display: 'flex', alignItems: 'center', gap: '4px' }}>
                                                 <Clock style={{ width: '10px', height: '10px' }} />
-                                                {post.sections.length * 3} MIN
+                                                {estimateReadTime(post.sections)} MIN
                                             </span>
                                         </div>
 

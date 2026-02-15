@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { ArrowRight, Clock, Image } from 'lucide-react';
 import { useBlogStore } from '@/store/store';
+import { estimateReadTime } from '@/types';
 import { MapPin } from 'lucide-react';
 
 export default function WelcomeView() {
@@ -83,7 +84,7 @@ export default function WelcomeView() {
                                     <span className="text-[var(--neon-magenta)]">■</span>
                                     <span className="flex items-center gap-1">
                                         <Clock className="w-2.5 h-2.5" />
-                                        {featured.sections.length * 3} MIN
+                                        {estimateReadTime(featured.sections)} MIN
                                     </span>
                                 </div>
                                 <h3 className="text-sm md:text-base font-bold text-white mb-5 group-hover:text-[var(--brand)] transition-colors leading-relaxed text-glitch"
@@ -156,7 +157,7 @@ export default function WelcomeView() {
                                     <span className="text-[var(--neon-magenta)]">■</span>
                                     <span className="flex items-center gap-1">
                                         <Clock className="w-2.5 h-2.5" />
-                                        {post.sections.length * 3} MIN
+                                        {estimateReadTime(post.sections)} MIN
                                     </span>
                                 </div>
                                 <h3 className="text-sm md:text-base font-bold text-white mb-4 group-hover:text-[var(--brand)] transition-colors leading-relaxed text-glitch"

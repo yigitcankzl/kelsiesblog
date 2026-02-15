@@ -37,6 +37,15 @@ export interface SocialLink {
     icon: string;
 }
 
+/** Average reading speed: ~200 words per minute. Returns at least 1. */
+export function estimateReadTime(sections: Section[]): number {
+    const words = sections.reduce(
+        (sum, s) => sum + s.heading.split(/\s+/).length + s.content.split(/\s+/).length,
+        0
+    );
+    return Math.max(1, Math.round(words / 200));
+}
+
 export interface AboutContent {
     name: string;
     bio1: string;

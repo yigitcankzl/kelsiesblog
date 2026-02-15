@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowLeft, MapPin } from 'lucide-react';
 import { useBlogStore } from '@/store/store';
+import { estimateReadTime } from '@/types';
 
 const categories = ['Culture', 'History', 'Tourism', 'Transportation', 'Politic', 'Food'];
 
@@ -128,7 +129,7 @@ export default function CountryPostsView() {
                                 style={{ fontFamily: "'Press Start 2P', monospace" }}>
                                 <span className="text-[var(--neon-cyan)]">{post.city}, {post.country}</span>
                                 <span className="w-1.5 h-1.5 bg-[var(--neon-magenta)]" />
-                                <span className="text-[var(--neon-amber)]">{post.sections.length * 3} MIN</span>
+                                <span className="text-[var(--neon-amber)]">{estimateReadTime(post.sections)} MIN</span>
                             </div>
                             <h3 className="text-sm md:text-base font-bold text-white mb-4 group-hover:text-[var(--brand)] transition-colors leading-relaxed text-glitch"
                                 style={{ fontFamily: "'Press Start 2P', monospace" }}

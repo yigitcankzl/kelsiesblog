@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { ArrowLeft } from 'lucide-react';
 import { useBlogStore } from '@/store/store';
+import { estimateReadTime } from '@/types';
 
 export default function PostReader() {
     const { selectedPost, selectedCountry, setSelectedPost } = useBlogStore();
@@ -49,7 +50,7 @@ export default function PostReader() {
                     <div className="flex items-center gap-4 mt-3">
                         <span className="text-[var(--neon-cyan)] text-[7px]"
                             style={{ fontFamily: "'Press Start 2P', monospace" }}>
-                            {selectedPost.sections.length * 3} MIN READ
+                            {estimateReadTime(selectedPost.sections)} MIN READ
                         </span>
                         <span className="text-[var(--neon-amber)] text-[6px]"
                             style={{ fontFamily: "'Press Start 2P', monospace" }}>
