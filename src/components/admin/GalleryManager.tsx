@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Trash2, Edit2, Save, X, Image } from 'lucide-react';
+import { Plus, Trash2, Edit2, Save, X, Image, UploadCloud } from 'lucide-react';
 import { useBlogStore } from '../../store/store';
 import type { GalleryItem } from '../../types';
 
@@ -108,27 +108,70 @@ export default function GalleryManager() {
                     </div>
                 </div>
                 {!showForm && (
-                    <button
-                        onClick={startAdd}
-                        className="cursor-pointer"
-                        style={{
-                            ...font,
-                            fontSize: '7px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '8px',
-                            backgroundColor: 'var(--neon-cyan)',
-                            color: '#000',
-                            border: 'none',
-                            padding: '10px 16px',
-                            letterSpacing: '0.1em',
-                            boxShadow: '0 0 12px rgba(0, 255, 255, 0.3)',
-                            transition: 'all 0.3s',
-                        }}
-                    >
-                        <Plus className="w-3 h-3" />
-                        ADD IMAGE
-                    </button>
+                    <div style={{ display: 'flex', gap: '12px' }}>
+                        <button
+                            onClick={() => {
+                                const driveImages = [
+                                    {
+                                        src: 'https://drive.google.com/thumbnail?id=1Mz6gPrV65yEMScZGF0iSdv0bDhDBTs3J&sz=w4096',
+                                        caption: 'Imported from Drive',
+                                        city: 'Unknown',
+                                        country: 'Unknown'
+                                    }
+                                ];
+
+                                if (confirm(`Import ${driveImages.length} images from Drive?`)) {
+                                    driveImages.forEach(img => {
+                                        // Check if already exists to avoid duplicates
+                                        if (!galleryItems.some(item => item.src === img.src)) {
+                                            addGalleryItem({
+                                                id: `gallery-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+                                                ...img
+                                            });
+                                        }
+                                    });
+                                }
+                            }}
+                            className="cursor-pointer"
+                            style={{
+                                ...font,
+                                fontSize: '7px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '8px',
+                                backgroundColor: 'transparent',
+                                color: 'var(--brand)',
+                                border: '1px solid var(--brand)',
+                                padding: '10px 16px',
+                                letterSpacing: '0.1em',
+                                transition: 'all 0.3s',
+                            }}
+                        >
+                            <UploadCloud className="w-3 h-3" />
+                            IMPORT DRIVE
+                        </button>
+                        <button
+                            onClick={startAdd}
+                            className="cursor-pointer"
+                            style={{
+                                ...font,
+                                fontSize: '7px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '8px',
+                                backgroundColor: 'var(--neon-cyan)',
+                                color: '#000',
+                                border: 'none',
+                                padding: '10px 16px',
+                                letterSpacing: '0.1em',
+                                boxShadow: '0 0 12px rgba(0, 255, 255, 0.3)',
+                                transition: 'all 0.3s',
+                            }}
+                        >
+                            <Plus className="w-3 h-3" />
+                            ADD IMAGE
+                        </button>
+                    </div>
                 )}
             </div>
 
@@ -215,6 +258,7 @@ export default function GalleryManager() {
                                         <img
                                             src={form.src}
                                             alt="preview"
+                                            referrerPolicy="no-referrer"
                                             style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                                             onError={() => setPreviewError(true)}
                                         />
@@ -301,6 +345,7 @@ export default function GalleryManager() {
                                             <img
                                                 src={item.src}
                                                 alt={item.caption}
+                                                referrerPolicy="no-referrer"
                                                 style={{
                                                     width: '100%',
                                                     height: '100%',

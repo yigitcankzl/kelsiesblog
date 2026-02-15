@@ -104,6 +104,7 @@ export default function GalleryPage() {
                             <img
                                 src={img.src}
                                 alt={img.heading}
+                                referrerPolicy="no-referrer"
                                 style={{
                                     width: '100%',
                                     height: '100%',
@@ -204,6 +205,7 @@ export default function GalleryPage() {
                                 <img
                                     src={img.src}
                                     alt={img.heading}
+                                    referrerPolicy="no-referrer"
                                     style={{
                                         width: '100%',
                                         height: '100%',
@@ -304,6 +306,7 @@ export default function GalleryPage() {
                             <img
                                 src={lightbox.src}
                                 alt={lightbox.heading}
+                                referrerPolicy="no-referrer"
                                 style={{ width: '100%', maxHeight: '80vh', objectFit: 'contain', backgroundColor: '#000' }}
                             />
                         </div>
