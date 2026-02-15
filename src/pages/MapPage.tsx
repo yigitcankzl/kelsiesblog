@@ -148,9 +148,8 @@ export default function MapPage() {
                         center={[20, 0]} zoom={2} minZoom={2} maxZoom={12}
                         zoomControl={true} scrollWheelZoom={true}
                         dragging={true}
+                        worldCopyJump={true}
                         style={{ width: '100%', height: '100%' }}
-                        maxBounds={[[-85, -180], [85, 180]]}
-                        maxBoundsViscosity={1.0}
                     >
                         <TileLayer
                             attribution='&copy; <a href="https://carto.com/">CARTO</a>'
