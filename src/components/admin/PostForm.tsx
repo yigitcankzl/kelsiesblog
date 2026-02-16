@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { Save, X, Plus, Trash2, ChevronUp, ChevronDown, Type, ImagePlus, AlignLeft } from 'lucide-react';
+import { Save, X, Plus, Trash2, ChevronUp, ChevronDown, Type, ImagePlus, AlignLeft, UploadCloud, Loader } from 'lucide-react';
 import { useBlogStore } from '../../store/store';
 import type { BlogPost, Section } from '../../types';
 import { CONTENT_FONTS, getFontConfig } from '../../types';
@@ -8,6 +8,7 @@ import { countryBounds } from '../../data/countryBounds';
 import { worldCities } from '../../data/worldCities';
 import { fetchCityBoundary } from '../../lib/cityBoundaryCache';
 import { mergePostFields } from '../../lib/firestore';
+import { parseFolderId, listDriveImages, driveThumbUrl } from '../../lib/googleDrive';
 
 const font = { fontFamily: "'Press Start 2P', monospace" } as const;
 
@@ -108,6 +109,48 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
         setSections(updated);
     };
 
+    // --- Formatting shortcut handler for textareas ---
+    const handleFormatKey = (
+        e: React.KeyboardEvent<HTMLTextAreaElement>,
+        sectionIndex: number,
+        ctnIndex: number,
+    ) => {
+        const isMod = e.ctrlKey || e.metaKey;
+        if (!isMod) return;
+
+        let prefix = '';
+        let suffix = '';
+        let placeholder = '';
+
+        if (e.key === 'b') {
+            prefix = '**'; suffix = '**'; placeholder = 'bold';
+        } else if (e.key === 'i') {
+            prefix = '*'; suffix = '*'; placeholder = 'italic';
+        } else if (e.key === 'k') {
+            prefix = '['; suffix = '](url)'; placeholder = 'link text';
+        } else {
+            return;
+        }
+
+        e.preventDefault();
+        const ta = e.currentTarget;
+        const start = ta.selectionStart;
+        const end = ta.selectionEnd;
+        const text = ta.value;
+        const selected = text.slice(start, end) || placeholder;
+        const newVal = text.slice(0, start) + prefix + selected + suffix + text.slice(end);
+
+        updateContentInSection(sectionIndex, ctnIndex, newVal);
+
+        // Restore cursor around the inserted text
+        requestAnimationFrame(() => {
+            ta.focus();
+            const selStart = start + prefix.length;
+            const selEnd = selStart + selected.length;
+            ta.setSelectionRange(selStart, selEnd);
+        });
+    };
+
     // --- Content (paragraph) helpers for a section ---
     const addContentToSection = (sectionIndex: number) => {
         setSections(prev => prev.map((s, i) =>
@@ -154,6 +197,36 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
             const imgs = (s.images || []).filter((_, j) => j !== imgIndex);
             return { ...s, images: imgs };
         }));
+    };
+
+    // --- Drive import for section images ---
+    const [driveImportIdx, setDriveImportIdx] = useState<number | null>(null);
+    const [driveUrl, setDriveUrl] = useState('');
+    const [driveLoading, setDriveLoading] = useState(false);
+    const [driveError, setDriveError] = useState('');
+
+    const handleDriveImportForSection = async (sectionIndex: number) => {
+        const folderId = parseFolderId(driveUrl);
+        if (!folderId) { setDriveError('INVALID DRIVE FOLDER LINK'); return; }
+
+        setDriveLoading(true);
+        setDriveError('');
+        try {
+            const files = await listDriveImages(folderId);
+            if (files.length === 0) { setDriveError('NO IMAGES FOUND'); setDriveLoading(false); return; }
+            const urls = files.map(f => driveThumbUrl(f.id));
+            setSections(prev => prev.map((s, i) => {
+                if (i !== sectionIndex) return s;
+                const existing = s.images || [];
+                return { ...s, images: [...existing, ...urls] };
+            }));
+            setDriveImportIdx(null);
+            setDriveUrl('');
+        } catch (err: any) {
+            setDriveError(err.message || 'FAILED TO FETCH');
+        } finally {
+            setDriveLoading(false);
+        }
     };
 
     const moveSection = (index: number, direction: 'up' | 'down') => {
@@ -618,6 +691,7 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                                             <textarea
                                                 value={ctn}
                                                 onChange={(e) => updateContentInSection(index, ctnIdx, e.target.value)}
+                                                onKeyDown={(e) => handleFormatKey(e, index, ctnIdx)}
                                                 placeholder={`PARAGRAPH ${ctnIdx + 1}...`}
                                                 rows={3}
                                                 style={{
@@ -727,30 +801,76 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                                         </div>
                                     ))}
 
-                                    <button
-                                        type="button"
-                                        onClick={() => addImageToSection(index)}
-                                        className="cursor-pointer"
-                                        style={{
-                                            ...font,
-                                            fontSize: '6px',
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            gap: '4px',
-                                            color: '#555',
-                                            background: 'none',
-                                            border: '1px dashed #333',
-                                            padding: '6px 10px',
-                                            letterSpacing: '0.1em',
-                                            transition: 'all 0.3s',
-                                            alignSelf: 'flex-start',
-                                        }}
-                                        onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--brand)'; e.currentTarget.style.color = 'var(--brand)'; }}
-                                        onMouseLeave={e => { e.currentTarget.style.borderColor = '#333'; e.currentTarget.style.color = '#555'; }}
-                                    >
-                                        <Plus style={{ width: '10px', height: '10px' }} />
-                                        ADD IMAGE
-                                    </button>
+                                    <div style={{ display: 'flex', gap: '8px' }}>
+                                        <button
+                                            type="button"
+                                            onClick={() => addImageToSection(index)}
+                                            className="cursor-pointer"
+                                            style={{
+                                                ...font, fontSize: '6px', display: 'flex', alignItems: 'center', gap: '4px',
+                                                color: '#555', background: 'none', border: '1px dashed #333',
+                                                padding: '6px 10px', letterSpacing: '0.1em', transition: 'all 0.3s',
+                                            }}
+                                            onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--brand)'; e.currentTarget.style.color = 'var(--brand)'; }}
+                                            onMouseLeave={e => { e.currentTarget.style.borderColor = '#333'; e.currentTarget.style.color = '#555'; }}
+                                        >
+                                            <Plus style={{ width: '10px', height: '10px' }} />
+                                            ADD IMAGE
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() => { setDriveImportIdx(driveImportIdx === index ? null : index); setDriveUrl(''); setDriveError(''); }}
+                                            className="cursor-pointer"
+                                            style={{
+                                                ...font, fontSize: '6px', display: 'flex', alignItems: 'center', gap: '4px',
+                                                color: driveImportIdx === index ? 'var(--brand)' : '#555',
+                                                background: 'none',
+                                                border: `1px dashed ${driveImportIdx === index ? 'var(--brand)' : '#333'}`,
+                                                padding: '6px 10px', letterSpacing: '0.1em', transition: 'all 0.3s',
+                                            }}
+                                            onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--brand)'; e.currentTarget.style.color = 'var(--brand)'; }}
+                                            onMouseLeave={e => { if (driveImportIdx !== index) { e.currentTarget.style.borderColor = '#333'; e.currentTarget.style.color = '#555'; } }}
+                                        >
+                                            <UploadCloud style={{ width: '10px', height: '10px' }} />
+                                            IMPORT DRIVE
+                                        </button>
+                                    </div>
+
+                                    {/* Drive import inline */}
+                                    {driveImportIdx === index && (
+                                        <div style={{ border: '1px solid var(--brand)', padding: '12px', backgroundColor: '#050505', marginTop: '6px' }}>
+                                            <div style={{ display: 'flex', gap: '6px', marginBottom: driveError ? '8px' : '0' }}>
+                                                <input
+                                                    type="text"
+                                                    value={driveUrl}
+                                                    onChange={e => { setDriveUrl(e.target.value); setDriveError(''); }}
+                                                    placeholder="GOOGLE DRIVE FOLDER LINK..."
+                                                    style={{ ...inputStyle, flex: 1, fontSize: '8px' }}
+                                                    onFocus={handleInputFocus}
+                                                    onBlur={handleInputBlur}
+                                                />
+                                                <button
+                                                    type="button"
+                                                    onClick={() => handleDriveImportForSection(index)}
+                                                    disabled={driveLoading || !driveUrl.trim()}
+                                                    className="cursor-pointer"
+                                                    style={{
+                                                        ...font, fontSize: '6px', padding: '8px 12px',
+                                                        backgroundColor: driveUrl.trim() ? 'var(--brand)' : '#1a1a1a',
+                                                        color: driveUrl.trim() ? '#000' : '#444',
+                                                        border: 'none', display: 'flex', alignItems: 'center', gap: '4px',
+                                                        cursor: driveUrl.trim() ? 'pointer' : 'not-allowed', flexShrink: 0,
+                                                    }}
+                                                >
+                                                    {driveLoading ? <Loader style={{ width: '10px', height: '10px' }} className="animate-spin" /> : <UploadCloud style={{ width: '10px', height: '10px' }} />}
+                                                    {driveLoading ? 'LOADING' : 'FETCH'}
+                                                </button>
+                                            </div>
+                                            {driveError && (
+                                                <p style={{ ...font, fontSize: '6px', color: 'var(--neon-magenta)' }}>{driveError}</p>
+                                            )}
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         </motion.div>

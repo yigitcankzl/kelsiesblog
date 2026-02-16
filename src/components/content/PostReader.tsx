@@ -1,7 +1,61 @@
+import { type ReactNode } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowLeft } from 'lucide-react';
 import { useBlogStore } from '@/store/store';
 import { estimateReadTime, getFontConfig, resolveContents } from '@/types';
+
+/**
+ * Lightweight inline-markdown renderer.
+ * Supports: **bold**, *italic*, [text](url), and bare URLs.
+ */
+function renderRichText(text: string): ReactNode[] {
+    // Regex that matches (in order): [text](url) | **bold** | *italic* | bare URLs
+    const pattern = /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)|\*\*(.+?)\*\*|\*(.+?)\*|(https?:\/\/[^\s<]+)/g;
+
+    const parts: ReactNode[] = [];
+    let lastIndex = 0;
+    let match: RegExpExecArray | null;
+
+    while ((match = pattern.exec(text)) !== null) {
+        // Push plain text before this match
+        if (match.index > lastIndex) {
+            parts.push(text.slice(lastIndex, match.index));
+        }
+
+        if (match[1] && match[2]) {
+            // [text](url)
+            parts.push(
+                <a key={match.index} href={match[2]} target="_blank" rel="noopener noreferrer"
+                    style={{ color: 'var(--neon-cyan)', textDecoration: 'underline', textUnderlineOffset: '3px' }}>
+                    {match[1]}
+                </a>
+            );
+        } else if (match[3]) {
+            // **bold**
+            parts.push(<strong key={match.index} style={{ color: '#fff' }}>{match[3]}</strong>);
+        } else if (match[4]) {
+            // *italic*
+            parts.push(<em key={match.index}>{match[4]}</em>);
+        } else if (match[5]) {
+            // bare URL
+            parts.push(
+                <a key={match.index} href={match[5]} target="_blank" rel="noopener noreferrer"
+                    style={{ color: 'var(--neon-cyan)', textDecoration: 'underline', textUnderlineOffset: '3px' }}>
+                    {match[5]}
+                </a>
+            );
+        }
+
+        lastIndex = match.index + match[0].length;
+    }
+
+    // Push remaining plain text
+    if (lastIndex < text.length) {
+        parts.push(text.slice(lastIndex));
+    }
+
+    return parts.length ? parts : [text];
+}
 
 export default function PostReader() {
     const { selectedPost, selectedCountry, setSelectedPost } = useBlogStore();
@@ -132,7 +186,7 @@ export default function PostReader() {
                                 style={{ fontFamily: fontCfg.family, fontSize: fontCfg.size }}>
                                 {resolveContents(section).map((para, pIdx) => (
                                     <p key={pIdx} style={{ marginBottom: '1.2em' }}>
-                                        {para}
+                                        {renderRichText(para)}
                                     </p>
                                 ))}
                             </div>
