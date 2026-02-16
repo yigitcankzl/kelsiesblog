@@ -14,8 +14,25 @@ export interface BlogPost {
     coverImage: string;
     date: string;
     category: string[];
+    contentFont?: string;
     sections: Section[];
     cityBoundary?: GeoJSON.Geometry;
+}
+
+/** Available fonts for post content text. */
+export const CONTENT_FONTS = [
+    { value: 'Press Start 2P',   label: 'PRESS START 2P',   family: "'Press Start 2P', monospace",   size: '9px' },
+    { value: 'VT323',            label: 'VT323',             family: "'VT323', monospace",            size: '16px' },
+    { value: 'Space Mono',       label: 'SPACE MONO',        family: "'Space Mono', monospace",       size: '13px' },
+    { value: 'IBM Plex Mono',    label: 'IBM PLEX MONO',     family: "'IBM Plex Mono', monospace",    size: '13px' },
+    { value: 'JetBrains Mono',   label: 'JETBRAINS MONO',    family: "'JetBrains Mono', monospace",   size: '13px' },
+    { value: 'Courier Prime',    label: 'COURIER PRIME',     family: "'Courier Prime', monospace",    size: '14px' },
+    { value: 'Share Tech Mono',  label: 'SHARE TECH MONO',   family: "'Share Tech Mono', monospace",  size: '14px' },
+    { value: 'Fira Code',        label: 'FIRA CODE',         family: "'Fira Code', monospace",        size: '13px' },
+] as const;
+
+export function getFontConfig(fontValue?: string) {
+    return CONTENT_FONTS.find(f => f.value === fontValue) ?? CONTENT_FONTS[0];
 }
 
 export interface CountryData {

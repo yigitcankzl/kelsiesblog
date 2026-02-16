@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Save, X, Plus, Trash2, ChevronUp, ChevronDown, Type, ImagePlus } from 'lucide-react';
 import { useBlogStore } from '../../store/store';
 import type { BlogPost, Section } from '../../types';
+import { CONTENT_FONTS, getFontConfig } from '../../types';
 import { countryBounds } from '../../data/countryBounds';
 import { worldCities } from '../../data/worldCities';
 import { fetchCityBoundary } from '../../lib/cityBoundaryCache';
@@ -62,6 +63,7 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
     const [date, setDate] = useState(post?.date || '');
     const [coverImage, setCoverImage] = useState(post?.coverImage || '');
     const [categories, setCategories] = useState<string[]>(post?.category || []);
+    const [contentFont, setContentFont] = useState(post?.contentFont || 'Press Start 2P');
     const [showPreview, setShowPreview] = useState(false);
     const [sections, setSections] = useState<Section[]>(
         post?.sections?.length ? normalizeSections(post.sections) : [{ ...emptySection }]
@@ -163,6 +165,7 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
             coverImage,
             date: date.trim(),
             category: categories,
+            contentFont,
             sections: cleanSections,
         };
 
@@ -366,6 +369,40 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                             onFocus={handleInputFocus}
                             onBlur={handleInputBlur}
                         />
+                    </div>
+
+                    {/* Content Font */}
+                    <div>
+                        <label style={labelStyle}>CONTENT FONT</label>
+                        <select
+                            value={contentFont}
+                            onChange={(e) => setContentFont(e.target.value)}
+                            style={{ ...inputStyle, cursor: 'pointer', appearance: 'none' }}
+                            onFocus={handleInputFocus as any}
+                            onBlur={handleInputBlur as any}
+                        >
+                            {CONTENT_FONTS.map((f) => (
+                                <option key={f.value} value={f.value}>
+                                    {f.label}
+                                </option>
+                            ))}
+                        </select>
+                        {/* Font preview */}
+                        <div style={{
+                            marginTop: '10px',
+                            padding: '14px',
+                            border: '1px solid #1a1a1a',
+                            backgroundColor: '#080808',
+                        }}>
+                            <span style={{
+                                fontFamily: getFontConfig(contentFont).family,
+                                fontSize: getFontConfig(contentFont).size,
+                                color: '#aaa',
+                                lineHeight: '2.2',
+                            }}>
+                                The quick brown fox jumps over the lazy dog.
+                            </span>
+                        </div>
                     </div>
 
                     {/* Cover Image URL */}
@@ -678,7 +715,7 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                                 </h3>
                             )}
                             {section.content && (
-                                <p style={{ ...font, fontSize: '8px', color: '#aaa', lineHeight: '2.4' }}>
+                                <p style={{ fontFamily: getFontConfig(contentFont).family, fontSize: getFontConfig(contentFont).size, color: '#aaa', lineHeight: '2.4' }}>
                                     {section.content}
                                 </p>
                             )}

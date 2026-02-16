@@ -1,11 +1,13 @@
 import { motion } from 'framer-motion';
 import { ArrowLeft } from 'lucide-react';
 import { useBlogStore } from '@/store/store';
-import { estimateReadTime } from '@/types';
+import { estimateReadTime, getFontConfig } from '@/types';
 
 export default function PostReader() {
     const { selectedPost, selectedCountry, setSelectedPost } = useBlogStore();
     if (!selectedPost) return null;
+
+    const fontCfg = getFontConfig(selectedPost.contentFont);
 
     return (
         <article className="pb-20 bg-black">
@@ -103,8 +105,8 @@ export default function PostReader() {
                                 ));
                             })()}
 
-                            <p className="text-[9px] text-gray-300 leading-[2.5]"
-                                style={{ fontFamily: "'Press Start 2P', monospace" }}>
+                            <p className="text-gray-300 leading-[2.5]"
+                                style={{ fontFamily: fontCfg.family, fontSize: fontCfg.size }}>
                                 {section.content}
                             </p>
                         </motion.section>
