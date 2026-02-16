@@ -38,41 +38,50 @@ export default function PostReader() {
                     initial={{ opacity: 0, y: 16 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.15, duration: 0.5 }}
-                    style={{ marginBottom: '24px' }}
+                    style={{ marginBottom: '40px' }}
                 >
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-[var(--brand)] text-black text-[6px] font-bold uppercase tracking-[0.12em]"
+                    {/* Location badge */}
+                    <span className="inline-flex items-center gap-2 px-4 py-1.5 bg-[var(--brand)] text-black text-[8px] font-bold uppercase tracking-[0.14em]"
                         style={{ fontFamily: "'Press Start 2P', monospace" }}>
                         {selectedPost.city}, {selectedPost.country}
                     </span>
-                    <h1 className="text-base sm:text-xl lg:text-2xl font-bold text-white leading-relaxed relative text-glitch-always mt-4"
-                        style={{ fontFamily: "'Press Start 2P', monospace" }}
+
+                    {/* Title */}
+                    <h1 className="text-lg sm:text-2xl lg:text-3xl font-bold text-white leading-relaxed relative text-glitch-always mt-5"
+                        style={{ fontFamily: "'Press Start 2P', monospace", lineHeight: '2' }}
                         data-text={selectedPost.title}>
                         {selectedPost.title}
                     </h1>
-                    <div className="flex items-center gap-4 mt-3">
-                        <span className="text-[var(--neon-cyan)] text-[7px]"
-                            style={{ fontFamily: "'Press Start 2P', monospace" }}>
-                            {estimateReadTime(selectedPost.sections)} MIN READ
-                        </span>
-                        <span className="text-[var(--neon-amber)] text-[6px]"
-                            style={{ fontFamily: "'Press Start 2P', monospace" }}>
+
+                    {/* Meta row: date + read time + categories */}
+                    <div className="flex flex-wrap items-center gap-3 mt-4"
+                        style={{ fontFamily: "'Press Start 2P', monospace" }}>
+                        <span className="text-[var(--neon-amber)] text-[9px] tracking-wide">
                             {selectedPost.date}
                         </span>
+                        <span className="text-[#333] text-[10px]">|</span>
+                        <span className="text-[var(--neon-cyan)] text-[9px] tracking-wide">
+                            {estimateReadTime(selectedPost.sections)} MIN READ
+                        </span>
+                        {selectedPost.category?.length > 0 && (
+                            <>
+                                <span className="text-[#333] text-[10px]">|</span>
+                                {selectedPost.category.map(cat => (
+                                    <span key={cat} className="text-[8px] uppercase tracking-[0.14em] px-3 py-1.5"
+                                        style={{
+                                            backgroundColor: 'var(--neon-magenta)',
+                                            color: '#000',
+                                            boxShadow: '0 0 8px rgba(255, 0, 228, 0.25)',
+                                        }}>
+                                        {cat}
+                                    </span>
+                                ))}
+                            </>
+                        )}
                     </div>
-                    {selectedPost.category?.length > 0 && (
-                        <div className="flex flex-wrap items-center gap-2 mt-3">
-                            {selectedPost.category.map(cat => (
-                                <span key={cat} className="text-[6px] uppercase tracking-[0.12em] px-2.5 py-1"
-                                    style={{
-                                        fontFamily: "'Press Start 2P', monospace",
-                                        backgroundColor: 'var(--neon-magenta)',
-                                        color: '#000',
-                                    }}>
-                                    {cat}
-                                </span>
-                            ))}
-                        </div>
-                    )}
+
+                    {/* Divider */}
+                    <div style={{ height: '1px', background: 'linear-gradient(to right, var(--brand), transparent)', marginTop: '24px', opacity: 0.3 }} />
                 </motion.div>
 
                 {/* Sections */}
