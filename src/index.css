@@ -474,6 +474,31 @@ body::before {
   border: 2px solid #ffffff;
 }
 
+/* ── Post content rich text styles ── */
+.post-content a {
+  color: var(--neon-cyan);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.post-content strong, .post-content b {
+  color: #fff;
+}
+
+/* ── ContentEditable editor styles ── */
+[contenteditable][data-placeholder]:empty::before {
+  content: attr(data-placeholder);
+  color: #444;
+  pointer-events: none;
+}
+[contenteditable] a {
+  color: var(--neon-cyan);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+[contenteditable] strong, [contenteditable] b {
+  color: #fff;
+}
+
 /* ── Leaflet overrides ── */
 .leaflet-container {
   width: 100%;

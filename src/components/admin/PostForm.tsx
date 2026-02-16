@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useRef, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { Save, X, Plus, Trash2, ChevronUp, ChevronDown, Type, ImagePlus, AlignLeft, UploadCloud, Loader } from 'lucide-react';
 import { useBlogStore } from '../../store/store';
@@ -109,47 +109,26 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
         setSections(updated);
     };
 
-    // --- Formatting shortcut handler for textareas ---
-    const handleFormatKey = (
-        e: React.KeyboardEvent<HTMLTextAreaElement>,
-        sectionIndex: number,
-        ctnIndex: number,
-    ) => {
+    // --- WYSIWYG formatting handler for contentEditable ---
+    const handleFormatKey = (e: React.KeyboardEvent<HTMLDivElement>) => {
         const isMod = e.ctrlKey || e.metaKey;
         if (!isMod) return;
 
-        let prefix = '';
-        let suffix = '';
-        let placeholder = '';
-
         if (e.key === 'b') {
-            prefix = '**'; suffix = '**'; placeholder = 'bold';
+            e.preventDefault();
+            document.execCommand('bold');
         } else if (e.key === 'i') {
-            prefix = '*'; suffix = '*'; placeholder = 'italic';
+            e.preventDefault();
+            document.execCommand('italic');
         } else if (e.key === 'k') {
-            prefix = '['; suffix = '](url)'; placeholder = 'link text';
-        } else {
-            return;
+            e.preventDefault();
+            const url = prompt('URL:');
+            if (url) document.execCommand('createLink', false, url);
         }
-
-        e.preventDefault();
-        const ta = e.currentTarget;
-        const start = ta.selectionStart;
-        const end = ta.selectionEnd;
-        const text = ta.value;
-        const selected = text.slice(start, end) || placeholder;
-        const newVal = text.slice(0, start) + prefix + selected + suffix + text.slice(end);
-
-        updateContentInSection(sectionIndex, ctnIndex, newVal);
-
-        // Restore cursor around the inserted text
-        requestAnimationFrame(() => {
-            ta.focus();
-            const selStart = start + prefix.length;
-            const selEnd = selStart + selected.length;
-            ta.setSelectionRange(selStart, selEnd);
-        });
     };
+
+    // Ref map for contentEditable divs to avoid cursor-reset
+    const editorRefs = useRef<Map<string, HTMLDivElement>>(new Map());
 
     // --- Content (paragraph) helpers for a section ---
     const addContentToSection = (sectionIndex: number) => {
@@ -688,20 +667,34 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                                             <span style={{ ...font, fontSize: '6px', color: '#444', marginTop: '14px', flexShrink: 0, width: '16px', textAlign: 'right' }}>
                                                 P{ctnIdx + 1}
                                             </span>
-                                            <textarea
-                                                value={ctn}
-                                                onChange={(e) => updateContentInSection(index, ctnIdx, e.target.value)}
-                                                onKeyDown={(e) => handleFormatKey(e, index, ctnIdx)}
-                                                placeholder={`PARAGRAPH ${ctnIdx + 1}...`}
-                                                rows={3}
+                                            <div
+                                                ref={(el) => {
+                                                    const key = `${index}-${ctnIdx}`;
+                                                    if (el) {
+                                                        editorRefs.current.set(key, el);
+                                                        // Only set innerHTML when it actually differs (avoids cursor reset)
+                                                        if (el.innerHTML !== ctn && document.activeElement !== el) {
+                                                            el.innerHTML = ctn || '';
+                                                        }
+                                                    } else {
+                                                        editorRefs.current.delete(key);
+                                                    }
+                                                }}
+                                                contentEditable
+                                                suppressContentEditableWarning
+                                                onInput={(e) => updateContentInSection(index, ctnIdx, (e.target as HTMLDivElement).innerHTML)}
+                                                onKeyDown={handleFormatKey}
+                                                onFocus={handleInputFocus as any}
+                                                onBlur={handleInputBlur as any}
+                                                data-placeholder={`PARAGRAPH ${ctnIdx + 1}...`}
                                                 style={{
                                                     ...inputStyle,
                                                     flex: 1,
-                                                    resize: 'vertical',
+                                                    minHeight: '70px',
                                                     lineHeight: '2.2',
+                                                    whiteSpace: 'pre-wrap',
+                                                    overflowY: 'auto',
                                                 }}
-                                                onFocus={handleInputFocus as any}
-                                                onBlur={handleInputBlur as any}
                                             />
                                             <button
                                                 type="button"
