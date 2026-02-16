@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { ArrowLeft } from 'lucide-react';
 import { useBlogStore } from '@/store/store';
-import { estimateReadTime, getFontConfig } from '@/types';
+import { estimateReadTime, getFontConfig, resolveContents } from '@/types';
 
 export default function PostReader() {
     const { selectedPost, selectedCountry, setSelectedPost } = useBlogStore();
@@ -105,10 +105,14 @@ export default function PostReader() {
                                 ));
                             })()}
 
-                            <p className="text-gray-300 leading-[2.5]"
+                            <div className="text-gray-300 leading-[2.5]"
                                 style={{ fontFamily: fontCfg.family, fontSize: fontCfg.size }}>
-                                {section.content}
-                            </p>
+                                {resolveContents(section).map((para, pIdx) => (
+                                    <p key={pIdx} style={{ marginBottom: '1.2em' }}>
+                                        {para}
+                                    </p>
+                                ))}
+                            </div>
                         </motion.section>
                     ))}
                 </div>

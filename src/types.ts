@@ -1,8 +1,16 @@
 export interface Section {
     heading: string;
-    content: string;
-    image?: string;       // legacy — kept for backward compat with old Firestore docs
+    content: string;        // legacy — kept for backward compat with old Firestore docs
+    contents?: string[];    // new multi-paragraph support
+    image?: string;         // legacy — kept for backward compat with old Firestore docs
     images?: string[];
+}
+
+/** Resolve contents: prefer `contents[]`, fall back to `content` string. */
+export function resolveContents(s: Section): string[] {
+    if (s.contents?.length) return s.contents;
+    if (s.content) return [s.content];
+    return [];
 }
 
 export interface BlogPost {
@@ -58,7 +66,11 @@ export interface SocialLink {
 /** Average reading speed: ~200 words per minute. Returns at least 1. */
 export function estimateReadTime(sections: Section[]): number {
     const words = sections.reduce(
-        (sum, s) => sum + s.heading.split(/\s+/).length + s.content.split(/\s+/).length,
+        (sum, s) => {
+            const texts = resolveContents(s);
+            const contentWords = texts.reduce((a, t) => a + t.split(/\s+/).length, 0);
+            return sum + s.heading.split(/\s+/).length + contentWords;
+        },
         0
     );
     return Math.max(1, Math.round(words / 200));

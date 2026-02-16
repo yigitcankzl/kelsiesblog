@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { Save, X, Plus, Trash2, ChevronUp, ChevronDown, Type, ImagePlus } from 'lucide-react';
+import { Save, X, Plus, Trash2, ChevronUp, ChevronDown, Type, ImagePlus, AlignLeft } from 'lucide-react';
 import { useBlogStore } from '../../store/store';
 import type { BlogPost, Section } from '../../types';
 import { CONTENT_FONTS, getFontConfig } from '../../types';
@@ -42,13 +42,14 @@ interface PostFormProps {
     onCancel: () => void;
 }
 
-const emptySection: Section = { heading: '', content: '', images: [] };
+const emptySection: Section = { heading: '', content: '', contents: [''], images: [] };
 
-// Normalize legacy sections that used `image` (string) into `images` (array)
+// Normalize legacy sections: `image` → `images[]`, `content` → `contents[]`
 function normalizeSections(sections: Section[]): Section[] {
     return sections.map(s => {
         const imgs = s.images?.length ? [...s.images] : (s.image ? [s.image] : []);
-        return { heading: s.heading, content: s.content, images: imgs };
+        const ctns = s.contents?.length ? [...s.contents] : (s.content ? [s.content] : ['']);
+        return { heading: s.heading, content: '', contents: ctns, images: imgs };
     });
 }
 
@@ -107,6 +108,30 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
         setSections(updated);
     };
 
+    // --- Content (paragraph) helpers for a section ---
+    const addContentToSection = (sectionIndex: number) => {
+        setSections(prev => prev.map((s, i) =>
+            i === sectionIndex ? { ...s, contents: [...(s.contents || []), ''] } : s
+        ));
+    };
+
+    const updateContentInSection = (sectionIndex: number, ctnIndex: number, value: string) => {
+        setSections(prev => prev.map((s, i) => {
+            if (i !== sectionIndex) return s;
+            const ctns = [...(s.contents || [])];
+            ctns[ctnIndex] = value;
+            return { ...s, contents: ctns };
+        }));
+    };
+
+    const removeContentFromSection = (sectionIndex: number, ctnIndex: number) => {
+        setSections(prev => prev.map((s, i) => {
+            if (i !== sectionIndex) return s;
+            const ctns = (s.contents || []).filter((_, j) => j !== ctnIndex);
+            return { ...s, contents: ctns.length ? ctns : [''] };
+        }));
+    };
+
     // --- Image helpers for a section ---
     const addImageToSection = (sectionIndex: number) => {
         setSections(prev => prev.map((s, i) =>
@@ -143,12 +168,14 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
         e.preventDefault();
 
         const cleanSections = sections
-            .filter(s => s.heading.trim() || s.content.trim())
+            .filter(s => s.heading.trim() || (s.contents || []).some(c => c.trim()))
             .map(s => {
                 const imgs = (s.images || []).map(u => u.trim()).filter(Boolean);
+                const ctns = (s.contents || []).map(c => c.trim()).filter(Boolean);
                 return {
                     heading: s.heading.trim(),
-                    content: s.content.trim(),
+                    content: ctns.join('\n\n'),          // backward compat: joined string
+                    ...(ctns.length ? { contents: ctns } : {}),
                     ...(imgs.length ? { images: imgs } : {}),
                 };
             });
@@ -200,7 +227,7 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
             .catch(err => console.error('[Boundary] Failed to save city boundary:', err));
     };
 
-    const isValid = title.trim() && country.trim() && city.trim() && sections.some(s => s.heading.trim() && s.content.trim());
+    const isValid = title.trim() && country.trim() && city.trim() && sections.some(s => s.heading.trim() && (s.contents || []).some(c => c.trim()));
 
     const handleInputFocus = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         e.currentTarget.style.borderColor = 'var(--brand)';
@@ -573,19 +600,88 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                                     onFocus={handleInputFocus}
                                     onBlur={handleInputBlur}
                                 />
-                                <textarea
-                                    value={section.content}
-                                    onChange={(e) => updateSection(index, 'content', e.target.value)}
-                                    placeholder="WRITE YOUR STORY HERE..."
-                                    rows={4}
-                                    style={{
-                                        ...inputStyle,
-                                        resize: 'vertical',
-                                        lineHeight: '2.2',
-                                    }}
-                                    onFocus={handleInputFocus as any}
-                                    onBlur={handleInputBlur as any}
-                                />
+                                {/* Multiple Content Blocks (paragraphs) */}
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                                    <label style={{ ...labelStyle, marginBottom: '4px' }}>
+                                        <AlignLeft style={{ width: '10px', height: '10px' }} />
+                                        PARAGRAPHS
+                                        {(section.contents?.length || 0) > 0 && (
+                                            <span style={{ color: 'var(--neon-cyan)' }}>[ {section.contents!.length} ]</span>
+                                        )}
+                                    </label>
+
+                                    {(section.contents || ['']).map((ctn, ctnIdx) => (
+                                        <div key={ctnIdx} style={{ display: 'flex', gap: '6px', alignItems: 'flex-start' }}>
+                                            <span style={{ ...font, fontSize: '6px', color: '#444', marginTop: '14px', flexShrink: 0, width: '16px', textAlign: 'right' }}>
+                                                P{ctnIdx + 1}
+                                            </span>
+                                            <textarea
+                                                value={ctn}
+                                                onChange={(e) => updateContentInSection(index, ctnIdx, e.target.value)}
+                                                placeholder={`PARAGRAPH ${ctnIdx + 1}...`}
+                                                rows={3}
+                                                style={{
+                                                    ...inputStyle,
+                                                    flex: 1,
+                                                    resize: 'vertical',
+                                                    lineHeight: '2.2',
+                                                }}
+                                                onFocus={handleInputFocus as any}
+                                                onBlur={handleInputBlur as any}
+                                            />
+                                            <button
+                                                type="button"
+                                                onClick={() => removeContentFromSection(index, ctnIdx)}
+                                                disabled={(section.contents?.length || 1) <= 1}
+                                                className="cursor-pointer"
+                                                style={{
+                                                    width: '28px',
+                                                    height: '28px',
+                                                    marginTop: '10px',
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'center',
+                                                    background: 'none',
+                                                    border: '1px solid #333',
+                                                    color: '#555',
+                                                    flexShrink: 0,
+                                                    transition: 'all 0.3s',
+                                                    opacity: (section.contents?.length || 1) <= 1 ? 0.3 : 1,
+                                                }}
+                                                onMouseEnter={e => { if ((section.contents?.length || 1) > 1) { e.currentTarget.style.color = '#FF00E4'; e.currentTarget.style.borderColor = '#FF00E4'; } }}
+                                                onMouseLeave={e => { e.currentTarget.style.color = '#555'; e.currentTarget.style.borderColor = '#333'; }}
+                                            >
+                                                <X style={{ width: '12px', height: '12px' }} />
+                                            </button>
+                                        </div>
+                                    ))}
+
+                                    <button
+                                        type="button"
+                                        onClick={() => addContentToSection(index)}
+                                        className="cursor-pointer"
+                                        style={{
+                                            ...font,
+                                            fontSize: '6px',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            gap: '4px',
+                                            color: '#555',
+                                            background: 'none',
+                                            border: '1px dashed #333',
+                                            padding: '6px 10px',
+                                            letterSpacing: '0.1em',
+                                            transition: 'all 0.3s',
+                                            alignSelf: 'flex-start',
+                                        }}
+                                        onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--neon-cyan)'; e.currentTarget.style.color = 'var(--neon-cyan)'; }}
+                                        onMouseLeave={e => { e.currentTarget.style.borderColor = '#333'; e.currentTarget.style.color = '#555'; }}
+                                    >
+                                        <Plus style={{ width: '10px', height: '10px' }} />
+                                        ADD PARAGRAPH
+                                    </button>
+                                </div>
+
                                 {/* Multiple Image URLs */}
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                                     <label style={{ ...labelStyle, marginBottom: '4px' }}>
@@ -707,18 +803,18 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                         {title || 'UNTITLED POST'}
                     </h2>
 
-                    {sections.filter(s => s.heading || s.content).map((section, i) => (
+                    {sections.filter(s => s.heading || (s.contents || []).some(c => c.trim())).map((section, i) => (
                         <div key={i} style={{ marginBottom: '16px' }}>
                             {section.heading && (
                                 <h3 style={{ ...font, fontSize: '10px', color: 'var(--brand)', marginBottom: '8px' }}>
                                     {'>'} {section.heading}
                                 </h3>
                             )}
-                            {section.content && (
-                                <p style={{ fontFamily: getFontConfig(contentFont).family, fontSize: getFontConfig(contentFont).size, color: '#aaa', lineHeight: '2.4' }}>
-                                    {section.content}
+                            {(section.contents || []).filter(c => c.trim()).map((ctn, cIdx) => (
+                                <p key={cIdx} style={{ fontFamily: getFontConfig(contentFont).family, fontSize: getFontConfig(contentFont).size, color: '#aaa', lineHeight: '2.4', marginBottom: '1em' }}>
+                                    {ctn}
                                 </p>
-                            )}
+                            ))}
                             {(section.images || []).filter(Boolean).map((img, imgI) => (
                                 <div key={imgI} style={{ marginTop: '12px', overflow: 'hidden', height: '140px', border: '1px solid #1a1a1a' }}>
                                     <img src={img} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
