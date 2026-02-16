@@ -59,6 +59,20 @@ export default function PostReader() {
                             {selectedPost.date}
                         </span>
                     </div>
+                    {selectedPost.category?.length > 0 && (
+                        <div className="flex flex-wrap items-center gap-2 mt-3">
+                            {selectedPost.category.map(cat => (
+                                <span key={cat} className="text-[6px] uppercase tracking-[0.12em] px-2.5 py-1"
+                                    style={{
+                                        fontFamily: "'Press Start 2P', monospace",
+                                        backgroundColor: 'var(--neon-magenta)',
+                                        color: '#000',
+                                    }}>
+                                    {cat}
+                                </span>
+                            ))}
+                        </div>
+                    )}
                 </motion.div>
 
                 {/* Sections */}
