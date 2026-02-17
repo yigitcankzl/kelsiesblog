@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { ArrowLeft, MapPin } from 'lucide-react';
 import { useBlogStore } from '@/store/store';
 import { estimateReadTime } from '@/types';
+import { getCountryDescription } from '@/data/countryDescriptions';
 
 const categories = ['Culture', 'History', 'Tourism', 'Transportation', 'Politic', 'Food'];
 
@@ -11,6 +12,7 @@ export default function CountryPostsView() {
     const countryPosts = posts.filter(p => p.country === selectedCountry);
 
     const [activeCategory, setActiveCategory] = useState<string | null>(null);
+    const countryDescription = getCountryDescription(selectedCountry);
 
     const filteredPosts = activeCategory
         ? countryPosts.filter(p => p.category.includes(activeCategory))
@@ -53,6 +55,23 @@ export default function CountryPostsView() {
                         </div>
                     </div>
                 </motion.div>
+
+                {/* Country description above stories */}
+                {countryDescription && (
+                    <motion.div
+                        className="mb-12 max-w-6xl w-full border border-[var(--brand)]/50 bg-[rgba(0,0,0,0.65)] px-6 sm:px-8 py-5 retro-corners"
+                        initial={{ opacity: 0, y: 8 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.3, delay: 0.05 }}
+                    >
+                        <p
+                            className="text-[11px] sm:text-sm leading-relaxed text-[var(--neon-amber)]"
+                            style={{ fontFamily: "'Press Start 2P', monospace" }}
+                        >
+                            {countryDescription}
+                        </p>
+                    </motion.div>
+                )}
 
                 {/* Category filters */}
                 <div className="flex flex-wrap gap-4 mb-12">
