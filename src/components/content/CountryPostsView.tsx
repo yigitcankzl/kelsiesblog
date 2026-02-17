@@ -59,8 +59,15 @@ export default function CountryPostsView() {
 
                 {/* Country description above stories */}
                 {countryDescription && (
-                    <motion.div
-                        className="mb-12 max-w-6xl w-full border border-[var(--brand)]/50 bg-[rgba(0,0,0,0.65)] px-6 sm:px-8 py-5 retro-corners"
+                    <div className="mb-12 max-w-6xl w-full">
+                        <h3
+                            className="text-xs sm:text-sm font-bold uppercase tracking-[0.25em] text-[var(--brand)] mb-4 neon-glow"
+                            style={{ fontFamily: "'Press Start 2P', monospace" }}
+                        >
+                            Overview
+                        </h3>
+                        <motion.div
+                            className="border border-[var(--brand)]/50 bg-[rgba(0,0,0,0.65)] px-6 sm:px-8 py-5 retro-corners"
                         initial={{ opacity: 0, y: 8 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.3, delay: 0.05 }}
@@ -71,7 +78,8 @@ export default function CountryPostsView() {
                         >
                             {countryDescription}
                         </p>
-                    </motion.div>
+                        </motion.div>
+                    </div>
                 )}
 
                 {/* Category filters */}
