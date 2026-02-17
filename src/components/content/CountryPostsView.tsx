@@ -8,11 +8,12 @@ import { getCountryDescription } from '@/data/countryDescriptions';
 const categories = ['Culture', 'History', 'Tourism', 'Transportation', 'Politic', 'Food'];
 
 export default function CountryPostsView() {
-    const { selectedCountry, posts, setSelectedCountry, setSelectedPost } = useBlogStore();
+    const { selectedCountry, posts, setSelectedCountry, setSelectedPost, countryOverviews } = useBlogStore();
     const countryPosts = posts.filter(p => p.country === selectedCountry);
 
     const [activeCategory, setActiveCategory] = useState<string | null>(null);
-    const countryDescription = getCountryDescription(selectedCountry);
+    const manualOverview = selectedCountry ? countryOverviews[selectedCountry] : undefined;
+    const countryDescription = manualOverview || getCountryDescription(selectedCountry);
 
     const filteredPosts = activeCategory
         ? countryPosts.filter(p => p.category.includes(activeCategory))

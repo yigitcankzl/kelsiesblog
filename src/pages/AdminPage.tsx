@@ -10,11 +10,12 @@ import PostList from '../components/admin/PostList';
 import PostForm from '../components/admin/PostForm';
 import GalleryManager from '../components/admin/GalleryManager';
 import AboutManager from '../components/admin/AboutManager';
+import CountryOverviewManager from '../components/admin/CountryOverviewManager';
 import type { BlogPost } from '../types';
 
 const font = { fontFamily: "'Press Start 2P', monospace" } as const;
 
-type AdminTab = 'posts' | 'gallery' | 'about';
+ type AdminTab = 'posts' | 'gallery' | 'about' | 'countries';
 
 export default function AdminPage() {
     const navigate = useNavigate();
@@ -136,6 +137,7 @@ export default function AdminPage() {
                             { key: 'posts' as AdminTab, label: 'POSTS' },
                             { key: 'gallery' as AdminTab, label: 'GALLERY' },
                             { key: 'about' as AdminTab, label: 'ABOUT' },
+                            { key: 'countries' as AdminTab, label: 'COUNTRIES' },
                         ]).map(tab => (
                             <button
                                 key={tab.key}
@@ -209,7 +211,7 @@ export default function AdminPage() {
                         >
                             <GalleryManager />
                         </motion.div>
-                    ) : (
+                    ) : activeTab === 'about' ? (
                         <motion.div
                             key="about"
                             initial={{ opacity: 0, y: 20 }}
@@ -218,6 +220,16 @@ export default function AdminPage() {
                             transition={{ duration: 0.3 }}
                         >
                             <AboutManager />
+                        </motion.div>
+                    ) : (
+                        <motion.div
+                            key="countries"
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -20 }}
+                            transition={{ duration: 0.3 }}
+                        >
+                            <CountryOverviewManager />
                         </motion.div>
                     )}
                 </AnimatePresence>

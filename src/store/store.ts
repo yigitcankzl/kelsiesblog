@@ -4,6 +4,7 @@ import {
     fetchPosts,
     fetchGalleryItems,
     fetchAboutContent,
+    fetchCountryOverviews,
     addPostDoc,
     updatePostDoc,
     deletePostDoc,
@@ -11,6 +12,7 @@ import {
     updateGalleryDoc,
     deleteGalleryDoc,
     updateAboutDoc,
+    saveCountryOverview,
 } from '../lib/firestore';
 
 interface BlogStore {
@@ -22,6 +24,7 @@ interface BlogStore {
     aboutContent: AboutContent;
     isAuthenticated: boolean;
     loading: boolean;
+    countryOverviews: Record<string, string>;
 
     // Actions
     initializeData: () => Promise<void>;
@@ -37,6 +40,7 @@ interface BlogStore {
     updateAboutContent: (content: Partial<AboutContent>) => void;
     setAuthenticated: (value: boolean) => void;
     logout: () => void;
+    updateCountryOverview: (country: string, overview: string) => void;
 
     // Derived
     getCountriesWithPosts: () => string[];
@@ -72,19 +76,22 @@ export const useBlogStore = create<BlogStore>((set, get) => ({
     aboutContent: defaultAbout,
     isAuthenticated: false,
     loading: true,
+    countryOverviews: {},
 
     initializeData: async () => {
         try {
-            const [posts, gallery, about] = await Promise.all([
+            const [posts, gallery, about, countryOverviews] = await Promise.all([
                 fetchPosts(),
                 fetchGalleryItems(),
                 fetchAboutContent(),
+                fetchCountryOverviews(),
             ]);
 
             set({
                 posts,
                 galleryItems: gallery,
                 aboutContent: about || defaultAbout,
+                countryOverviews,
                 loading: false,
             });
         } catch (err) {
@@ -144,6 +151,16 @@ export const useBlogStore = create<BlogStore>((set, get) => ({
         }));
         const fullContent = { ...get().aboutContent, ...updates };
         updateAboutDoc(fullContent).catch(console.error);
+    },
+
+    updateCountryOverview: (country, overview) => {
+        set((state) => ({
+            countryOverviews: {
+                ...state.countryOverviews,
+                [country]: overview,
+            },
+        }));
+        saveCountryOverview(country, overview).catch(console.error);
     },
 
     setAuthenticated: (value) => set({ isAuthenticated: value }),

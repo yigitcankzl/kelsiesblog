@@ -86,6 +86,32 @@ export async function updateAboutDoc(data: Partial<AboutContent>): Promise<void>
     await setDoc(aboutDocRef, data, { merge: true });
 }
 
+// ── Country Overviews (per-country editable description) ─────────────────────
+
+export interface CountryOverviewDoc {
+    country: string;
+    overview: string;
+}
+
+const countryOverviewsCol = collection(db, 'countryOverviews');
+
+export async function fetchCountryOverviews(): Promise<Record<string, string>> {
+    const snap = await getDocs(countryOverviewsCol);
+    const map: Record<string, string> = {};
+    snap.forEach((d) => {
+        const data = d.data() as CountryOverviewDoc;
+        if (data.country && typeof data.overview === 'string') {
+            map[data.country] = data.overview;
+        }
+    });
+    return map;
+}
+
+export async function saveCountryOverview(country: string, overview: string): Promise<void> {
+    const id = country;
+    await setDoc(doc(db, 'countryOverviews', id), { country, overview });
+}
+
 // ── City Boundaries ───────────────────────────────────
 
 export interface CityBoundaryDoc {
