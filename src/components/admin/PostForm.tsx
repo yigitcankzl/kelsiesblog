@@ -73,7 +73,7 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
 
     const isEditing = post !== null;
 
-    const availableCategories = ['Culture', 'History', 'Tourism', 'Transportation', 'Politic', 'Food'];
+    const availableCategories = ['Culture', 'History', 'Tourism', 'Transportation', 'Politic', 'Food and Drink', 'Personal Story'];
 
     const toggleCategory = (cat: string) => {
         setCategories(prev =>

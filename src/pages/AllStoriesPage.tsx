@@ -15,10 +15,13 @@ export default function AllStoriesPage() {
         window.scrollTo(0, 0);
     }, []);
 
-    const categories = ['Culture', 'History', 'Tourism', 'Transportation', 'Politic', 'Food'];
+    const categories = ['Culture', 'History', 'Tourism', 'Transportation', 'Politic', 'Food and Drink', 'Personal Story'];
 
     const filteredPosts = activeCategory
-        ? posts.filter(p => p.category.includes(activeCategory))
+        ? posts.filter(p =>
+            p.category.includes(activeCategory) ||
+            (activeCategory === 'Food and Drink' && p.category.includes('Food'))
+        )
         : posts;
 
     const grouped = filteredPosts.reduce<Record<string, BlogPost[]>>((acc, post) => {
