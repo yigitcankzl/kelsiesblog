@@ -20,11 +20,11 @@ export default function CountryPostsView() {
         : countryPosts;
 
     return (
-        <section className="py-16 bg-black">
-            <div style={{ maxWidth: '1024px', margin: '0 auto', paddingLeft: '24px', paddingRight: '24px' }}>
+        <section className="py-20 sm:py-24 bg-black">
+            <div style={{ maxWidth: '1024px', margin: '0 auto', paddingLeft: '24px', paddingRight: '24px' }} className="space-y-16">
                 {/* Header */}
                 <motion.div
-                    className="flex items-end gap-6 mb-8"
+                    className="flex items-end gap-8 sm:gap-10 mb-4"
                     initial={{ opacity: 0, x: -12 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.3 }}
@@ -59,15 +59,15 @@ export default function CountryPostsView() {
 
                 {/* Country description above stories */}
                 {countryDescription && (
-                    <div className="mb-12 max-w-6xl w-full">
+                    <div className="max-w-6xl w-full">
                         <h3
-                            className="text-xs sm:text-sm font-bold uppercase tracking-[0.25em] text-[var(--brand)] mb-4 neon-glow"
+                            className="text-xs sm:text-sm font-bold uppercase tracking-[0.25em] text-[var(--brand)] mb-5 neon-glow"
                             style={{ fontFamily: "'Press Start 2P', monospace" }}
                         >
                             Overview
                         </h3>
                         <motion.div
-                            className="border border-[var(--brand)]/50 bg-[rgba(0,0,0,0.65)] px-6 sm:px-8 py-5 retro-corners"
+                            className="border border-[var(--brand)]/50 bg-[rgba(0,0,0,0.65)] px-6 sm:px-8 py-6 sm:py-7 retro-corners"
                         initial={{ opacity: 0, y: 8 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.3, delay: 0.05 }}
@@ -83,7 +83,7 @@ export default function CountryPostsView() {
                 )}
 
                 {/* Category filters */}
-                <div className="flex flex-wrap gap-4 mb-12">
+                <div className="flex flex-wrap gap-5 sm:gap-6">
                     <button
                         onClick={() => setActiveCategory(null)}
                         className="cursor-pointer transition-all duration-300"
@@ -126,7 +126,7 @@ export default function CountryPostsView() {
                 </div>
 
                 {/* Grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-10">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-12 sm:gap-14">
                     {filteredPosts.map((post, index) => (
                         <motion.article
                             key={post.id}
@@ -136,7 +136,7 @@ export default function CountryPostsView() {
                             onClick={() => setSelectedPost(post)}
                             className="group cursor-pointer transition-all duration-500 hover:-translate-y-1"
                         >
-                            <div className="relative overflow-hidden aspect-[16/9] mb-6 retro-corners hover-glitch"
+                            <div className="relative overflow-hidden aspect-[16/9] mb-8 retro-corners hover-glitch"
                                 style={{ boxShadow: '0 0 10px rgba(0, 255, 65, 0.15)' }}>
                                 <span className="rc-extra absolute inset-0" />
                                 <img
@@ -153,13 +153,13 @@ export default function CountryPostsView() {
                                     </span>
                                 </div>
                             </div>
-                            <div className="flex items-center text-[8px] font-medium text-gray-500 mb-4 space-x-3 uppercase tracking-wider"
+                            <div className="flex items-center text-[8px] font-medium text-gray-500 mb-5 space-x-3 uppercase tracking-wider"
                                 style={{ fontFamily: "'Press Start 2P', monospace" }}>
                                 <span className="text-[var(--neon-cyan)]">{post.city}, {post.country}</span>
                                 <span className="w-1.5 h-1.5 bg-[var(--neon-magenta)]" />
                                 <span className="text-[var(--neon-amber)]">{estimateReadTime(post.sections)} MIN</span>
                             </div>
-                            <h3 className="text-sm md:text-base font-bold text-white mb-4 group-hover:text-[var(--brand)] transition-colors leading-relaxed text-glitch"
+                            <h3 className="text-sm md:text-base font-bold text-white mb-5 group-hover:text-[var(--brand)] transition-colors leading-relaxed text-glitch"
                                 style={{ fontFamily: "'Press Start 2P', monospace" }}
                                 data-text={post.title}>
                                 {post.title}
