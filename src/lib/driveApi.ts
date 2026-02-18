@@ -12,7 +12,7 @@ export interface UploadResponse {
 /**
  * Upload an image file to Cloudflare R2 via backend API
  */
-export async function uploadImageToDrive(file: File): Promise<UploadResponse> {
+export async function uploadImageToR2(file: File): Promise<UploadResponse> {
     const formData = new FormData();
     formData.append('file', file);
 
