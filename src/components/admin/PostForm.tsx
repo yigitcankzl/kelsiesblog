@@ -10,6 +10,7 @@ import { fetchCityBoundary } from '@/lib/cityBoundaryCache';
 import { mergePostFields } from '@/lib/firestore';
 import { parseFolderId, listDriveImages, driveThumbUrl } from '@/lib/googleDrive';
 import { uploadImageToR2, listR2Images, deleteR2Image, type R2Item } from '@/lib/r2Api';
+import RichTextEditor from './RichTextEditor';
 
 const font = { fontFamily: "'Press Start 2P', monospace" } as const;
 
@@ -46,12 +47,24 @@ interface PostFormProps {
 
 const emptySection: Section = { heading: '', content: '', contents: [''], images: [] };
 
-// Normalize legacy sections: `image` → `images[]`, `content` → `contents[]`
+// Normalize legacy sections: `image` → `images[]`, `content`/`contents[]` → `content` (HTML)
 function normalizeSections(sections: Section[]): Section[] {
     return sections.map(s => {
         const imgs = s.images?.length ? [...s.images] : (s.image ? [s.image] : []);
-        const ctns = s.contents?.length ? [...s.contents] : (s.content ? [s.content] : ['']);
-        return { heading: s.heading, content: '', contents: ctns, images: imgs };
+
+        // Convert legacy contents[] to HTML string
+        let htmlContent = s.content || '';
+        if (s.contents?.length) {
+            htmlContent = s.contents.map(c => {
+                if (c.startsWith('IMAGE::')) {
+                    const url = c.replace('IMAGE::', '');
+                    return `<img src="${url}" />`;
+                }
+                return `<p>${c}</p>`;
+            }).join('');
+        }
+
+        return { heading: s.heading, content: htmlContent, contents: [], images: imgs };
     });
 }
 
@@ -76,11 +89,10 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
 
     const coverFileInputRef = useRef<HTMLInputElement>(null);
     const sectionImageFileInputRef = useRef<HTMLInputElement>(null);
-    const inlineImageFileInputRef = useRef<HTMLInputElement>(null); // New ref for inline images
+
     const [coverUploading, setCoverUploading] = useState(false);
     const [sectionUploadingIndex, setSectionUploadingIndex] = useState<number | null>(null);
     const [sectionImageUploading, setSectionImageUploading] = useState<number | null>(null);
-    const [inlineImageUploading, setInlineImageUploading] = useState<{ sectionIndex: number, contentIndex: number } | null>(null); // New state
 
     // R2 media browser (pick existing + delete)
     const [showR2Browser, setShowR2Browser] = useState(false);
@@ -116,11 +128,7 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
         await loadR2();
     };
 
-    const openR2ForInline = async (sectionIndex: number, contentIndex: number) => {
-        setR2PickTarget({ kind: 'inline', sectionIndex, contentIndex });
-        setShowR2Browser(true);
-        await loadR2();
-    };
+
 
     const closeR2 = () => {
         setShowR2Browser(false);
@@ -154,23 +162,19 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
             return;
         }
 
-        if (r2PickTarget.kind === 'inline') {
-            const { sectionIndex, contentIndex } = r2PickTarget;
-            // Only take the first selected image for inline
-            if (urls.length > 0) {
-                updateContentInSection(sectionIndex, contentIndex, `IMAGE::${urls[0]}`);
-            }
+        if (r2PickTarget.kind === 'section') {
+            const idx = r2PickTarget.index;
+            setSections(prev => prev.map((s, i) => {
+                if (i !== idx) return s;
+                const existing = s.images || [];
+                const merged = Array.from(new Set([...existing, ...urls]));
+                return { ...s, images: merged };
+            }));
             closeR2();
             return;
         }
 
-        const idx = r2PickTarget.index;
-        setSections(prev => prev.map((s, i) => {
-            if (i !== idx) return s;
-            const existing = s.images || [];
-            const merged = Array.from(new Set([...existing, ...urls]));
-            return { ...s, images: merged };
-        }));
+        // Add logical fallthrough or additional handling if 'inline' is needed in future
         closeR2();
     };
 
@@ -237,23 +241,7 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
         }
     };
 
-    const handleInlineImageFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        const target = inlineImageUploading;
-        if (!file || !file.type.startsWith('image/') || !target) return;
 
-        // Force re-render to show loading state if needed, though state is already set
-        try {
-            const result = await uploadImageToR2(file);
-            updateContentInSection(target.sectionIndex, target.contentIndex, `IMAGE::${result.url}`);
-        } catch (err: unknown) {
-            console.error('Inline image upload failed:', err);
-            alert(err instanceof Error ? err.message : 'Upload failed');
-        } finally {
-            setInlineImageUploading(null);
-            e.target.value = '';
-        }
-    };
 
     const availableCategories = ['Culture', 'History', 'Tourism', 'Transportation', 'Politic', 'Food and Drink', 'Personal Story'];
 
@@ -291,49 +279,15 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
         setSections(updated);
     };
 
-    // --- WYSIWYG formatting handler for contentEditable ---
-    const handleFormatKey = (e: React.KeyboardEvent<HTMLDivElement>) => {
-        const isMod = e.ctrlKey || e.metaKey;
-        if (!isMod) return;
 
-        if (e.key === 'b') {
-            e.preventDefault();
-            document.execCommand('bold');
-        } else if (e.key === 'i') {
-            e.preventDefault();
-            document.execCommand('italic');
-        } else if (e.key === 'k') {
-            e.preventDefault();
-            const url = prompt('URL:');
-            if (url) document.execCommand('createLink', false, url);
-        }
-    };
 
-    // Ref map for contentEditable divs to avoid cursor-reset
-    const editorRefs = useRef<Map<string, HTMLDivElement>>(new Map());
 
-    // --- Content (paragraph) helpers for a section ---
-    const addContentToSection = (sectionIndex: number) => {
+
+    // --- Content helpers ---
+    const updateSectionContent = (index: number, html: string) => {
         setSections(prev => prev.map((s, i) =>
-            i === sectionIndex ? { ...s, contents: [...(s.contents || []), ''] } : s
+            i === index ? { ...s, content: html } : s
         ));
-    };
-
-    const updateContentInSection = (sectionIndex: number, ctnIndex: number, value: string) => {
-        setSections(prev => prev.map((s, i) => {
-            if (i !== sectionIndex) return s;
-            const ctns = [...(s.contents || [])];
-            ctns[ctnIndex] = value;
-            return { ...s, contents: ctns };
-        }));
-    };
-
-    const removeContentFromSection = (sectionIndex: number, ctnIndex: number) => {
-        setSections(prev => prev.map((s, i) => {
-            if (i !== sectionIndex) return s;
-            const ctns = (s.contents || []).filter((_, j) => j !== ctnIndex);
-            return { ...s, contents: ctns.length ? ctns : [''] };
-        }));
     };
 
     // --- Image helpers for a section ---
@@ -405,11 +359,11 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
             .filter(s => s.heading.trim() || (s.contents || []).some(c => c.trim()))
             .map(s => {
                 const imgs = (s.images || []).map(u => u.trim()).filter(Boolean);
-                const ctns = (s.contents || []).map(c => c.trim()).filter(Boolean);
+
                 return {
                     heading: s.heading.trim(),
-                    content: ctns.join('\n\n'),          // backward compat: joined string
-                    ...(ctns.length ? { contents: ctns } : {}),
+                    content: s.content || '',
+                    contents: [], // Clear legacy
                     ...(imgs.length ? { images: imgs } : {}),
                 };
             });
@@ -461,7 +415,7 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
             .catch(err => console.error('[Boundary] Failed to save city boundary:', err));
     };
 
-    const isValid = title.trim() && country.trim() && city.trim() && sections.some(s => s.heading.trim() && (s.contents || []).some(c => c.trim()));
+    const isValid = title.trim() && country.trim() && city.trim() && sections.some(s => s.heading.trim() && s.content?.trim());
 
     const handleInputFocus = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         e.currentTarget.style.borderColor = 'var(--brand)';
@@ -810,7 +764,7 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                                                 color: '#000',
                                                 border: 'none',
                                                 padding: '6px 10px',
-                                                opacity: storageSelected.size === 0 ? 0.6 : 1,
+                                                opacity: r2Selected.size === 0 ? 0.6 : 1,
                                             }}
                                         >
                                             <ImagePlus style={{ width: '10px', height: '10px' }} />
@@ -819,20 +773,20 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                                     </div>
                                 </div>
 
-                                {storageError && (
-                                    <p style={{ ...font, fontSize: '6px', color: 'var(--neon-magenta)', marginBottom: '8px' }}>{storageError}</p>
+                                {r2Error && (
+                                    <p style={{ ...font, fontSize: '6px', color: 'var(--neon-magenta)', marginBottom: '8px' }}>{r2Error}</p>
                                 )}
 
-                                {storageLoading && storageItems.length === 0 ? (
+                                {r2Loading && r2Items.length === 0 ? (
                                     <p style={{ ...font, fontSize: '6px', color: '#666' }}>LOADING...</p>
                                 ) : (
                                     <div className="grid grid-cols-4 sm:grid-cols-6 gap-2" style={{ maxHeight: '240px', overflowY: 'auto' }}>
-                                        {storageItems.map(item => {
-                                            const selected = storageSelected.has(item.key);
+                                        {r2Items.map(item => {
+                                            const selected = r2Selected.has(item.key);
                                             return (
                                                 <div
                                                     key={item.key}
-                                                    onClick={() => toggleStorageSelect(item.key)}
+                                                    onClick={() => toggleR2Select(item.key)}
                                                     className="cursor-pointer"
                                                     style={{
                                                         border: `2px solid ${selected ? 'var(--neon-cyan)' : '#1a1a1a'}`,
@@ -1026,194 +980,20 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                                     onFocus={handleInputFocus}
                                     onBlur={handleInputBlur}
                                 />
-                                {/* Multiple Content Blocks (paragraphs) */}
+
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                                     <label style={{ ...labelStyle, marginBottom: '4px' }}>
                                         <AlignLeft style={{ width: '10px', height: '10px' }} />
-                                        PARAGRAPHS
-                                        {(section.contents?.length || 0) > 0 && (
-                                            <span style={{ color: 'var(--neon-cyan)' }}>[ {section.contents!.length} ]</span>
-                                        )}
+                                        CONTENT
                                     </label>
-
-                                    {(section.contents || ['']).map((ctn, ctnIdx) => {
-                                        const isImageBlock = ctn.startsWith('IMAGE::');
-                                        const imageValue = isImageBlock ? ctn.replace('IMAGE::', '') : '';
-
-                                        return (
-                                            <div key={ctnIdx} style={{ display: 'flex', gap: '6px', alignItems: 'flex-start', marginBottom: '8px' }}>
-                                                <span style={{ ...font, fontSize: '6px', color: '#444', marginTop: '14px', flexShrink: 0, width: '16px', textAlign: 'right' }}>
-                                                    {isImageBlock ? 'IMG' : `P${ctnIdx + 1}`}
-                                                </span>
-
-                                                {isImageBlock ? (
-                                                    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                                                        <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
-                                                            <input
-                                                                type="url"
-                                                                value={imageValue}
-                                                                onChange={(e) => updateContentInSection(index, ctnIdx, `IMAGE::${e.target.value}`)}
-                                                                placeholder="INLINE IMAGE URL..."
-                                                                style={{ ...inputStyle, flex: 1, borderColor: 'var(--neon-cyan)' }}
-                                                                onFocus={handleInputFocus}
-                                                                onBlur={handleInputBlur}
-                                                            />
-                                                        </div>
-                                                        {/* Inline Image Tools */}
-                                                        <div style={{ display: 'flex', gap: '6px' }}>
-                                                            <button
-                                                                type="button"
-                                                                onClick={() => {
-                                                                    const url = prompt('Enter Image URL:');
-                                                                    if (url) updateContentInSection(index, ctnIdx, `IMAGE::${url}`);
-                                                                }}
-                                                                className="cursor-pointer"
-                                                                style={{ ...font, fontSize: '5px', padding: '4px 8px', border: '1px solid #333', color: '#666' }}
-                                                            >
-                                                                PASTE URL
-                                                            </button>
-                                                            <button
-                                                                type="button"
-                                                                onClick={() => {
-                                                                    setInlineImageUploading({ sectionIndex: index, contentIndex: ctnIdx });
-                                                                    inlineImageFileInputRef.current?.click();
-                                                                }}
-                                                                disabled={inlineImageUploading?.sectionIndex === index && inlineImageUploading?.contentIndex === ctnIdx}
-                                                                className="cursor-pointer"
-                                                                style={{ ...font, fontSize: '5px', padding: '4px 8px', border: '1px solid #333', color: 'var(--neon-cyan)' }}
-                                                            >
-                                                                {inlineImageUploading?.sectionIndex === index && inlineImageUploading?.contentIndex === ctnIdx ? 'UPLOADING...' : 'UPLOAD'}
-                                                            </button>
-                                                            <button
-                                                                type="button"
-                                                                onClick={() => openStorageForInline(index, ctnIdx)}
-                                                                className="cursor-pointer"
-                                                                style={{ ...font, fontSize: '5px', padding: '4px 8px', border: '1px solid #333', color: '#aaa' }}
-                                                            >
-                                                                STORAGE MEDIA
-                                                            </button>
-                                                        </div>
-                                                        {imageValue && (
-                                                            <div style={{ height: '100px', overflow: 'hidden', border: '1px solid #333', marginTop: '4px' }}>
-                                                                <img src={imageValue} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
-                                                            </div>
-                                                        )}
-                                                    </div>
-                                                ) : (
-                                                    <div
-                                                        ref={(el) => {
-                                                            const key = `${index}-${ctnIdx}`;
-                                                            if (el) {
-                                                                editorRefs.current.set(key, el);
-                                                                if (el.innerHTML !== ctn && document.activeElement !== el) {
-                                                                    el.innerHTML = ctn || '';
-                                                                }
-                                                            } else {
-                                                                editorRefs.current.delete(key);
-                                                            }
-                                                        }}
-                                                        contentEditable
-                                                        suppressContentEditableWarning
-                                                        onInput={(e) => updateContentInSection(index, ctnIdx, (e.target as HTMLDivElement).innerHTML)}
-                                                        onKeyDown={handleFormatKey}
-                                                        onFocus={handleInputFocus as any}
-                                                        onBlur={handleInputBlur as any}
-                                                        data-placeholder={`PARAGRAPH ${ctnIdx + 1}...`}
-                                                        style={{
-                                                            ...inputStyle,
-                                                            flex: 1,
-                                                            minHeight: '70px',
-                                                            lineHeight: '2.2',
-                                                            whiteSpace: 'pre-wrap',
-                                                            overflowY: 'auto',
-                                                        }}
-                                                    />
-                                                )}
-
-                                                <button
-                                                    type="button"
-                                                    onClick={() => removeContentFromSection(index, ctnIdx)}
-                                                    disabled={(section.contents?.length || 1) <= 1}
-                                                    className="cursor-pointer"
-                                                    style={{
-                                                        width: '28px',
-                                                        height: '28px',
-                                                        marginTop: '10px',
-                                                        display: 'flex',
-                                                        alignItems: 'center',
-                                                        justifyContent: 'center',
-                                                        background: 'none',
-                                                        border: '1px solid #333',
-                                                        color: '#555',
-                                                        flexShrink: 0,
-                                                        transition: 'all 0.3s',
-                                                        opacity: (section.contents?.length || 1) <= 1 ? 0.3 : 1,
-                                                    }}
-                                                    onMouseEnter={e => { if ((section.contents?.length || 1) > 1) { e.currentTarget.style.color = '#FF00E4'; e.currentTarget.style.borderColor = '#FF00E4'; } }}
-                                                    onMouseLeave={e => { e.currentTarget.style.color = '#555'; e.currentTarget.style.borderColor = '#333'; }}
-                                                >
-                                                    <X style={{ width: '12px', height: '12px' }} />
-                                                </button>
-                                            </div>
-                                        );
-                                    })}
-
-                                    <div style={{ display: 'flex', gap: '8px' }}>
-                                        <button
-                                            type="button"
-                                            onClick={() => addContentToSection(index)}
-                                            className="cursor-pointer"
-                                            style={{
-                                                ...font,
-                                                fontSize: '6px',
-                                                display: 'flex',
-                                                alignItems: 'center',
-                                                gap: '4px',
-                                                color: '#555',
-                                                background: 'none',
-                                                border: '1px dashed #333',
-                                                padding: '6px 10px',
-                                                letterSpacing: '0.1em',
-                                                transition: 'all 0.3s',
-                                            }}
-                                            onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--neon-cyan)'; e.currentTarget.style.color = 'var(--neon-cyan)'; }}
-                                            onMouseLeave={e => { e.currentTarget.style.borderColor = '#333'; e.currentTarget.style.color = '#555'; }}
-                                        >
-                                            <Plus style={{ width: '10px', height: '10px' }} />
-                                            ADD PARAGRAPH
-                                        </button>
-                                        <button
-                                            type="button"
-                                            onClick={() => {
-                                                setSections(prev => prev.map((s, i) =>
-                                                    i === index ? { ...s, contents: [...(s.contents || []), 'IMAGE::'] } : s
-                                                ));
-                                            }}
-                                            className="cursor-pointer"
-                                            style={{
-                                                ...font,
-                                                fontSize: '6px',
-                                                display: 'flex',
-                                                alignItems: 'center',
-                                                gap: '4px',
-                                                color: '#555',
-                                                background: 'none',
-                                                border: '1px dashed #333',
-                                                padding: '6px 10px',
-                                                letterSpacing: '0.1em',
-                                                transition: 'all 0.3s',
-                                            }}
-                                            onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--neon-magenta)'; e.currentTarget.style.color = 'var(--neon-magenta)'; }}
-                                            onMouseLeave={e => { e.currentTarget.style.borderColor = '#333'; e.currentTarget.style.color = '#555'; }}
-                                        >
-                                            <ImagePlus style={{ width: '10px', height: '10px' }} />
-                                            ADD INLINE IMAGE
-                                        </button>
-                                    </div>
+                                    <RichTextEditor
+                                        content={section.content || ''}
+                                        onChange={(html) => updateSectionContent(index, html)}
+                                    />
                                 </div>
 
-                                {/* Multiple Image URLs */}
-                                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                                {/* Images Manager */}
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginTop: '12px' }}>
                                     <label style={{ ...labelStyle, marginBottom: '4px' }}>
                                         <ImagePlus style={{ width: '10px', height: '10px' }} />
                                         IMAGES
@@ -1264,13 +1044,7 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                                         style={{ display: 'none' }}
                                         onChange={handleSectionImageFileChange}
                                     />
-                                    <input
-                                        ref={inlineImageFileInputRef}
-                                        type="file"
-                                        accept="image/*"
-                                        style={{ display: 'none' }}
-                                        onChange={handleInlineImageFileChange}
-                                    />
+
                                     <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
                                         <button
                                             type="button"
@@ -1305,7 +1079,7 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                                         </button>
                                         <button
                                             type="button"
-                                            onClick={() => openStorageForSection(index)}
+                                            onClick={() => openR2ForSection(index)}
                                             className="cursor-pointer"
                                             style={{
                                                 ...font, fontSize: '6px', display: 'flex', alignItems: 'center', gap: '4px',
@@ -1424,18 +1198,17 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                         {title || 'UNTITLED POST'}
                     </h2>
 
-                    {sections.filter(s => s.heading || (s.contents || []).some(c => c.trim())).map((section, i) => (
+                    {sections.filter(s => s.heading || (s.contents || []).some(c => c.trim()) || s.content).map((section, i) => (
                         <div key={i} style={{ marginBottom: '16px' }}>
                             {section.heading && (
                                 <h3 style={{ ...font, fontSize: '10px', color: 'var(--brand)', marginBottom: '8px' }}>
                                     {'>'} {section.heading}
                                 </h3>
                             )}
-                            {(section.contents || []).filter(c => c.trim()).map((ctn, cIdx) => (
-                                <p key={cIdx} style={{ fontFamily: getFontConfig(contentFont).family, fontSize: getFontConfig(contentFont).size, color: '#aaa', lineHeight: '2.4', marginBottom: '1em' }}>
-                                    {ctn}
-                                </p>
-                            ))}
+                            <div
+                                style={{ fontFamily: getFontConfig(contentFont).family, fontSize: getFontConfig(contentFont).size, color: '#aaa', lineHeight: '2.4', marginBottom: '1em' }}
+                                dangerouslySetInnerHTML={{ __html: section.content || '' }}
+                            />
                             {(section.images || []).filter(Boolean).map((img, imgI) => (
                                 <div key={imgI} style={{ marginTop: '12px', overflow: 'hidden', height: '140px', border: '1px solid #1a1a1a' }}>
                                     <img src={img} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
