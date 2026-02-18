@@ -16,14 +16,6 @@ export interface R2Item {
     size: number | null;
 }
 
-async function getAuthHeader(): Promise<Record<string, string>> {
-    const { auth } = await import('@/lib/firebase');
-    const user = auth.currentUser;
-    if (!user) throw new Error('Not authenticated');
-    const token = await user.getIdToken();
-    return { Authorization: `Bearer ${token}` };
-}
-
 /**
  * Upload an image file to Cloudflare R2 via backend API
  */
@@ -34,7 +26,6 @@ export async function uploadImageToR2(file: File): Promise<UploadResponse> {
     const res = await fetch('/api/upload-r2', {
         method: 'POST',
         body: formData,
-        headers: await getAuthHeader(),
     });
 
     if (!res.ok) {
@@ -53,9 +44,7 @@ export async function uploadImageToR2(file: File): Promise<UploadResponse> {
 }
 
 export async function listR2Images(prefix = 'blog/'): Promise<R2Item[]> {
-    const res = await fetch(`/api/r2-list?prefix=${encodeURIComponent(prefix)}`, {
-        headers: await getAuthHeader(),
-    });
+    const res = await fetch(`/api/r2-list?prefix=${encodeURIComponent(prefix)}`);
     if (!res.ok) {
         const error = await res.json().catch(() => ({ error: 'List failed' }));
         throw new Error(error.error || `List failed: ${res.status}`);
@@ -69,7 +58,6 @@ export async function deleteR2Image(key: string): Promise<void> {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            ...(await getAuthHeader()),
         },
         body: JSON.stringify({ key }),
     });
