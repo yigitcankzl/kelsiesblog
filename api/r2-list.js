@@ -1,5 +1,4 @@
 import { S3Client, ListObjectsV2Command } from '@aws-sdk/client-s3';
-import { requireIdToken } from './_lib/firebaseAdmin.js';
 
 const BUCKET = process.env.R2_BUCKET || 'blog-images';
 
@@ -20,13 +19,11 @@ function getS3() {
 export default async function handler(req, res) {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Authorization, Content-Type');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
     if (req.method === 'OPTIONS') return res.status(200).end();
     if (req.method !== 'GET') return res.status(405).json({ error: 'Method not allowed' });
 
     try {
-        await requireIdToken(req);
-
         const prefix = typeof req.query?.prefix === 'string' ? req.query.prefix : 'blog/';
         const maxKeysRaw = typeof req.query?.maxKeys === 'string' ? Number(req.query.maxKeys) : 200;
         const maxKeys = Number.isFinite(maxKeysRaw) ? Math.max(1, Math.min(1000, maxKeysRaw)) : 200;
