@@ -9,6 +9,7 @@ import { uploadImageToR2, listR2Images, deleteR2Image, type R2Item } from '@/lib
 const font = { fontFamily: "'Press Start 2P', monospace" } as const;
 
 const inputStyle: React.CSSProperties = {
+    // ... (keep usage of inputStyle implicitly or explicitly if not changing)
     ...font,
     fontSize: '9px',
     width: '100%',
@@ -221,7 +222,7 @@ export default function GalleryManager() {
 
     const handleR2DeleteSelected = async () => {
         if (r2Selected.size === 0) return;
-        if (!confirm(`Delete ${r2Selected.size} file(s) from R2? This cannot be undone.`)) return;
+        if (!confirm(`Delete ${r2Selected.size} file(s)? This cannot be undone.`)) return;
         setR2Loading(true);
         setR2Error('');
         try {
@@ -374,7 +375,7 @@ export default function GalleryManager() {
                                 disabled={r2Selected.size === 0 || r2Loading}
                             >
                                 {r2Loading ? <Loader className="w-3 h-3 animate-spin" /> : <Trash2 className="w-3 h-3" />}
-                                DELETE FROM R2
+                                DELETE
                             </button>
                         </div>
                     </div>
@@ -563,7 +564,7 @@ export default function GalleryManager() {
                                             type="text"
                                             value={form.src}
                                             onChange={e => { setForm({ ...form, src: e.target.value }); setPreviewError(false); }}
-                                            placeholder="https://... veya bilgisayardan yükle (R2)"
+                                            placeholder="https://... veya bilgisayardan yükle"
                                             style={{ ...inputStyle, flex: '1 1 200px' }}
                                         />
                                         <input
@@ -594,7 +595,7 @@ export default function GalleryManager() {
                                             }}
                                         >
                                             {galleryUploading ? <Loader className="w-3 h-3 animate-spin" /> : <UploadCloud className="w-3 h-3" />}
-                                            {galleryUploading ? 'YÜKLENİYOR...' : 'BILGISAYARDAN YÜKLE (R2)'}
+                                            {galleryUploading ? 'YÜKLENİYOR...' : 'BILGISAYARDAN YÜKLE'}
                                         </button>
                                     </div>
                                 </div>
