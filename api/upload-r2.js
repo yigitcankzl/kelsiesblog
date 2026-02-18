@@ -53,10 +53,10 @@ export default async function handler(req, res) {
             multiples: false,
         });
 
-        const { fields, files } = await new Promise((resolve, reject) => {
-            form.parse(req, (err, fields, files) => {
+        const { files } = await new Promise((resolve, reject) => {
+            form.parse(req, (err, _fields, files) => {
                 if (err) reject(err);
-                else resolve({ fields, files });
+                else resolve({ files });
             });
         });
 
@@ -85,13 +85,12 @@ export default async function handler(req, res) {
 
         // Public URL: set R2_PUBLIC_URL (e.g. https://pub-xxx.r2.dev or custom domain) in Vercel env
         const baseUrl = (process.env.R2_PUBLIC_URL || '').replace(/\/$/, '');
-        const url = baseUrl ? `${baseUrl}/${key}` : null;
-        if (!url) {
-            console.warn('R2_PUBLIC_URL not set; image uploaded but URL will not be publicly reachable.');
-        }
+        const url = baseUrl 
+            ? `${baseUrl}/${key}` 
+            : `https://${BUCKET}.r2.cloudflarestorage.com/${key}`;
 
         return res.status(200).json({
-            url: url || `https://${BUCKET}.r2.cloudflarestorage.com/${key}`,
+            url,
             fileId: key,
             name: fileName,
         });
