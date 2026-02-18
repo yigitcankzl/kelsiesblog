@@ -15,25 +15,25 @@ export default function WelcomeView() {
     const rest = posts.slice(1);
 
     return (
-        <section className="bg-black py-28 relative z-10">
+        <section className="bg-black py-40 relative z-10">
             <div style={{ maxWidth: '1024px', margin: '0 auto', paddingLeft: '24px', paddingRight: '24px' }}>
                 {/* Section header — centered */}
                 <motion.div
-                    className="text-center mb-20"
+                    className="text-center mb-36"
                     initial={{ opacity: 0, y: 16 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5 }}
                 >
-                    <span className="text-[var(--neon-cyan)] font-bold tracking-[0.3em] text-[8px] uppercase block mb-4 neon-glow-cyan"
+                    <span className="text-[var(--neon-cyan)] font-bold tracking-[0.3em] text-[8px] uppercase block mb-12 neon-glow-cyan"
                         style={{ fontFamily: "'Press Start 2P', monospace" }}>
                         ▸ JOURNAL ◂
                     </span>
-                    <h2 className="text-lg md:text-2xl lg:text-3xl text-white leading-tight relative text-glitch-always inline-block"
+                    <h2 className="text-lg md:text-2xl lg:text-3xl text-white leading-[1.8] relative text-glitch-always inline-block"
                         style={{ fontFamily: "'Press Start 2P', monospace" }}
                         data-text="Latest Stories">
                         Latest Stories
                     </h2>
-                    <div className="flex justify-center mt-5 gap-1">
+                    <div className="flex justify-center mt-16 gap-2">
                         {Array.from({ length: 11 }).map((_, i) => (
                             <div key={i} className="w-1.5 h-1.5"
                                 style={{
@@ -175,12 +175,12 @@ export default function WelcomeView() {
 
                 <motion.div
                     className="text-center"
-                    style={{ marginTop: '160px', marginBottom: '64px' }}
+                    style={{ marginTop: '160px', marginBottom: '160px' }}
                     initial={{ opacity: 0, y: 12 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.4, duration: 0.5 }}
                 >
-                    <div className="flex items-center justify-center gap-1 mb-8">
+                    <div className="flex items-center justify-center gap-2 mb-16">
                         {Array.from({ length: 25 }).map((_, i) => (
                             <div key={i} className="w-1 h-1"
                                 style={{
@@ -228,23 +228,23 @@ export default function WelcomeView() {
                 {/* Gallery preview */}
                 {galleryItems.length > 0 && (
                     <motion.div
-                        className="mt-28"
+                        className="mt-40"
                         initial={{ opacity: 0, y: 16 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.5, duration: 0.5 }}
                     >
                         {/* Section header */}
-                        <div className="text-center mb-16">
-                            <span className="text-[var(--neon-cyan)] font-bold tracking-[0.3em] text-[8px] uppercase block mb-4 neon-glow-cyan"
+                        <div className="text-center mb-36">
+                            <span className="text-[var(--neon-cyan)] font-bold tracking-[0.3em] text-[8px] uppercase block mb-12 neon-glow-cyan"
                                 style={{ fontFamily: "'Press Start 2P', monospace" }}>
                                 ▸ GALLERY ◂
                             </span>
-                            <h2 className="text-lg md:text-2xl lg:text-3xl text-white leading-tight relative text-glitch-always inline-block"
+                            <h2 className="text-lg md:text-2xl lg:text-3xl text-white leading-[1.8] relative text-glitch-always inline-block"
                                 style={{ fontFamily: "'Press Start 2P', monospace" }}
                                 data-text="Photo Roll">
                                 Photo Roll
                             </h2>
-                            <div className="flex justify-center mt-5 gap-1">
+                            <div className="flex justify-center mt-16 gap-2">
                                 {Array.from({ length: 11 }).map((_, i) => (
                                     <div key={i} className="w-1.5 h-1.5"
                                         style={{
@@ -348,8 +348,8 @@ export default function WelcomeView() {
                         </div>
 
                         {/* VIEW GALLERY button */}
-                        <div className="text-center mt-16">
-                            <div className="flex items-center justify-center gap-1 mb-8">
+                        <div className="text-center mt-24">
+                            <div className="flex items-center justify-center gap-2 mb-16">
                                 {Array.from({ length: 25 }).map((_, i) => (
                                     <div key={i} className="w-1 h-1"
                                         style={{
