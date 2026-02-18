@@ -2,14 +2,24 @@ import { useCallback, useMemo, useRef } from 'react';
 import { MapContainer, TileLayer, GeoJSON, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import icon from 'leaflet/dist/images/marker-icon.png';
+import iconShadow from 'leaflet/dist/images/marker-shadow.png';
 import { useBlogStore } from '@/store/store';
 import { countryBounds } from '@/data/countryBounds';
+import countriesGeoJson from '@/data/countries.geo.json';
 import CountryView from '@/components/map/CountryView';
 import ContentArea from '@/components/content/ContentArea';
 import AllStoriesPage from '@/pages/AllStoriesPage';
 import GalleryPage from '@/pages/GalleryPage';
 import AboutPage from '@/pages/AboutPage';
-import countriesGeoJson from '@/data/countries.geo.json';
+
+// Configure Leaflet marker icon
+L.Marker.prototype.options.icon = L.icon({
+    iconUrl: icon,
+    shadowUrl: iconShadow,
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+});
 
 // Mapping from countryBounds names → GeoJSON ADMIN names (for mismatches)
 const countryNameAliases: Record<string, string> = {
@@ -29,13 +39,6 @@ for (const [boundsName, geoName] of Object.entries(countryNameAliases)) {
 function toPostName(geoJsonName: string): string {
     return reverseAliases[geoJsonName] || geoJsonName;
 }
-
-import icon from 'leaflet/dist/images/marker-icon.png';
-import iconShadow from 'leaflet/dist/images/marker-shadow.png';
-L.Marker.prototype.options.icon = L.icon({
-    iconUrl: icon, shadowUrl: iconShadow,
-    iconSize: [25, 41], iconAnchor: [12, 41],
-});
 
 function FlyToCountry({ country }: { country: string | null }) {
     const map = useMap();

@@ -9,7 +9,7 @@ import { worldCities } from '../../data/worldCities';
 import { fetchCityBoundary } from '../../lib/cityBoundaryCache';
 import { mergePostFields } from '../../lib/firestore';
 import { parseFolderId, listDriveImages, driveThumbUrl } from '../../lib/googleDrive';
-import { uploadImageToR2 } from '../../lib/driveApi';
+import { uploadImageToR2 } from '../../lib/r2Api';
 
 const font = { fontFamily: "'Press Start 2P', monospace" } as const;
 

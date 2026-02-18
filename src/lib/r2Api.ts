@@ -1,6 +1,6 @@
 /**
  * Frontend API client for image upload to Cloudflare R2
- * Upload uses Cloudflare R2 via /api/upload-r2
+ * Upload uses Cloudflare R2 via /api/upload-r2 endpoint
  */
 
 export interface UploadResponse {

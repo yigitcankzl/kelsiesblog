@@ -4,7 +4,7 @@ import { Plus, Trash2, Edit2, Save, X, Image, UploadCloud, Loader } from 'lucide
 import { useBlogStore } from '../../store/store';
 import type { GalleryItem } from '../../types';
 import { parseFolderId, listDriveImages, driveThumbUrl } from '../../lib/googleDrive';
-import { uploadImageToR2 } from '../../lib/driveApi';
+import { uploadImageToR2 } from '../../lib/r2Api';
 
 const font = { fontFamily: "'Press Start 2P', monospace" } as const;
 
