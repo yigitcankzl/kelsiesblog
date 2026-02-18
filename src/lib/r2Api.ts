@@ -1,7 +1,10 @@
-/**
- * Frontend API client for image upload to Cloudflare R2
- * Upload uses Cloudflare R2 via /api/upload-r2 endpoint
- */
+export interface R2Item {
+    key: string;
+    url: string;
+    name: string;
+    size?: number;
+    time?: string;
+}
 
 export interface UploadResponse {
     url: string;
@@ -9,60 +12,45 @@ export interface UploadResponse {
     name: string;
 }
 
-export interface R2Item {
-    key: string;
-    url: string | null;
-    lastModified: string | null;
-    size: number | null;
-}
-
-/**
- * Upload an image file to Cloudflare R2 via backend API
- */
 export async function uploadImageToR2(file: File): Promise<UploadResponse> {
     const formData = new FormData();
     formData.append('file', file);
 
-    const res = await fetch('/api/upload-r2', {
+    const response = await fetch('/api/upload-r2', {
         method: 'POST',
         body: formData,
     });
 
-    if (!res.ok) {
-        let errorData;
-        try {
-            errorData = await res.json();
-        } catch {
-            errorData = { error: `Upload failed: ${res.status} ${res.statusText}` };
-        }
-        const errorMsg = errorData.error || `Upload failed: ${res.status}`;
-        const details = errorData.details ? `\nDetails: ${errorData.details}` : '';
-        throw new Error(`${errorMsg}${details}`);
+    if (!response.ok) {
+        const error = await response.json().catch(() => ({ error: 'Upload failed' }));
+        throw new Error(error.error || `Upload failed: ${response.status}`);
     }
 
-    return res.json();
+    return response.json();
 }
 
 export async function listR2Images(prefix = 'blog/'): Promise<R2Item[]> {
-    const res = await fetch(`/api/r2-list?prefix=${encodeURIComponent(prefix)}`);
-    if (!res.ok) {
-        const error = await res.json().catch(() => ({ error: 'List failed' }));
-        throw new Error(error.error || `List failed: ${res.status}`);
+    const params = new URLSearchParams({ prefix });
+    const response = await fetch(`/api/r2-list?${params.toString()}`);
+
+    if (!response.ok) {
+        throw new Error(`List failed: ${response.status}`);
     }
-    const data = (await res.json()) as { items: R2Item[] };
-    return data.items;
+
+    const data = await response.json();
+    return data.items || [];
 }
 
 export async function deleteR2Image(key: string): Promise<void> {
-    const res = await fetch('/api/r2-delete', {
+    const response = await fetch('/api/r2-delete', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({ key }),
     });
-    if (!res.ok) {
-        const error = await res.json().catch(() => ({ error: 'Delete failed' }));
-        throw new Error(error.error || `Delete failed: ${res.status}`);
+
+    if (!response.ok) {
+        throw new Error(`Delete failed: ${response.status}`);
     }
 }
