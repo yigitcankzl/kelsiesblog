@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { Edit2, Trash2, MapPin, FileText } from 'lucide-react';
-import { useBlogStore } from '../../store/store';
-import type { BlogPost } from '../../types';
+import { useBlogStore } from '@/store/store';
+import type { BlogPost } from '@/types';
 
 const font = { fontFamily: "'Press Start 2P', monospace" } as const;
 

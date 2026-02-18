@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Globe2, Save } from 'lucide-react';
-import { useBlogStore } from '../../store/store';
-import { getCountryDescription } from '../../data/countryDescriptions';
+import { useBlogStore } from '@/store/store';
+import { getCountryDescription } from '@/data/countryDescriptions';
 
 const font = { fontFamily: "'Press Start 2P', monospace" } as const;
 

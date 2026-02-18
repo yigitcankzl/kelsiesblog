@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Lock, Mail, Eye, EyeOff } from 'lucide-react';
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../../lib/firebase';
-import { useBlogStore } from '../../store/store';
+import { auth } from '@/lib/firebase';
+import { useBlogStore } from '@/store/store';
 
 const font = { fontFamily: "'Press Start 2P', monospace" } as const;
 
