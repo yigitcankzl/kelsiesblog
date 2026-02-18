@@ -1,9 +1,10 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, Trash2, Edit2, Save, X, Image, UploadCloud, Loader } from 'lucide-react';
 import { useBlogStore } from '../../store/store';
 import type { GalleryItem } from '../../types';
 import { parseFolderId, listDriveImages, driveThumbUrl } from '../../lib/googleDrive';
+import { uploadImageToDrive } from '../../lib/driveApi';
 
 const font = { fontFamily: "'Press Start 2P', monospace" } as const;
 
@@ -52,6 +53,26 @@ export default function GalleryManager() {
     const [driveError, setDriveError] = useState('');
     const [driveResults, setDriveResults] = useState<{ id: string; name: string; url: string }[]>([]);
     const [driveSelected, setDriveSelected] = useState<Set<string>>(new Set());
+
+    const galleryFileInputRef = useRef<HTMLInputElement>(null);
+    const [galleryUploading, setGalleryUploading] = useState(false);
+
+    const handleGalleryFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file || !file.type.startsWith('image/')) return;
+        setGalleryUploading(true);
+        try {
+            const result = await uploadImageToDrive(file);
+            setForm(prev => ({ ...prev, src: result.url }));
+            setPreviewError(false);
+        } catch (err: unknown) {
+            console.error('Gallery image upload failed:', err);
+            alert(err instanceof Error ? err.message : 'Upload failed');
+        } finally {
+            setGalleryUploading(false);
+            e.target.value = '';
+        }
+    };
 
     // Derive unique countries and cities for datalists
     const uniqueCountries = useMemo(() => {
@@ -350,13 +371,45 @@ export default function GalleryManager() {
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
                                 <div style={{ gridColumn: '1 / -1' }}>
                                     <label style={labelStyle}>Image URL</label>
-                                    <input
-                                        type="text"
-                                        value={form.src}
-                                        onChange={e => { setForm({ ...form, src: e.target.value }); setPreviewError(false); }}
-                                        placeholder="https://..."
-                                        style={inputStyle}
-                                    />
+                                    <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
+                                        <input
+                                            type="text"
+                                            value={form.src}
+                                            onChange={e => { setForm({ ...form, src: e.target.value }); setPreviewError(false); }}
+                                            placeholder="https://... veya bilgisayardan yükle (R2)"
+                                            style={{ ...inputStyle, flex: '1 1 200px' }}
+                                        />
+                                        <input
+                                            ref={galleryFileInputRef}
+                                            type="file"
+                                            accept="image/*"
+                                            style={{ display: 'none' }}
+                                            onChange={handleGalleryFileChange}
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={() => galleryFileInputRef.current?.click()}
+                                            disabled={galleryUploading}
+                                            className="cursor-pointer"
+                                            style={{
+                                                ...font,
+                                                fontSize: '7px',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                gap: '6px',
+                                                padding: '10px 14px',
+                                                border: '1px solid var(--neon-cyan)',
+                                                color: 'var(--neon-cyan)',
+                                                background: 'none',
+                                                letterSpacing: '0.1em',
+                                                transition: 'all 0.3s',
+                                                flexShrink: 0,
+                                            }}
+                                        >
+                                            {galleryUploading ? <Loader className="w-3 h-3 animate-spin" /> : <UploadCloud className="w-3 h-3" />}
+                                            {galleryUploading ? 'YÜKLENİYOR...' : 'BILGISAYARDAN YÜKLE (R2)'}
+                                        </button>
+                                    </div>
                                 </div>
                                 <div style={{ gridColumn: '1 / -1' }}>
                                     <label style={labelStyle}>Caption</label>

@@ -9,6 +9,7 @@ import { worldCities } from '../../data/worldCities';
 import { fetchCityBoundary } from '../../lib/cityBoundaryCache';
 import { mergePostFields } from '../../lib/firestore';
 import { parseFolderId, listDriveImages, driveThumbUrl } from '../../lib/googleDrive';
+import { uploadImageToDrive } from '../../lib/driveApi';
 
 const font = { fontFamily: "'Press Start 2P', monospace" } as const;
 
@@ -72,6 +73,57 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
     );
 
     const isEditing = post !== null;
+
+    const coverFileInputRef = useRef<HTMLInputElement>(null);
+    const sectionImageFileInputRef = useRef<HTMLInputElement>(null);
+    const [coverUploading, setCoverUploading] = useState(false);
+    const [sectionUploadingIndex, setSectionUploadingIndex] = useState<number | null>(null);
+    const [sectionImageUploading, setSectionImageUploading] = useState<number | null>(null);
+
+    const handleCoverFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file || !file.type.startsWith('image/')) return;
+        
+        // Check file size (10MB limit)
+        if (file.size > 10 * 1024 * 1024) {
+            alert('File too large. Maximum size is 10MB.');
+            e.target.value = '';
+            return;
+        }
+        
+        setCoverUploading(true);
+        try {
+            const result = await uploadImageToDrive(file);
+            setCoverImage(result.url);
+        } catch (err: unknown) {
+            console.error('Cover upload failed:', err);
+            const errorMsg = err instanceof Error ? err.message : 'Upload failed';
+            alert(`Upload failed: ${errorMsg}\n\nCheck browser console and Vercel logs for details.`);
+        } finally {
+            setCoverUploading(false);
+            e.target.value = '';
+        }
+    };
+
+    const handleSectionImageFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        const idx = sectionUploadingIndex;
+        if (!file || !file.type.startsWith('image/') || idx == null) return;
+        setSectionImageUploading(idx);
+        try {
+            const result = await uploadImageToDrive(file);
+            setSections(prev => prev.map((s, i) =>
+                i === idx ? { ...s, images: [...(s.images || []), result.url] } : s
+            ));
+        } catch (err: unknown) {
+            console.error('Section image upload failed:', err);
+            alert(err instanceof Error ? err.message : 'Upload failed');
+        } finally {
+            setSectionUploadingIndex(null);
+            setSectionImageUploading(null);
+            e.target.value = '';
+        }
+    };
 
     const availableCategories = ['Culture', 'History', 'Tourism', 'Transportation', 'Politic', 'Food and Drink', 'Personal Story'];
 
@@ -487,15 +539,47 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                     {/* Cover Image URL */}
                     <div>
                         <label style={labelStyle}>COVER IMAGE URL</label>
-                        <input
-                            type="url"
-                            value={coverImage}
-                            onChange={(e) => setCoverImage(e.target.value)}
-                            placeholder="HTTPS://... IMAGE URL"
-                            style={inputStyle}
-                            onFocus={handleInputFocus}
-                            onBlur={handleInputBlur}
-                        />
+                        <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
+                            <input
+                                type="url"
+                                value={coverImage}
+                                onChange={(e) => setCoverImage(e.target.value)}
+                                placeholder="HTTPS://... VEYA BILGISAYARDAN YÜKLE"
+                                style={{ ...inputStyle, flex: '1 1 200px' }}
+                                onFocus={handleInputFocus}
+                                onBlur={handleInputBlur}
+                            />
+                            <input
+                                ref={coverFileInputRef}
+                                type="file"
+                                accept="image/*"
+                                style={{ display: 'none' }}
+                                onChange={handleCoverFileChange}
+                            />
+                            <button
+                                type="button"
+                                onClick={() => coverFileInputRef.current?.click()}
+                                disabled={coverUploading}
+                                className="cursor-pointer"
+                                style={{
+                                    ...font,
+                                    fontSize: '7px',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '6px',
+                                    padding: '10px 14px',
+                                    border: '1px solid var(--neon-cyan)',
+                                    color: 'var(--neon-cyan)',
+                                    background: 'none',
+                                    letterSpacing: '0.1em',
+                                    transition: 'all 0.3s',
+                                    flexShrink: 0,
+                                }}
+                            >
+                                {coverUploading ? <Loader style={{ width: '12px', height: '12px' }} className="animate-spin" /> : <UploadCloud style={{ width: '12px', height: '12px' }} />}
+                                {coverUploading ? 'YÜKLENİYOR...' : 'BILGISAYARDAN YÜKLE (R2)'}
+                            </button>
+                        </div>
                         {coverImage && (
                             <div style={{
                                 marginTop: '10px',
@@ -794,7 +878,14 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                                         </div>
                                     ))}
 
-                                    <div style={{ display: 'flex', gap: '8px' }}>
+                                    <input
+                                        ref={sectionImageFileInputRef}
+                                        type="file"
+                                        accept="image/*"
+                                        style={{ display: 'none' }}
+                                        onChange={handleSectionImageFileChange}
+                                    />
+                                    <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
                                         <button
                                             type="button"
                                             onClick={() => addImageToSection(index)}
@@ -809,6 +900,22 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                                         >
                                             <Plus style={{ width: '10px', height: '10px' }} />
                                             ADD IMAGE
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() => { setSectionUploadingIndex(index); sectionImageFileInputRef.current?.click(); }}
+                                            disabled={sectionImageUploading === index}
+                                            className="cursor-pointer"
+                                            style={{
+                                                ...font, fontSize: '6px', display: 'flex', alignItems: 'center', gap: '4px',
+                                                color: 'var(--neon-cyan)', background: 'none', border: '1px solid #333',
+                                                padding: '6px 10px', letterSpacing: '0.1em', transition: 'all 0.3s',
+                                            }}
+                                            onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--neon-cyan)'; }}
+                                            onMouseLeave={e => { e.currentTarget.style.borderColor = '#333'; }}
+                                        >
+                                            {sectionImageUploading === index ? <Loader style={{ width: '10px', height: '10px' }} className="animate-spin" /> : <UploadCloud style={{ width: '10px', height: '10px' }} />}
+                                            BILGISAYARDAN YÜKLE (R2)
                                         </button>
                                         <button
                                             type="button"
