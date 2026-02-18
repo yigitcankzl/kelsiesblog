@@ -10,15 +10,15 @@ export default function ContentArea() {
     const { selectedCountry, selectedPost } = useBlogStore();
 
     return (
-        <div style={{ backgroundColor: '#000', minHeight: '50vh' }}>
+        <div style={{ backgroundColor: '#000' }}>
             <AnimatePresence mode="sync">
                 {selectedPost ? (
                     <motion.div
                         key="post"
-                        initial={{ opacity: 0, y: 16 }}
-                        animate={{ opacity: 1, y: 0 }}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        transition={{ duration: 0.25, ease: 'easeOut' }}
+                        transition={{ duration: 0.2, ease: 'easeOut' }}
                         style={{ backgroundColor: '#000' }}
                     >
                         <PostReader />
@@ -26,10 +26,10 @@ export default function ContentArea() {
                 ) : selectedCountry ? (
                     <motion.div
                         key={`country-${selectedCountry}`}
-                        initial={{ opacity: 0, y: 16 }}
-                        animate={{ opacity: 1, y: 0 }}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        transition={{ duration: 0.25, ease: 'easeOut' }}
+                        transition={{ duration: 0.2, ease: 'easeOut' }}
                         style={{ backgroundColor: '#000' }}
                     >
                         <CountryPostsView />
@@ -37,10 +37,10 @@ export default function ContentArea() {
                 ) : (
                     <motion.div
                         key="welcome"
-                        initial={{ opacity: 0, y: 16 }}
-                        animate={{ opacity: 1, y: 0 }}
+                        initial={{ opacity: 1 }}
+                        animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        transition={{ duration: 0.25, ease: 'easeOut' }}
+                        transition={{ duration: 0.2, ease: 'easeOut' }}
                         style={{ backgroundColor: '#000' }}
                     >
                         <WelcomeView />

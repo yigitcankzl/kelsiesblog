@@ -170,9 +170,11 @@ export default function MapPage() {
 
                     <MapContainer
                         center={[20, 0]} zoom={2} minZoom={2} maxZoom={12}
-                        zoomControl={true} scrollWheelZoom={true}
+                        zoomControl={true} scrollWheelZoom={false}
                         dragging={true}
                         worldCopyJump={true}
+                        maxBounds={[[-85, -Infinity], [85, Infinity]]}
+                        maxBoundsViscosity={1.0}
                         style={{ width: '100%', height: '100%' }}
                     >
                         <TileLayer
