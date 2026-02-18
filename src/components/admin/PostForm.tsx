@@ -84,7 +84,7 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
 
     // R2 media browser (pick existing + delete)
     const [showR2Browser, setShowR2Browser] = useState(false);
-    const [r2PickTarget, setR2PickTarget] = useState<{ kind: 'cover' } | { kind: 'section'; index: number } | { kind: 'inline'; sectionIndex: number; contentIndex: number } | null>(null); // Update type
+    const [r2PickTarget, setR2PickTarget] = useState<{ kind: 'cover' } | { kind: 'section'; index: number } | { kind: 'inline'; sectionIndex: number; contentIndex: number } | null>(null);
     const [r2Loading, setR2Loading] = useState(false);
     const [r2Error, setR2Error] = useState('');
     const [r2Items, setR2Items] = useState<R2Item[]>([]);
@@ -144,7 +144,7 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
         const selectedItems = r2Items.filter(i => r2Selected.has(i.key));
         const urls = selectedItems.map(i => i.url).filter(Boolean) as string[];
         if (urls.length === 0) {
-            setR2Error('No selectable URLs. Make sure R2_PUBLIC_URL is set and items are selected.');
+            setR2Error('No selectable URLs.');
             return;
         }
 
@@ -176,7 +176,7 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
 
     const deleteSelectedFromR2 = async () => {
         if (r2Selected.size === 0) return;
-        if (!confirm(`Delete ${r2Selected.size} file(s) from R2? This cannot be undone.`)) return;
+        if (!confirm(`Delete ${r2Selected.size} file(s)? This cannot be undone.`)) return;
         setR2Loading(true);
         setR2Error('');
         try {
@@ -210,7 +210,7 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
         } catch (err: unknown) {
             console.error('Cover upload failed:', err);
             const errorMsg = err instanceof Error ? err.message : 'Upload failed';
-            alert(`Upload failed: ${errorMsg}\n\nCheck browser console and Vercel logs for details.`);
+            alert(`Upload failed: ${errorMsg}`);
         } finally {
             setCoverUploading(false);
             e.target.value = '';
@@ -707,7 +707,7 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                                 }}
                             >
                                 {coverUploading ? <Loader style={{ width: '12px', height: '12px' }} className="animate-spin" /> : <UploadCloud style={{ width: '12px', height: '12px' }} />}
-                                {coverUploading ? 'YÜKLENİYOR...' : 'BILGISAYARDAN YÜKLE (R2)'}
+                                {coverUploading ? 'YÜKLENİYOR...' : 'BILGISAYARDAN YÜKLE'}
                             </button>
                             <button
                                 type="button"
@@ -810,7 +810,7 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                                                 color: '#000',
                                                 border: 'none',
                                                 padding: '6px 10px',
-                                                opacity: r2Selected.size === 0 ? 0.6 : 1,
+                                                opacity: storageSelected.size === 0 ? 0.6 : 1,
                                             }}
                                         >
                                             <ImagePlus style={{ width: '10px', height: '10px' }} />
@@ -819,20 +819,20 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                                     </div>
                                 </div>
 
-                                {r2Error && (
-                                    <p style={{ ...font, fontSize: '6px', color: 'var(--neon-magenta)', marginBottom: '8px' }}>{r2Error}</p>
+                                {storageError && (
+                                    <p style={{ ...font, fontSize: '6px', color: 'var(--neon-magenta)', marginBottom: '8px' }}>{storageError}</p>
                                 )}
 
-                                {r2Loading && r2Items.length === 0 ? (
+                                {storageLoading && storageItems.length === 0 ? (
                                     <p style={{ ...font, fontSize: '6px', color: '#666' }}>LOADING...</p>
                                 ) : (
                                     <div className="grid grid-cols-4 sm:grid-cols-6 gap-2" style={{ maxHeight: '240px', overflowY: 'auto' }}>
-                                        {r2Items.map(item => {
-                                            const selected = r2Selected.has(item.key);
+                                        {storageItems.map(item => {
+                                            const selected = storageSelected.has(item.key);
                                             return (
                                                 <div
                                                     key={item.key}
-                                                    onClick={() => toggleR2Select(item.key)}
+                                                    onClick={() => toggleStorageSelect(item.key)}
                                                     className="cursor-pointer"
                                                     style={{
                                                         border: `2px solid ${selected ? 'var(--neon-cyan)' : '#1a1a1a'}`,
@@ -843,6 +843,7 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                                                     }}
                                                     title={item.key}
                                                 >
+
                                                     {item.url ? (
                                                         <img
                                                             src={item.url}
@@ -1085,11 +1086,11 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                                                             </button>
                                                             <button
                                                                 type="button"
-                                                                onClick={() => openR2ForInline(index, ctnIdx)}
+                                                                onClick={() => openStorageForInline(index, ctnIdx)}
                                                                 className="cursor-pointer"
                                                                 style={{ ...font, fontSize: '5px', padding: '4px 8px', border: '1px solid #333', color: '#aaa' }}
                                                             >
-                                                                R2 MEDIA
+                                                                STORAGE MEDIA
                                                             </button>
                                                         </div>
                                                         {imageValue && (
@@ -1300,11 +1301,11 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                                             onMouseLeave={e => { e.currentTarget.style.borderColor = '#333'; }}
                                         >
                                             {sectionImageUploading === index ? <Loader style={{ width: '10px', height: '10px' }} className="animate-spin" /> : <UploadCloud style={{ width: '10px', height: '10px' }} />}
-                                            BILGISAYARDAN YÜKLE (R2)
+                                            BILGISAYARDAN YÜKLE
                                         </button>
                                         <button
                                             type="button"
-                                            onClick={() => openR2ForSection(index)}
+                                            onClick={() => openStorageForSection(index)}
                                             className="cursor-pointer"
                                             style={{
                                                 ...font, fontSize: '6px', display: 'flex', alignItems: 'center', gap: '4px',
@@ -1315,7 +1316,7 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                                             onMouseLeave={e => { e.currentTarget.style.borderColor = '#333'; e.currentTarget.style.color = '#aaa'; }}
                                         >
                                             <ImagePlus style={{ width: '10px', height: '10px' }} />
-                                            R2 MEDIA
+                                            STORAGE MEDIA
                                         </button>
                                         <button
                                             type="button"
