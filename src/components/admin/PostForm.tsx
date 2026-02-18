@@ -1,15 +1,15 @@
 import { useState, useMemo, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Save, X, Plus, Trash2, ChevronUp, ChevronDown, Type, ImagePlus, AlignLeft, UploadCloud, Loader } from 'lucide-react';
-import { useBlogStore } from '../../store/store';
-import type { BlogPost, Section } from '../../types';
-import { CONTENT_FONTS, getFontConfig } from '../../types';
-import { countryBounds } from '../../data/countryBounds';
-import { worldCities } from '../../data/worldCities';
-import { fetchCityBoundary } from '../../lib/cityBoundaryCache';
-import { mergePostFields } from '../../lib/firestore';
-import { parseFolderId, listDriveImages, driveThumbUrl } from '../../lib/googleDrive';
-import { uploadImageToR2 } from '../../lib/r2Api';
+import { useBlogStore } from '@/store/store';
+import type { BlogPost, Section } from '@/types';
+import { CONTENT_FONTS, getFontConfig } from '@/types';
+import { countryBounds } from '@/data/countryBounds';
+import { worldCities } from '@/data/worldCities';
+import { fetchCityBoundary } from '@/lib/cityBoundaryCache';
+import { mergePostFields } from '@/lib/firestore';
+import { parseFolderId, listDriveImages, driveThumbUrl } from '@/lib/googleDrive';
+import { uploadImageToR2 } from '@/lib/r2Api';
 
 const font = { fontFamily: "'Press Start 2P', monospace" } as const;
 
