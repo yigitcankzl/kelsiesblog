@@ -59,7 +59,7 @@ export default function RichTextEditor({ content, onChange }: RichTextEditorProp
                 class: 'prose prose-invert max-w-none focus:outline-none min-h-[150px] text-[#ccc] text-[14px] leading-relaxed',
                 style: 'font-family: inherit;',
             },
-            handleDrop: (view, event, slice, moved) => {
+            handleDrop: (view, event, _, moved) => {
                 if (!moved && event.dataTransfer && event.dataTransfer.files && event.dataTransfer.files[0]) {
                     const file = event.dataTransfer.files[0];
                     if (file.type.startsWith('image/')) {
@@ -85,7 +85,7 @@ export default function RichTextEditor({ content, onChange }: RichTextEditorProp
                 }
                 return false;
             },
-            handlePaste: (view, event, slice) => {
+            handlePaste: (view, event) => {
                 const items = Array.from(event.clipboardData?.items || []);
                 const item = items.find(i => i.type.indexOf('image') === 0);
 

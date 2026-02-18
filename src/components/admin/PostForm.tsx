@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef } from 'react';
+import { useState, useMemo, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Save, X, Plus, Trash2, ChevronUp, ChevronDown, Type, ImagePlus, AlignLeft, UploadCloud, Loader } from 'lucide-react';
 import { useBlogStore } from '@/store/store';
@@ -101,6 +101,65 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
     const [r2Error, setR2Error] = useState('');
     const [r2Items, setR2Items] = useState<R2Item[]>([]);
     const [r2Selected, setR2Selected] = useState<Set<string>>(new Set());
+
+    // --- Drafts ---
+    const [draftFound, setDraftFound] = useState(false);
+
+    // Load draft on mount
+    useEffect(() => {
+        if (!isEditing) {
+            const draft = localStorage.getItem('kelsiesblog_draft');
+            if (draft) {
+                setDraftFound(true);
+            }
+        }
+    }, [isEditing]);
+
+    // Auto-save draft
+    useEffect(() => {
+        if (isEditing) return; // Don't overwrite draft while editing existing post
+
+        const timer = setTimeout(() => {
+            const draftData = {
+                title,
+                country,
+                city,
+                date,
+                coverImage,
+                categories,
+                contentFont,
+                sections,
+                timestamp: Date.now()
+            };
+            localStorage.setItem('kelsiesblog_draft', JSON.stringify(draftData));
+        }, 1000); // Debounce 1s
+
+        return () => clearTimeout(timer);
+    }, [title, country, city, date, coverImage, categories, contentFont, sections, isEditing]);
+
+    const restoreDraft = () => {
+        try {
+            const draft = localStorage.getItem('kelsiesblog_draft');
+            if (!draft) return;
+            const data = JSON.parse(draft);
+            setTitle(data.title || '');
+            setCountry(data.country || '');
+            setCity(data.city || '');
+            setDate(data.date || '');
+            setCoverImage(data.coverImage || '');
+            setCategories(data.categories || []);
+            setContentFont(data.contentFont || 'Press Start 2P');
+            setSections(data.sections || [{ ...emptySection }]);
+            setDraftFound(false); // Hide prompt after restore
+        } catch (e) {
+            console.error('Failed to restore draft', e);
+        }
+    };
+
+    const discardDraft = () => {
+        localStorage.removeItem('kelsiesblog_draft');
+        setDraftFound(false);
+    };
 
     const loadR2 = async () => {
         setR2Loading(true);
@@ -413,6 +472,11 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                 }));
             })
             .catch(err => console.error('[Boundary] Failed to save city boundary:', err));
+
+        // Clear draft
+        if (!isEditing) {
+            localStorage.removeItem('kelsiesblog_draft');
+        }
     };
 
     const isValid = title.trim() && country.trim() && city.trim() && sections.some(s => s.heading.trim() && s.content?.trim());
@@ -455,6 +519,58 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                     <X style={{ width: '16px', height: '16px' }} />
                 </button>
             </div>
+
+            {/* Draft Banner */}
+            {draftFound && (
+                <div style={{
+                    backgroundColor: '#1a1a00',
+                    border: '1px solid var(--neon-amber)',
+                    padding: '12px',
+                    marginBottom: '24px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between'
+                }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <Loader style={{ color: 'var(--neon-amber)', width: '16px', height: '16px' }} />
+                        <span style={{ ...font, fontSize: '8px', color: 'var(--neon-amber)' }}>
+                            UNSAVED DRAFT FOUND
+                        </span>
+                    </div>
+                    <div style={{ display: 'flex', gap: '8px' }}>
+                        <button
+                            type="button"
+                            onClick={restoreDraft}
+                            className="cursor-pointer"
+                            style={{
+                                ...font,
+                                fontSize: '8px',
+                                padding: '6px 12px',
+                                backgroundColor: 'var(--neon-amber)',
+                                color: '#000',
+                                border: 'none'
+                            }}
+                        >
+                            RESTORE
+                        </button>
+                        <button
+                            type="button"
+                            onClick={discardDraft}
+                            className="cursor-pointer"
+                            style={{
+                                ...font,
+                                fontSize: '8px',
+                                padding: '6px 12px',
+                                backgroundColor: 'transparent',
+                                border: '1px solid var(--neon-amber)',
+                                color: 'var(--neon-amber)'
+                            }}
+                        >
+                            DISCARD
+                        </button>
+                    </div>
+                </div>
+            )}
 
             {/* Basic Info */}
             <div style={{
