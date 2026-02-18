@@ -76,13 +76,15 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
 
     const coverFileInputRef = useRef<HTMLInputElement>(null);
     const sectionImageFileInputRef = useRef<HTMLInputElement>(null);
+    const inlineImageFileInputRef = useRef<HTMLInputElement>(null); // New ref for inline images
     const [coverUploading, setCoverUploading] = useState(false);
     const [sectionUploadingIndex, setSectionUploadingIndex] = useState<number | null>(null);
     const [sectionImageUploading, setSectionImageUploading] = useState<number | null>(null);
+    const [inlineImageUploading, setInlineImageUploading] = useState<{ sectionIndex: number, contentIndex: number } | null>(null); // New state
 
     // R2 media browser (pick existing + delete)
     const [showR2Browser, setShowR2Browser] = useState(false);
-    const [r2PickTarget, setR2PickTarget] = useState<{ kind: 'cover' } | { kind: 'section'; index: number } | null>(null);
+    const [r2PickTarget, setR2PickTarget] = useState<{ kind: 'cover' } | { kind: 'section'; index: number } | { kind: 'inline'; sectionIndex: number; contentIndex: number } | null>(null); // Update type
     const [r2Loading, setR2Loading] = useState(false);
     const [r2Error, setR2Error] = useState('');
     const [r2Items, setR2Items] = useState<R2Item[]>([]);
@@ -110,6 +112,12 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
 
     const openR2ForSection = async (index: number) => {
         setR2PickTarget({ kind: 'section', index });
+        setShowR2Browser(true);
+        await loadR2();
+    };
+
+    const openR2ForInline = async (sectionIndex: number, contentIndex: number) => {
+        setR2PickTarget({ kind: 'inline', sectionIndex, contentIndex });
         setShowR2Browser(true);
         await loadR2();
     };
@@ -146,6 +154,16 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
             return;
         }
 
+        if (r2PickTarget.kind === 'inline') {
+            const { sectionIndex, contentIndex } = r2PickTarget;
+            // Only take the first selected image for inline
+            if (urls.length > 0) {
+                updateContentInSection(sectionIndex, contentIndex, `IMAGE::${urls[0]}`);
+            }
+            closeR2();
+            return;
+        }
+
         const idx = r2PickTarget.index;
         setSections(prev => prev.map((s, i) => {
             if (i !== idx) return s;
@@ -177,14 +195,14 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
     const handleCoverFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (!file || !file.type.startsWith('image/')) return;
-        
+
         // Check file size (10MB limit)
         if (file.size > 10 * 1024 * 1024) {
             alert('File too large. Maximum size is 10MB.');
             e.target.value = '';
             return;
         }
-        
+
         setCoverUploading(true);
         try {
             const result = await uploadImageToR2(file);
@@ -215,6 +233,24 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
         } finally {
             setSectionUploadingIndex(null);
             setSectionImageUploading(null);
+            e.target.value = '';
+        }
+    };
+
+    const handleInlineImageFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        const target = inlineImageUploading;
+        if (!file || !file.type.startsWith('image/') || !target) return;
+
+        // Force re-render to show loading state if needed, though state is already set
+        try {
+            const result = await uploadImageToR2(file);
+            updateContentInSection(target.sectionIndex, target.contentIndex, `IMAGE::${result.url}`);
+        } catch (err: unknown) {
+            console.error('Inline image upload failed:', err);
+            alert(err instanceof Error ? err.message : 'Upload failed');
+        } finally {
+            setInlineImageUploading(null);
             e.target.value = '';
         }
     };
@@ -999,91 +1035,180 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                                         )}
                                     </label>
 
-                                    {(section.contents || ['']).map((ctn, ctnIdx) => (
-                                        <div key={ctnIdx} style={{ display: 'flex', gap: '6px', alignItems: 'flex-start' }}>
-                                            <span style={{ ...font, fontSize: '6px', color: '#444', marginTop: '14px', flexShrink: 0, width: '16px', textAlign: 'right' }}>
-                                                P{ctnIdx + 1}
-                                            </span>
-                                            <div
-                                                ref={(el) => {
-                                                    const key = `${index}-${ctnIdx}`;
-                                                    if (el) {
-                                                        editorRefs.current.set(key, el);
-                                                        // Only set innerHTML when it actually differs (avoids cursor reset)
-                                                        if (el.innerHTML !== ctn && document.activeElement !== el) {
-                                                            el.innerHTML = ctn || '';
-                                                        }
-                                                    } else {
-                                                        editorRefs.current.delete(key);
-                                                    }
-                                                }}
-                                                contentEditable
-                                                suppressContentEditableWarning
-                                                onInput={(e) => updateContentInSection(index, ctnIdx, (e.target as HTMLDivElement).innerHTML)}
-                                                onKeyDown={handleFormatKey}
-                                                onFocus={handleInputFocus as any}
-                                                onBlur={handleInputBlur as any}
-                                                data-placeholder={`PARAGRAPH ${ctnIdx + 1}...`}
-                                                style={{
-                                                    ...inputStyle,
-                                                    flex: 1,
-                                                    minHeight: '70px',
-                                                    lineHeight: '2.2',
-                                                    whiteSpace: 'pre-wrap',
-                                                    overflowY: 'auto',
-                                                }}
-                                            />
-                                            <button
-                                                type="button"
-                                                onClick={() => removeContentFromSection(index, ctnIdx)}
-                                                disabled={(section.contents?.length || 1) <= 1}
-                                                className="cursor-pointer"
-                                                style={{
-                                                    width: '28px',
-                                                    height: '28px',
-                                                    marginTop: '10px',
-                                                    display: 'flex',
-                                                    alignItems: 'center',
-                                                    justifyContent: 'center',
-                                                    background: 'none',
-                                                    border: '1px solid #333',
-                                                    color: '#555',
-                                                    flexShrink: 0,
-                                                    transition: 'all 0.3s',
-                                                    opacity: (section.contents?.length || 1) <= 1 ? 0.3 : 1,
-                                                }}
-                                                onMouseEnter={e => { if ((section.contents?.length || 1) > 1) { e.currentTarget.style.color = '#FF00E4'; e.currentTarget.style.borderColor = '#FF00E4'; } }}
-                                                onMouseLeave={e => { e.currentTarget.style.color = '#555'; e.currentTarget.style.borderColor = '#333'; }}
-                                            >
-                                                <X style={{ width: '12px', height: '12px' }} />
-                                            </button>
-                                        </div>
-                                    ))}
+                                    {(section.contents || ['']).map((ctn, ctnIdx) => {
+                                        const isImageBlock = ctn.startsWith('IMAGE::');
+                                        const imageValue = isImageBlock ? ctn.replace('IMAGE::', '') : '';
 
-                                    <button
-                                        type="button"
-                                        onClick={() => addContentToSection(index)}
-                                        className="cursor-pointer"
-                                        style={{
-                                            ...font,
-                                            fontSize: '6px',
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            gap: '4px',
-                                            color: '#555',
-                                            background: 'none',
-                                            border: '1px dashed #333',
-                                            padding: '6px 10px',
-                                            letterSpacing: '0.1em',
-                                            transition: 'all 0.3s',
-                                            alignSelf: 'flex-start',
-                                        }}
-                                        onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--neon-cyan)'; e.currentTarget.style.color = 'var(--neon-cyan)'; }}
-                                        onMouseLeave={e => { e.currentTarget.style.borderColor = '#333'; e.currentTarget.style.color = '#555'; }}
-                                    >
-                                        <Plus style={{ width: '10px', height: '10px' }} />
-                                        ADD PARAGRAPH
-                                    </button>
+                                        return (
+                                            <div key={ctnIdx} style={{ display: 'flex', gap: '6px', alignItems: 'flex-start', marginBottom: '8px' }}>
+                                                <span style={{ ...font, fontSize: '6px', color: '#444', marginTop: '14px', flexShrink: 0, width: '16px', textAlign: 'right' }}>
+                                                    {isImageBlock ? 'IMG' : `P${ctnIdx + 1}`}
+                                                </span>
+
+                                                {isImageBlock ? (
+                                                    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                                                        <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+                                                            <input
+                                                                type="url"
+                                                                value={imageValue}
+                                                                onChange={(e) => updateContentInSection(index, ctnIdx, `IMAGE::${e.target.value}`)}
+                                                                placeholder="INLINE IMAGE URL..."
+                                                                style={{ ...inputStyle, flex: 1, borderColor: 'var(--neon-cyan)' }}
+                                                                onFocus={handleInputFocus}
+                                                                onBlur={handleInputBlur}
+                                                            />
+                                                        </div>
+                                                        {/* Inline Image Tools */}
+                                                        <div style={{ display: 'flex', gap: '6px' }}>
+                                                            <button
+                                                                type="button"
+                                                                onClick={() => {
+                                                                    const url = prompt('Enter Image URL:');
+                                                                    if (url) updateContentInSection(index, ctnIdx, `IMAGE::${url}`);
+                                                                }}
+                                                                className="cursor-pointer"
+                                                                style={{ ...font, fontSize: '5px', padding: '4px 8px', border: '1px solid #333', color: '#666' }}
+                                                            >
+                                                                PASTE URL
+                                                            </button>
+                                                            <button
+                                                                type="button"
+                                                                onClick={() => {
+                                                                    setInlineImageUploading({ sectionIndex: index, contentIndex: ctnIdx });
+                                                                    inlineImageFileInputRef.current?.click();
+                                                                }}
+                                                                disabled={inlineImageUploading?.sectionIndex === index && inlineImageUploading?.contentIndex === ctnIdx}
+                                                                className="cursor-pointer"
+                                                                style={{ ...font, fontSize: '5px', padding: '4px 8px', border: '1px solid #333', color: 'var(--neon-cyan)' }}
+                                                            >
+                                                                {inlineImageUploading?.sectionIndex === index && inlineImageUploading?.contentIndex === ctnIdx ? 'UPLOADING...' : 'UPLOAD'}
+                                                            </button>
+                                                            <button
+                                                                type="button"
+                                                                onClick={() => openR2ForInline(index, ctnIdx)}
+                                                                className="cursor-pointer"
+                                                                style={{ ...font, fontSize: '5px', padding: '4px 8px', border: '1px solid #333', color: '#aaa' }}
+                                                            >
+                                                                R2 MEDIA
+                                                            </button>
+                                                        </div>
+                                                        {imageValue && (
+                                                            <div style={{ height: '100px', overflow: 'hidden', border: '1px solid #333', marginTop: '4px' }}>
+                                                                <img src={imageValue} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                ) : (
+                                                    <div
+                                                        ref={(el) => {
+                                                            const key = `${index}-${ctnIdx}`;
+                                                            if (el) {
+                                                                editorRefs.current.set(key, el);
+                                                                if (el.innerHTML !== ctn && document.activeElement !== el) {
+                                                                    el.innerHTML = ctn || '';
+                                                                }
+                                                            } else {
+                                                                editorRefs.current.delete(key);
+                                                            }
+                                                        }}
+                                                        contentEditable
+                                                        suppressContentEditableWarning
+                                                        onInput={(e) => updateContentInSection(index, ctnIdx, (e.target as HTMLDivElement).innerHTML)}
+                                                        onKeyDown={handleFormatKey}
+                                                        onFocus={handleInputFocus as any}
+                                                        onBlur={handleInputBlur as any}
+                                                        data-placeholder={`PARAGRAPH ${ctnIdx + 1}...`}
+                                                        style={{
+                                                            ...inputStyle,
+                                                            flex: 1,
+                                                            minHeight: '70px',
+                                                            lineHeight: '2.2',
+                                                            whiteSpace: 'pre-wrap',
+                                                            overflowY: 'auto',
+                                                        }}
+                                                    />
+                                                )}
+
+                                                <button
+                                                    type="button"
+                                                    onClick={() => removeContentFromSection(index, ctnIdx)}
+                                                    disabled={(section.contents?.length || 1) <= 1}
+                                                    className="cursor-pointer"
+                                                    style={{
+                                                        width: '28px',
+                                                        height: '28px',
+                                                        marginTop: '10px',
+                                                        display: 'flex',
+                                                        alignItems: 'center',
+                                                        justifyContent: 'center',
+                                                        background: 'none',
+                                                        border: '1px solid #333',
+                                                        color: '#555',
+                                                        flexShrink: 0,
+                                                        transition: 'all 0.3s',
+                                                        opacity: (section.contents?.length || 1) <= 1 ? 0.3 : 1,
+                                                    }}
+                                                    onMouseEnter={e => { if ((section.contents?.length || 1) > 1) { e.currentTarget.style.color = '#FF00E4'; e.currentTarget.style.borderColor = '#FF00E4'; } }}
+                                                    onMouseLeave={e => { e.currentTarget.style.color = '#555'; e.currentTarget.style.borderColor = '#333'; }}
+                                                >
+                                                    <X style={{ width: '12px', height: '12px' }} />
+                                                </button>
+                                            </div>
+                                        );
+                                    })}
+
+                                    <div style={{ display: 'flex', gap: '8px' }}>
+                                        <button
+                                            type="button"
+                                            onClick={() => addContentToSection(index)}
+                                            className="cursor-pointer"
+                                            style={{
+                                                ...font,
+                                                fontSize: '6px',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                gap: '4px',
+                                                color: '#555',
+                                                background: 'none',
+                                                border: '1px dashed #333',
+                                                padding: '6px 10px',
+                                                letterSpacing: '0.1em',
+                                                transition: 'all 0.3s',
+                                            }}
+                                            onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--neon-cyan)'; e.currentTarget.style.color = 'var(--neon-cyan)'; }}
+                                            onMouseLeave={e => { e.currentTarget.style.borderColor = '#333'; e.currentTarget.style.color = '#555'; }}
+                                        >
+                                            <Plus style={{ width: '10px', height: '10px' }} />
+                                            ADD PARAGRAPH
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                setSections(prev => prev.map((s, i) =>
+                                                    i === index ? { ...s, contents: [...(s.contents || []), 'IMAGE::'] } : s
+                                                ));
+                                            }}
+                                            className="cursor-pointer"
+                                            style={{
+                                                ...font,
+                                                fontSize: '6px',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                gap: '4px',
+                                                color: '#555',
+                                                background: 'none',
+                                                border: '1px dashed #333',
+                                                padding: '6px 10px',
+                                                letterSpacing: '0.1em',
+                                                transition: 'all 0.3s',
+                                            }}
+                                            onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--neon-magenta)'; e.currentTarget.style.color = 'var(--neon-magenta)'; }}
+                                            onMouseLeave={e => { e.currentTarget.style.borderColor = '#333'; e.currentTarget.style.color = '#555'; }}
+                                        >
+                                            <ImagePlus style={{ width: '10px', height: '10px' }} />
+                                            ADD INLINE IMAGE
+                                        </button>
+                                    </div>
                                 </div>
 
                                 {/* Multiple Image URLs */}
@@ -1137,6 +1262,13 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                                         accept="image/*"
                                         style={{ display: 'none' }}
                                         onChange={handleSectionImageFileChange}
+                                    />
+                                    <input
+                                        ref={inlineImageFileInputRef}
+                                        type="file"
+                                        accept="image/*"
+                                        style={{ display: 'none' }}
+                                        onChange={handleInlineImageFileChange}
                                     />
                                     <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
                                         <button

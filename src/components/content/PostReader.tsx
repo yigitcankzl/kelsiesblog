@@ -130,10 +130,31 @@ export default function PostReader() {
 
                             <div className="text-gray-300 leading-[2.5] post-content"
                                 style={{ fontFamily: fontCfg.family, fontSize: fontCfg.size }}>
-                                {resolveContents(section).map((para, pIdx) => (
-                                    <div key={pIdx} style={{ marginBottom: '1.2em' }}
-                                        dangerouslySetInnerHTML={{ __html: para }} />
-                                ))}
+                                {resolveContents(section).map((para, pIdx) => {
+                                    // Check for inline image marker
+                                    if (para.startsWith('IMAGE::')) {
+                                        const imgUrl = para.replace('IMAGE::', '').trim();
+                                        if (!imgUrl) return null;
+                                        return (
+                                            <div key={pIdx} className="my-8 overflow-hidden retro-corners hover-glitch"
+                                                style={{ boxShadow: '0 0 10px rgba(0, 255, 65, 0.15)' }}>
+                                                <span className="rc-extra absolute inset-0" />
+                                                <img
+                                                    src={imgUrl}
+                                                    alt="Story inline"
+                                                    className="w-full h-auto object-cover"
+                                                    style={{ maxHeight: '500px' }}
+                                                />
+                                            </div>
+                                        );
+                                    }
+
+                                    // Regular text paragraph
+                                    return (
+                                        <div key={pIdx} style={{ marginBottom: '1.2em' }}
+                                            dangerouslySetInnerHTML={{ __html: para }} />
+                                    );
+                                })}
                             </div>
                         </motion.section>
                     ))}
