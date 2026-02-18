@@ -1,8 +1,7 @@
 import { motion } from 'framer-motion';
-import { ArrowRight, Clock, Image } from 'lucide-react';
+import { ArrowRight, Clock, Image, MapPin } from 'lucide-react';
 import { useBlogStore } from '@/store/store';
 import { estimateReadTime } from '@/types';
-import { MapPin } from 'lucide-react';
 
 export default function WelcomeView() {
     const { posts, galleryItems, setSelectedCountry, setSelectedPost, setActivePage } = useBlogStore();
