@@ -130,31 +130,66 @@ export default function PostReader() {
 
                             <div className="text-gray-300 leading-[2.5] post-content"
                                 style={{ fontFamily: fontCfg.family, fontSize: fontCfg.size }}>
-                                {resolveContents(section).map((para, pIdx) => {
-                                    // Check for inline image marker
-                                    if (para.startsWith('IMAGE::')) {
-                                        const imgUrl = para.replace('IMAGE::', '').trim();
-                                        if (!imgUrl) return null;
-                                        return (
-                                            <div key={pIdx} className="my-8 overflow-hidden retro-corners hover-glitch"
-                                                style={{ boxShadow: '0 0 10px rgba(0, 255, 65, 0.15)' }}>
-                                                <span className="rc-extra absolute inset-0" />
-                                                <img
-                                                    src={imgUrl}
-                                                    alt="Story inline"
-                                                    className="w-full h-auto object-cover"
-                                                    style={{ maxHeight: '500px' }}
-                                                />
-                                            </div>
-                                        );
-                                    }
 
-                                    // Regular text paragraph
-                                    return (
-                                        <div key={pIdx} style={{ marginBottom: '1.2em' }}
-                                            dangerouslySetInnerHTML={{ __html: para }} />
-                                    );
-                                })}
+                                {/* New HTML Content (TipTap) */}
+                                {section.content ? (
+                                    <>
+                                        <div
+                                            dangerouslySetInnerHTML={{ __html: section.content }}
+                                            className="rte-content"
+                                            style={{
+                                                ['--image-width' as any]: 'auto' // Placeholder if we want to use CSS vars, but HTML attributes should work
+                                            }}
+                                        />
+                                        <style>{`
+                                            .rte-content img {
+                                                max-width: 100%;
+                                                height: auto;
+                                                display: block;
+                                                margin: 1em 0;
+                                                border: 1px solid var(--neon-cyan);
+                                                box-shadow: 0 0 10px rgba(0, 255, 255, 0.2);
+                                            }
+                                            .rte-content img[align="left"] {
+                                                float: left;
+                                                margin-right: 1.5em;
+                                                margin-bottom: 1em;
+                                            }
+                                            .rte-content img[align="right"] {
+                                                float: right;
+                                                margin-left: 1.5em;
+                                                margin-bottom: 1em;
+                                            }
+                                            .rte-content img[align="center"] {
+                                                display: block;
+                                                margin: 1em auto;
+                                                float: none;
+                                            }
+                                            /* Clearfix for floated images */
+                                            .rte-content::after {
+                                                content: "";
+                                                display: table;
+                                                clear: both;
+                                            }
+                                        `}</style>
+                                    </>
+                                ) : (
+                                    /* Fallback: Legacy Content */
+                                    resolveContents(section).map((para, pIdx) => {
+                                        if (para.startsWith('IMAGE::')) {
+                                            const imgUrl = para.replace('IMAGE::', '').trim();
+                                            if (!imgUrl) return null;
+                                            return (
+                                                <div key={pIdx} className="my-8 overflow-hidden retro-corners hover-glitch"
+                                                    style={{ boxShadow: '0 0 10px rgba(0, 255, 65, 0.15)' }}>
+                                                    <span className="rc-extra absolute inset-0" />
+                                                    <img src={imgUrl} alt="Inline" className="w-full h-auto object-cover" />
+                                                </div>
+                                            );
+                                        }
+                                        return <div key={pIdx} style={{ marginBottom: '1.2em' }} dangerouslySetInnerHTML={{ __html: para }} />;
+                                    })
+                                )}
                             </div>
                         </motion.section>
                     ))}
