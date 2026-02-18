@@ -9,7 +9,7 @@ import { worldCities } from '../../data/worldCities';
 import { fetchCityBoundary } from '../../lib/cityBoundaryCache';
 import { mergePostFields } from '../../lib/firestore';
 import { parseFolderId, listDriveImages, driveThumbUrl } from '../../lib/googleDrive';
-import { uploadImageToDrive } from '../../lib/driveApi';
+import { uploadImageToR2 } from '../../lib/driveApi';
 
 const font = { fontFamily: "'Press Start 2P', monospace" } as const;
 
@@ -93,7 +93,7 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
         
         setCoverUploading(true);
         try {
-            const result = await uploadImageToDrive(file);
+            const result = await uploadImageToR2(file);
             setCoverImage(result.url);
         } catch (err: unknown) {
             console.error('Cover upload failed:', err);
@@ -111,7 +111,7 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
         if (!file || !file.type.startsWith('image/') || idx == null) return;
         setSectionImageUploading(idx);
         try {
-            const result = await uploadImageToDrive(file);
+            const result = await uploadImageToR2(file);
             setSections(prev => prev.map((s, i) =>
                 i === idx ? { ...s, images: [...(s.images || []), result.url] } : s
             ));

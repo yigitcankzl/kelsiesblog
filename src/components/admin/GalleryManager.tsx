@@ -4,7 +4,7 @@ import { Plus, Trash2, Edit2, Save, X, Image, UploadCloud, Loader } from 'lucide
 import { useBlogStore } from '../../store/store';
 import type { GalleryItem } from '../../types';
 import { parseFolderId, listDriveImages, driveThumbUrl } from '../../lib/googleDrive';
-import { uploadImageToDrive } from '../../lib/driveApi';
+import { uploadImageToR2 } from '../../lib/driveApi';
 
 const font = { fontFamily: "'Press Start 2P', monospace" } as const;
 
@@ -62,7 +62,7 @@ export default function GalleryManager() {
         if (!file || !file.type.startsWith('image/')) return;
         setGalleryUploading(true);
         try {
-            const result = await uploadImageToDrive(file);
+            const result = await uploadImageToR2(file);
             setForm(prev => ({ ...prev, src: result.url }));
             setPreviewError(false);
         } catch (err: unknown) {
