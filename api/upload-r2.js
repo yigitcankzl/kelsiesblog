@@ -9,6 +9,7 @@
 
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 import { createRequire } from 'module';
+import { requireIdToken } from './_lib/firebaseAdmin.js';
 const require = createRequire(import.meta.url);
 const formidable = require('formidable');
 const fs = require('fs').promises;
@@ -36,7 +37,7 @@ function getS3() {
 export default async function handler(req, res) {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    res.setHeader('Access-Control-Allow-Headers', 'Authorization, Content-Type');
 
     if (req.method === 'OPTIONS') {
         return res.status(200).end();
@@ -47,6 +48,8 @@ export default async function handler(req, res) {
     }
 
     try {
+        await requireIdToken(req);
+
         const form = new formidable.IncomingForm({
             keepExtensions: true,
             maxFileSize: MAX_FILE_SIZE,
