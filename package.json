@@ -19,7 +19,6 @@
     "firebase": "^12.9.0",
     "formidable": "^2.1.1",
     "framer-motion": "^12.34.0",
-    "googleapis": "^144.0.0",
     "leaflet": "^1.9.4",
     "lucide-react": "^0.563.0",
     "radix-ui": "^1.4.3",
