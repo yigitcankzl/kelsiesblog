@@ -3,15 +3,15 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Plus, LogOut, Globe } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { signOut } from 'firebase/auth';
-import { auth } from '../lib/firebase';
-import { useBlogStore } from '../store/store';
-import AuthGate from '../components/admin/AuthGate';
-import PostList from '../components/admin/PostList';
-import PostForm from '../components/admin/PostForm';
-import GalleryManager from '../components/admin/GalleryManager';
-import AboutManager from '../components/admin/AboutManager';
-import CountryOverviewManager from '../components/admin/CountryOverviewManager';
-import type { BlogPost } from '../types';
+import { auth } from '@/lib/firebase';
+import { useBlogStore } from '@/store/store';
+import type { BlogPost } from '@/types';
+import AuthGate from '@/components/admin/AuthGate';
+import PostList from '@/components/admin/PostList';
+import PostForm from '@/components/admin/PostForm';
+import GalleryManager from '@/components/admin/GalleryManager';
+import AboutManager from '@/components/admin/AboutManager';
+import CountryOverviewManager from '@/components/admin/CountryOverviewManager';
 
 const font = { fontFamily: "'Press Start 2P', monospace" } as const;
 
