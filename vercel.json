@@ -1,5 +1,5 @@
 {
-  "rewrites": [
-    { "source": "/(.*)", "destination": "/" }
-  ]
+  "functions": {
+    "api/upload-r2.js": { "maxDuration": 30 }
+  }
 }
