@@ -140,8 +140,8 @@ export default function AllStoriesPage() {
                                 </span>
                             </div>
 
-                            {/* Post cards */}
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                            {/* Post cards - adjusted to single column stack */}
+                            <div className="flex flex-col gap-6">
                                 {countryPosts.map((post, index) => (
                                     <motion.article
                                         key={post.id}
@@ -149,17 +149,16 @@ export default function AllStoriesPage() {
                                         animate={{ opacity: 1, y: 0 }}
                                         transition={{ delay: index * 0.06, duration: 0.4 }}
                                         onClick={() => handlePostClick(post)}
-                                        className="group cursor-pointer"
+                                        className="group cursor-pointer flex flex-col sm:flex-row gap-6 items-start"
                                         style={{ transition: 'transform 0.5s' }}
-                                        onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-4px)'; }}
+                                        onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; }}
                                         onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; }}
                                     >
-                                        {/* Image */}
-                                        <div className="retro-corners hover-glitch" style={{
+                                        {/* Image - reduced size and fixed width on desktop */}
+                                        <div className="retro-corners hover-glitch w-full sm:w-48 md:w-64 shrink-0" style={{
                                             position: 'relative',
                                             overflow: 'hidden',
-                                            aspectRatio: '16/9',
-                                            marginBottom: '16px',
+                                            aspectRatio: '4/3',
                                             boxShadow: '0 0 10px rgba(0, 255, 65, 0.15)',
                                         }}>
                                             <span className="rc-extra" style={{ position: 'absolute', inset: 0 }} />
@@ -180,93 +179,78 @@ export default function AllStoriesPage() {
                                                 inset: 0,
                                                 background: 'linear-gradient(to top, rgba(0,0,0,0.6), transparent)',
                                             }} />
-                                            <span style={{
-                                                position: 'absolute',
-                                                top: '12px',
-                                                left: '12px',
+                                        </div>
+
+                                        {/* Content side */}
+                                        <div className="flex-1 min-w-0">
+                                            {/* Meta */}
+                                            <div style={{
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                gap: '10px',
+                                                marginBottom: '8px',
                                                 ...font,
-                                                fontSize: '6px',
-                                                backgroundColor: 'var(--brand)',
-                                                color: '#000',
-                                                padding: '6px 10px',
-                                                fontWeight: 'bold',
+                                                fontSize: '7px',
                                                 textTransform: 'uppercase',
                                                 letterSpacing: '0.12em',
-                                                display: 'inline-flex',
-                                                alignItems: 'center',
-                                                gap: '6px',
                                             }}>
-                                                <MapPin style={{ width: '10px', height: '10px' }} />
-                                                {post.city}
-                                            </span>
-                                        </div>
-
-                                        {/* Meta */}
-                                        <div style={{
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            gap: '10px',
-                                            marginBottom: '12px',
-                                            ...font,
-                                            fontSize: '7px',
-                                            textTransform: 'uppercase',
-                                            letterSpacing: '0.12em',
-                                        }}>
-                                            <span style={{ color: 'var(--neon-cyan)' }}>{post.date}</span>
-                                            <span style={{ width: '4px', height: '4px', backgroundColor: 'var(--neon-magenta)' }} />
-                                            <span style={{ color: '#555', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                                                <Clock style={{ width: '10px', height: '10px' }} />
-                                                {estimateReadTime(post.sections)} MIN
-                                            </span>
-                                        </div>
-
-                                        {/* Title */}
-                                        <h3
-                                            className="text-glitch"
-                                            data-text={post.title}
-                                            style={{
-                                                ...font,
-                                                fontSize: '11px',
-                                                color: '#fff',
-                                                marginBottom: '12px',
-                                                lineHeight: '2',
-                                                transition: 'color 0.3s',
-                                            }}
-                                            onMouseEnter={e => { e.currentTarget.style.color = 'var(--brand)'; }}
-                                            onMouseLeave={e => { e.currentTarget.style.color = '#fff'; }}
-                                        >
-                                            {post.title}
-                                        </h3>
-
-                                        {/* Excerpt */}
-                                        <p style={{
-                                            ...font,
-                                            fontSize: '8px',
-                                            color: '#666',
-                                            lineHeight: '2.4',
-                                            display: '-webkit-box',
-                                            WebkitLineClamp: 3,
-                                            WebkitBoxOrient: 'vertical',
-                                            overflow: 'hidden',
-                                        }}>
-                                            {post.sections[0]?.content?.substring(0, 120)}...
-                                        </p>
-
-                                        {/* Categories */}
-                                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginTop: '12px' }}>
-                                            {post.category.map(cat => (
-                                                <span key={cat} style={{
-                                                    ...font,
-                                                    fontSize: '5px',
-                                                    padding: '4px 8px',
-                                                    border: '1px solid #333',
-                                                    color: '#555',
-                                                    textTransform: 'uppercase',
-                                                    letterSpacing: '0.1em',
-                                                }}>
-                                                    {cat}
+                                                <span style={{ color: 'var(--neon-cyan)' }}>{post.date}</span>
+                                                <span style={{ width: '4px', height: '4px', backgroundColor: 'var(--neon-magenta)' }} />
+                                                <span style={{ color: '#555', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                                    <Clock style={{ width: '10px', height: '10px' }} />
+                                                    {estimateReadTime(post.sections)} MIN
                                                 </span>
-                                            ))}
+                                            </div>
+
+                                            {/* Title */}
+                                            <h3
+                                                className="text-glitch"
+                                                data-text={post.title}
+                                                style={{
+                                                    ...font,
+                                                    fontSize: '11px',
+                                                    color: '#fff',
+                                                    marginBottom: '8px',
+                                                    lineHeight: '1.8',
+                                                    transition: 'color 0.3s',
+                                                }}
+                                                onMouseEnter={e => { e.currentTarget.style.color = 'var(--brand)'; }}
+                                                onMouseLeave={e => { e.currentTarget.style.color = '#fff'; }}
+                                            >
+                                                {post.title}
+                                            </h3>
+
+                                            {/* Excerpt */}
+                                            <p style={{
+                                                ...font,
+                                                fontSize: '8px',
+                                                color: '#666',
+                                                lineHeight: '2.2',
+                                                marginBottom: '10px',
+                                                display: '-webkit-box',
+                                                WebkitLineClamp: 2,
+                                                WebkitBoxOrient: 'vertical',
+                                                overflow: 'hidden',
+                                            }}>
+                                                {post.sections[0]?.content?.substring(0, 120)}...
+                                            </p>
+
+                                            {/* Categories */}
+                                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+                                                {post.category.map(cat => (
+                                                    <span key={cat} style={{
+                                                        ...font,
+                                                        fontSize: '5px',
+                                                        padding: '4px 8px',
+                                                        border: '1px solid #333',
+                                                        color: '#555',
+                                                        textTransform: 'uppercase',
+                                                        letterSpacing: '0.1em',
+                                                    }}>
+                                                        {cat}
+                                                    </span>
+                                                ))}
+                                            </div>
                                         </div>
                                     </motion.article>
                                 ))}

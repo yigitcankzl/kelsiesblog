@@ -71,16 +71,16 @@ export default function CountryPostsView() {
                         </h3>
                         <motion.div
                             className="border border-[var(--brand)]/50 bg-[rgba(0,0,0,0.65)] px-6 sm:px-8 py-6 sm:py-7 retro-corners"
-                        initial={{ opacity: 0, y: 8 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.3, delay: 0.05 }}
-                    >
-                        <p
-                            className="text-[11px] sm:text-sm leading-relaxed text-[var(--neon-amber)]"
-                            style={{ fontFamily: "'Press Start 2P', monospace" }}
+                            initial={{ opacity: 0, y: 8 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.3, delay: 0.05 }}
                         >
-                            {countryDescription}
-                        </p>
+                            <p
+                                className="text-[11px] sm:text-sm leading-relaxed text-[var(--neon-amber)]"
+                                style={{ fontFamily: "'Press Start 2P', monospace" }}
+                            >
+                                {countryDescription}
+                            </p>
                         </motion.div>
                     </div>
                 )}
@@ -128,8 +128,8 @@ export default function CountryPostsView() {
                     ))}
                 </div>
 
-                {/* Grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-12 sm:gap-14">
+                {/* List - adjusted to single column stack */}
+                <div className="flex flex-col gap-8">
                     {filteredPosts.map((post, index) => (
                         <motion.article
                             key={post.id}
@@ -137,10 +137,16 @@ export default function CountryPostsView() {
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.05 + index * 0.08, duration: 0.4 }}
                             onClick={() => setSelectedPost(post)}
-                            className="group cursor-pointer transition-all duration-500 hover:-translate-y-1"
+                            className="group cursor-pointer flex flex-col sm:flex-row gap-6 items-start"
                         >
-                            <div className="relative overflow-hidden aspect-[16/9] mb-8 retro-corners hover-glitch"
-                                style={{ boxShadow: '0 0 10px rgba(0, 255, 65, 0.15)' }}>
+                            {/* Image - reduced size and fixed width on desktop */}
+                            <div className="retro-corners hover-glitch w-full sm:w-48 md:w-64 shrink-0"
+                                style={{
+                                    position: 'relative',
+                                    overflow: 'hidden',
+                                    aspectRatio: '4/3',
+                                    boxShadow: '0 0 10px rgba(0, 255, 65, 0.15)'
+                                }}>
                                 <span className="rc-extra absolute inset-0" />
                                 <img
                                     src={post.coverImage}
@@ -156,21 +162,25 @@ export default function CountryPostsView() {
                                     </span>
                                 </div>
                             </div>
-                            <div className="flex items-center text-[8px] font-medium text-gray-500 mb-5 space-x-3 uppercase tracking-wider"
-                                style={{ fontFamily: "'Press Start 2P', monospace" }}>
-                                <span className="text-[var(--neon-cyan)]">{post.city}, {post.country}</span>
-                                <span className="w-1.5 h-1.5 bg-[var(--neon-magenta)]" />
-                                <span className="text-[var(--neon-amber)]">{estimateReadTime(post.sections)} MIN</span>
+
+                            {/* Content side */}
+                            <div className="flex-1 min-w-0">
+                                <div className="flex items-center text-[8px] font-medium text-gray-500 mb-4 space-x-3 uppercase tracking-wider"
+                                    style={{ fontFamily: "'Press Start 2P', monospace" }}>
+                                    <span className="text-[var(--neon-cyan)]">{post.city}, {post.country}</span>
+                                    <span className="w-1.5 h-1.5 bg-[var(--neon-magenta)]" />
+                                    <span className="text-[var(--neon-amber)]">{estimateReadTime(post.sections)} MIN</span>
+                                </div>
+                                <h3 className="text-sm md:text-base font-bold text-white mb-4 group-hover:text-[var(--brand)] transition-colors leading-relaxed text-glitch"
+                                    style={{ fontFamily: "'Press Start 2P', monospace" }}
+                                    data-text={post.title}>
+                                    {post.title}
+                                </h3>
+                                <p className="text-gray-400 text-[10px] line-clamp-3 leading-[2.4]"
+                                    style={{ fontFamily: "'Press Start 2P', monospace" }}>
+                                    {post.sections[0]?.content?.substring(0, 100)}...
+                                </p>
                             </div>
-                            <h3 className="text-sm md:text-base font-bold text-white mb-5 group-hover:text-[var(--brand)] transition-colors leading-relaxed text-glitch"
-                                style={{ fontFamily: "'Press Start 2P', monospace" }}
-                                data-text={post.title}>
-                                {post.title}
-                            </h3>
-                            <p className="text-gray-400 text-[10px] line-clamp-3 leading-[2.4]"
-                                style={{ fontFamily: "'Press Start 2P', monospace" }}>
-                                {post.sections[0]?.content?.substring(0, 100)}...
-                            </p>
                         </motion.article>
                     ))}
                 </div>
