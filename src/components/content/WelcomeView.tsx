@@ -33,7 +33,7 @@ export default function WelcomeView() {
                         data-text="Latest Stories">
                         Latest Stories
                     </h2>
-                    <div className="flex justify-center mt-16 gap-2">
+                    <div className="flex justify-center mt-40 gap-2">
                         {Array.from({ length: 11 }).map((_, i) => (
                             <div key={i} className="w-1.5 h-1.5"
                                 style={{
@@ -180,7 +180,7 @@ export default function WelcomeView() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.4, duration: 0.5 }}
                 >
-                    <div className="flex items-center justify-center gap-2 mb-16">
+                    <div className="flex items-center justify-center gap-2 mb-64">
                         {Array.from({ length: 25 }).map((_, i) => (
                             <div key={i} className="w-1 h-1"
                                 style={{
@@ -196,7 +196,7 @@ export default function WelcomeView() {
                             style={{
                                 fontFamily: "'Press Start 2P', monospace",
                                 fontSize: '10px',
-                                padding: '16px 40px',
+                                padding: '20px 48px',
                                 border: '2px solid var(--brand)',
                                 backgroundColor: 'transparent',
                                 color: 'var(--brand)',
@@ -206,7 +206,7 @@ export default function WelcomeView() {
                                 transition: 'all 0.3s',
                                 display: 'inline-flex',
                                 alignItems: 'center',
-                                gap: '12px',
+                                gap: '16px',
                             }}
                             onMouseEnter={e => {
                                 e.currentTarget.style.backgroundColor = 'var(--brand)';
@@ -244,7 +244,7 @@ export default function WelcomeView() {
                                 data-text="Photo Roll">
                                 Photo Roll
                             </h2>
-                            <div className="flex justify-center mt-16 gap-2">
+                            <div className="flex justify-center mt-40 gap-2">
                                 {Array.from({ length: 11 }).map((_, i) => (
                                     <div key={i} className="w-1.5 h-1.5"
                                         style={{
@@ -349,7 +349,7 @@ export default function WelcomeView() {
 
                         {/* VIEW GALLERY button */}
                         <div className="text-center mt-24">
-                            <div className="flex items-center justify-center gap-2 mb-16">
+                            <div className="flex items-center justify-center gap-2 mb-64">
                                 {Array.from({ length: 25 }).map((_, i) => (
                                     <div key={i} className="w-1 h-1"
                                         style={{
@@ -364,7 +364,7 @@ export default function WelcomeView() {
                                 style={{
                                     fontFamily: "'Press Start 2P', monospace",
                                     fontSize: '10px',
-                                    padding: '16px 40px',
+                                    padding: '20px 48px',
                                     border: '2px solid var(--neon-cyan)',
                                     backgroundColor: 'transparent',
                                     color: 'var(--neon-cyan)',
@@ -374,7 +374,7 @@ export default function WelcomeView() {
                                     transition: 'all 0.3s',
                                     display: 'inline-flex',
                                     alignItems: 'center',
-                                    gap: '12px',
+                                    gap: '16px',
                                 }}
                                 onMouseEnter={e => {
                                     e.currentTarget.style.backgroundColor = 'var(--neon-cyan)';
