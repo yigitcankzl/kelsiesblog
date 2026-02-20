@@ -1,10 +1,10 @@
 import { motion } from 'framer-motion';
-import { ArrowRight, Clock, Image, MapPin } from 'lucide-react';
+import { ArrowRight, Clock } from 'lucide-react';
 import { useBlogStore } from '@/store/store';
 import { estimateReadTime } from '@/types';
 
 export default function WelcomeView() {
-    const { posts, galleryItems, setSelectedCountry, setSelectedPost, setActivePage } = useBlogStore();
+    const { posts, setSelectedCountry, setSelectedPost, setActivePage } = useBlogStore();
 
     const handlePostClick = (post: typeof posts[0]) => {
         setSelectedCountry(post.country);
@@ -225,174 +225,7 @@ export default function WelcomeView() {
                     </div>
                 </motion.div>
 
-                {/* Gallery preview */}
-                {galleryItems.length > 0 && (
-                    <motion.div
-                        className="mt-40"
-                        initial={{ opacity: 0, y: 16 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.5, duration: 0.5 }}
-                    >
-                        {/* Section header */}
-                        <div className="text-center mb-36">
-                            <span className="text-[var(--neon-cyan)] font-bold tracking-[0.3em] text-[8px] uppercase block mb-12 neon-glow-cyan"
-                                style={{ fontFamily: "'Press Start 2P', monospace" }}>
-                                ▸ GALLERY ◂
-                            </span>
-                            <h2 className="text-lg md:text-2xl lg:text-3xl text-white leading-[1.8] relative text-glitch-always inline-block"
-                                style={{ fontFamily: "'Press Start 2P', monospace" }}
-                                data-text="Photo Roll">
-                                Photo Roll
-                            </h2>
-                            <div className="flex justify-center mt-40 gap-2">
-                                {Array.from({ length: 11 }).map((_, i) => (
-                                    <div key={i} className="w-1.5 h-1.5"
-                                        style={{
-                                            backgroundColor: i % 3 === 0 ? '#00FFFF' : i % 3 === 1 ? '#FF00E4' : '#00FF41',
-                                            opacity: i === 5 ? 0.8 : 0.25,
-                                        }} />
-                                ))}
-                            </div>
-                        </div>
 
-                        {/* Gallery grid */}
-                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                            {galleryItems.slice(0, 6).map((item, index) => (
-                                <motion.div
-                                    key={item.id}
-                                    initial={{ opacity: 0, y: 16 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: 0.55 + index * 0.06, duration: 0.4 }}
-                                    className="group cursor-pointer retro-corners hover-glitch"
-                                    onClick={() => setActivePage('gallery')}
-                                    style={{
-                                        position: 'relative',
-                                        overflow: 'hidden',
-                                        aspectRatio: index % 5 === 0 ? '1/1' : '4/3',
-                                        boxShadow: '0 0 8px rgba(0, 255, 255, 0.1)',
-                                    }}
-                                >
-                                    <span className="rc-extra" style={{ position: 'absolute', inset: 0 }} />
-                                    <img
-                                        src={item.src}
-                                        alt={item.caption}
-                                        style={{
-                                            width: '100%',
-                                            height: '100%',
-                                            objectFit: 'cover',
-                                            transition: 'transform 0.7s, filter 0.5s',
-                                            filter: 'saturate(0.8) brightness(0.85)',
-                                        }}
-                                        onMouseEnter={e => {
-                                            e.currentTarget.style.transform = 'scale(1.1)';
-                                            e.currentTarget.style.filter = 'saturate(1) brightness(1)';
-                                        }}
-                                        onMouseLeave={e => {
-                                            e.currentTarget.style.transform = 'scale(1)';
-                                            e.currentTarget.style.filter = 'saturate(0.8) brightness(0.85)';
-                                        }}
-                                    />
-                                    {/* Gradient overlay */}
-                                    <div style={{
-                                        position: 'absolute',
-                                        inset: 0,
-                                        background: 'linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 50%)',
-                                        pointerEvents: 'none',
-                                    }} />
-                                    {/* Location label */}
-                                    <div style={{
-                                        position: 'absolute',
-                                        bottom: '10px',
-                                        left: '10px',
-                                        right: '10px',
-                                    }}>
-                                        <span style={{
-                                            fontFamily: "'Press Start 2P', monospace",
-                                            fontSize: '6px',
-                                            color: 'var(--neon-cyan)',
-                                            display: 'inline-flex',
-                                            alignItems: 'center',
-                                            gap: '4px',
-                                            textTransform: 'uppercase' as const,
-                                            letterSpacing: '0.1em',
-                                        }}>
-                                            <MapPin style={{ width: '8px', height: '8px' }} />
-                                            {item.city}
-                                        </span>
-                                        <p style={{
-                                            fontFamily: "'Press Start 2P', monospace",
-                                            fontSize: '5px',
-                                            color: '#666',
-                                            marginTop: '4px',
-                                            overflow: 'hidden',
-                                            textOverflow: 'ellipsis',
-                                            whiteSpace: 'nowrap',
-                                        }}>
-                                            {item.caption}
-                                        </p>
-                                    </div>
-                                    {/* Index badge */}
-                                    <span style={{
-                                        position: 'absolute',
-                                        top: '8px',
-                                        right: '8px',
-                                        fontFamily: "'Press Start 2P', monospace",
-                                        fontSize: '5px',
-                                        color: 'var(--neon-cyan)',
-                                        opacity: 0.4,
-                                    }}>
-                                        #{String(index + 1).padStart(2, '0')}
-                                    </span>
-                                </motion.div>
-                            ))}
-                        </div>
-
-                        {/* VIEW GALLERY button */}
-                        <div className="text-center mt-24">
-                            <div className="flex items-center justify-center gap-2 mb-64">
-                                {Array.from({ length: 25 }).map((_, i) => (
-                                    <div key={i} className="w-1 h-1"
-                                        style={{
-                                            backgroundColor: i % 3 === 0 ? '#00FFFF' : i % 3 === 1 ? '#FF00E4' : '#00FF41',
-                                            opacity: i % 2 === 0 ? 0.4 : 0.15,
-                                        }} />
-                                ))}
-                            </div>
-                            <button
-                                onClick={() => setActivePage('gallery')}
-                                className="cursor-pointer group"
-                                style={{
-                                    fontFamily: "'Press Start 2P', monospace",
-                                    fontSize: '10px',
-                                    padding: '20px 48px',
-                                    border: '2px solid var(--neon-cyan)',
-                                    backgroundColor: 'transparent',
-                                    color: 'var(--neon-cyan)',
-                                    letterSpacing: '0.15em',
-                                    textTransform: 'uppercase' as const,
-                                    boxShadow: '0 0 12px rgba(0, 255, 255, 0.2)',
-                                    transition: 'all 0.3s',
-                                    display: 'inline-flex',
-                                    alignItems: 'center',
-                                    gap: '16px',
-                                }}
-                                onMouseEnter={e => {
-                                    e.currentTarget.style.backgroundColor = 'var(--neon-cyan)';
-                                    e.currentTarget.style.color = '#000';
-                                    e.currentTarget.style.boxShadow = '0 0 24px rgba(0, 255, 255, 0.5)';
-                                }}
-                                onMouseLeave={e => {
-                                    e.currentTarget.style.backgroundColor = 'transparent';
-                                    e.currentTarget.style.color = 'var(--neon-cyan)';
-                                    e.currentTarget.style.boxShadow = '0 0 12px rgba(0, 255, 255, 0.2)';
-                                }}
-                            >
-                                <Image className="w-4 h-4" />
-                                VIEW GALLERY ▸
-                            </button>
-                        </div>
-                    </motion.div>
-                )}
 
             </div>
         </section>
