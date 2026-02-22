@@ -22,23 +22,18 @@ export default function PostFormPreview({
         <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            style={{
-                border: '1px solid var(--neon-cyan)',
-                padding: '24px',
-                backgroundColor: '#050505',
-                marginBottom: '16px',
-                boxShadow: '0 0 15px rgba(0, 255, 255, 0.1)',
-            }}
+            className="p-6 mb-4 border border-[var(--neon-cyan)] bg-[#050505]"
+            style={{ boxShadow: '0 0 15px rgba(0, 255, 255, 0.1)' }}
         >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '20px' }}>
+            <div className="flex items-center gap-2 mb-5">
                 <div style={{ width: '6px', height: '6px', backgroundColor: 'var(--neon-cyan)' }} />
                 <h3 style={{ ...FONT, fontSize: '8px', color: 'var(--neon-cyan)', textTransform: 'uppercase', letterSpacing: '0.15em' }}>
                     PREVIEW
                 </h3>
-                <div style={{ flex: 1, height: '1px', background: 'linear-gradient(to right, rgba(0,255,255,0.3), transparent)' }} />
+                <div className="flex-1 h-px bg-gradient-to-r from-[rgba(0,255,255,0.3)] to-transparent" />
             </div>
 
-            <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '8px', marginBottom: '12px' }}>
+            <div className="flex items-center flex-wrap gap-2 mb-3">
                 {city && <span style={{ ...FONT, fontSize: '7px', color: 'var(--neon-cyan)' }}>{city}, {country}</span>}
                 {categories.length > 0 && (
                     <>
@@ -63,7 +58,7 @@ export default function PostFormPreview({
             </h2>
 
             {sections.filter(s => s.heading || (s.contents || []).some(c => c.trim()) || s.content).map((section, i) => (
-                <div key={i} style={{ marginBottom: '16px' }}>
+                <div key={i} className="mb-4">
                     {section.heading && (
                         <h3 style={{ ...FONT, fontSize: '10px', color: 'var(--brand)', marginBottom: '8px' }}>
                             {'>'} {section.heading}
@@ -74,8 +69,8 @@ export default function PostFormPreview({
                         dangerouslySetInnerHTML={{ __html: section.content || '' }}
                     />
                     {(section.images || []).filter(Boolean).map((img, imgI) => (
-                        <div key={imgI} style={{ marginTop: '12px', overflow: 'hidden', height: '140px', border: '1px solid #1a1a1a' }}>
-                            <img src={img} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                        <div key={imgI} className="mt-3 overflow-hidden h-[140px] border border-[#1a1a1a]">
+                            <img src={img} alt="" className="w-full h-full object-cover" />
                         </div>
                     ))}
                 </div>

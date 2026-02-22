@@ -36,18 +36,12 @@ export default function AdminPage() {
     const showForm = isCreating || editingPost !== null;
 
     return (
-        <div style={{ minHeight: '100vh', backgroundColor: '#000' }}>
+        <div className="min-h-screen bg-black">
             {/* Header */}
-            <header style={{
-                borderBottom: '1px solid #1a1a1a',
-                position: 'sticky',
-                top: 0,
-                zIndex: 50,
-                backgroundColor: '#000',
-                boxShadow: '0 0 20px rgba(0, 255, 65, 0.05)',
-            }}>
-                <div style={{ maxWidth: '1024px', margin: '0 auto', padding: '16px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+            <header className="border-b border-[#1a1a1a] sticky top-0 z-50 bg-black"
+                style={{ boxShadow: '0 0 20px rgba(0, 255, 65, 0.05)' }}>
+                <div className="max-w-screen-lg mx-auto px-6 py-4 flex items-center justify-between">
+                    <div className="flex items-center gap-4">
                         <button
                             onClick={() => navigate('/')}
                             className="cursor-pointer"
@@ -78,7 +72,7 @@ export default function AdminPage() {
                             </p>
                         </div>
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <div className="flex items-center gap-3">
                         {activeTab === 'posts' && !showForm && (
                             <button
                                 onClick={() => setIsCreating(true)}
@@ -130,8 +124,8 @@ export default function AdminPage() {
                 </div>
 
                 {/* Tabs */}
-                <div style={{ maxWidth: '1024px', margin: '0 auto', padding: '0 24px' }}>
-                    <div style={{ display: 'flex', gap: '0', borderTop: '1px solid #1a1a1a' }}>
+                <div className="max-w-screen-lg mx-auto px-6">
+                    <div className="flex border-t border-[#1a1a1a]">
                         {([
                             { key: 'posts' as AdminTab, label: 'POSTS' },
                             { key: 'gallery' as AdminTab, label: 'GALLERY' },
@@ -166,7 +160,7 @@ export default function AdminPage() {
             </header>
 
             {/* Content */}
-            <main style={{ maxWidth: '1024px', margin: '0 auto', padding: '32px 24px' }}>
+            <main className="max-w-screen-lg mx-auto px-6 py-8">
                 <AnimatePresence mode="wait">
                     {activeTab === 'posts' ? (
                         showForm ? (

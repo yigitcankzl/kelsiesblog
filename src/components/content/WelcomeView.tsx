@@ -16,7 +16,7 @@ export default function WelcomeView() {
 
     return (
         <section className="bg-black py-40 relative z-10">
-            <div style={{ maxWidth: '1024px', margin: '0 auto', paddingLeft: '24px', paddingRight: '24px' }}>
+            <div className="max-w-screen-lg mx-auto px-6">
                 {/* Section header — centered */}
                 <motion.div
                     className="text-center mb-36"
@@ -51,8 +51,7 @@ export default function WelcomeView() {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.1, duration: 0.5 }}
                         onClick={() => handlePostClick(featured)}
-                        className="group cursor-pointer transition-all duration-500 hover:-translate-y-1"
-                        style={{ marginBottom: '80px' }}
+                        className="group cursor-pointer transition-all duration-500 hover:-translate-y-1 mb-20"
                     >
                         <div className="grid grid-cols-1 md:grid-cols-[3fr_2fr] gap-0 retro-corners overflow-hidden md:min-h-[420px]"
                             style={{ boxShadow: '0 0 20px rgba(0, 255, 65, 0.15)' }}>
@@ -108,8 +107,7 @@ export default function WelcomeView() {
                 )}
 
                 {/* Pixel divider */}
-                <div className="flex items-center justify-center gap-1"
-                    style={{ marginBottom: '80px' }}>
+                <div className="flex items-center justify-center gap-1 mb-20">
                     {Array.from({ length: 25 }).map((_, i) => (
                         <div key={i} className="w-1 h-1"
                             style={{
@@ -121,7 +119,7 @@ export default function WelcomeView() {
 
                 {/* Stories grid — dynamic, centered */}
                 {rest.length > 0 && (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-10" style={{ paddingBottom: '20px' }}>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-10 pb-5">
                         {rest.map((post, index) => (
                             <motion.article
                                 key={post.id}
@@ -174,8 +172,7 @@ export default function WelcomeView() {
                 )}
 
                 <motion.div
-                    className="text-center"
-                    style={{ marginTop: '160px', marginBottom: '160px' }}
+                    className="text-center mt-40 mb-40"
                     initial={{ opacity: 0, y: 12 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.4, duration: 0.5 }}
@@ -189,7 +186,7 @@ export default function WelcomeView() {
                                 }} />
                         ))}
                     </div>
-                    <div style={{ display: 'flex', justifyContent: 'center', gap: '16px', flexWrap: 'wrap' }}>
+                    <div className="flex justify-center gap-4 flex-wrap">
                         <button
                             onClick={() => setActivePage('stories')}
                             className="cursor-pointer group"
