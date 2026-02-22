@@ -282,7 +282,7 @@ function runGlobeAnimation(
     const yOffset = yLatOffset + yContainerOffset;
 
     /* Timeline */
-    const SPIN = 1800, MORPH = 2200, FADE = 300;
+    const SPIN = 800, MORPH = 1000, FADE = 100;
     const TOTAL = SPIN + MORPH + FADE;
     const zStart = 3.2;
     const startTime = performance.now();
@@ -317,8 +317,10 @@ function runGlobeAnimation(
         }
 
         if (elapsed >= SPIN + MORPH) {
-            const fadeT = (elapsed - SPIN - MORPH) / FADE;
-            renderer.domElement.style.opacity = `${1 - Math.min(fadeT, 1)}`;
+            const fadeRaw = Math.min((elapsed - SPIN - MORPH) / FADE, 1);
+            // Ease-out quadratic for smooth dissolve
+            const fadeT = fadeRaw * (2 - fadeRaw);
+            renderer.domElement.style.opacity = `${1 - fadeT}`;
         }
 
         renderer.render(scene, camera);
