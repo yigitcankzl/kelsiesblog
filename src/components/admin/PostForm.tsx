@@ -1,6 +1,5 @@
-import { useState, useMemo, useRef, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { Save, X, Plus, Trash2, ChevronUp, ChevronDown, Type, ImagePlus, AlignLeft, UploadCloud, Loader } from 'lucide-react';
+import { useState, useMemo, useRef } from 'react';
+import { X, Plus, Type, ImagePlus, UploadCloud, Loader } from 'lucide-react';
 import { useBlogStore } from '@/store/store';
 import type { BlogPost, Section } from '@/types';
 import { CONTENT_FONTS, getFontConfig } from '@/types';
@@ -8,10 +7,12 @@ import { countryBounds } from '@/data/countryBounds';
 import { worldCities } from '@/data/worldCities';
 import { fetchCityBoundary } from '@/lib/cityBoundaryCache';
 import { mergePostFields } from '@/lib/firestore';
-import { parseFolderId, listDriveImages, driveThumbUrl } from '@/lib/googleDrive';
 import { uploadImageToR2 } from '@/lib/r2Api';
-import RichTextEditor from './RichTextEditor';
 import R2MediaBrowser from './R2MediaBrowser';
+import PostFormSectionEditor from './PostFormSectionEditor';
+import PostFormPreview from './PostFormPreview';
+import PostFormActions from './PostFormActions';
+import { usePostDraft } from '@/hooks/usePostDraft';
 import { FONT, CATEGORIES } from '@/lib/constants';
 import { inputStyle, labelStyle, handleInputFocus, handleInputBlur } from '@/lib/adminStyles';
 
@@ -44,8 +45,6 @@ function normalizeSections(sections: Section[]): Section[] {
     });
 }
 
-
-
 export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
     const { addPost, updatePost } = useBlogStore();
 
@@ -63,144 +62,58 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
 
     const isEditing = post !== null;
 
-    const coverFileInputRef = useRef<HTMLInputElement>(null);
-    const sectionImageFileInputRef = useRef<HTMLInputElement>(null);
-
-    const [coverUploading, setCoverUploading] = useState(false);
-    const [sectionUploadingIndex, setSectionUploadingIndex] = useState<number | null>(null);
-    const [sectionImageUploading, setSectionImageUploading] = useState<number | null>(null);
-
-    // R2 media browser pick target
-    const [r2PickTarget, setR2PickTarget] = useState<{ kind: 'cover' } | { kind: 'section'; index: number } | null>(null);
-
     // --- Drafts ---
-    const [draftFound, setDraftFound] = useState(false);
+    const { draftFound, restoreDraft, discardDraft, clearDraft } = usePostDraft(isEditing, {
+        title, country, city, date, coverImage, categories, contentFont, sections,
+    });
 
-    // Load draft on mount
-    useEffect(() => {
-        if (!isEditing) {
-            const draft = localStorage.getItem('kelsiesblog_draft');
-            if (draft) {
-                setDraftFound(true);
-            }
-        }
-    }, [isEditing]);
-
-    // Auto-save draft
-    useEffect(() => {
-        if (isEditing) return; // Don't overwrite draft while editing existing post
-
-        const timer = setTimeout(() => {
-            const draftData = {
-                title,
-                country,
-                city,
-                date,
-                coverImage,
-                categories,
-                contentFont,
-                sections,
-                timestamp: Date.now()
-            };
-            localStorage.setItem('kelsiesblog_draft', JSON.stringify(draftData));
-        }, 1000); // Debounce 1s
-
-        return () => clearTimeout(timer);
-    }, [title, country, city, date, coverImage, categories, contentFont, sections, isEditing]);
-
-    const restoreDraft = () => {
-        try {
-            const draft = localStorage.getItem('kelsiesblog_draft');
-            if (!draft) return;
-            const data = JSON.parse(draft);
-            setTitle(data.title || '');
-            setCountry(data.country || '');
-            setCity(data.city || '');
-            setDate(data.date || '');
-            setCoverImage(data.coverImage || '');
-            setCategories(data.categories || []);
-            setContentFont(data.contentFont || 'Press Start 2P');
-            setSections(data.sections || [{ ...emptySection }]);
-            setDraftFound(false); // Hide prompt after restore
-        } catch (e) {
-            console.error('Failed to restore draft', e);
-        }
+    const handleRestoreDraft = () => {
+        const data = restoreDraft();
+        if (!data) return;
+        setTitle(data.title || '');
+        setCountry(data.country || '');
+        setCity(data.city || '');
+        setDate(data.date || '');
+        setCoverImage(data.coverImage || '');
+        setCategories(data.categories || []);
+        setContentFont(data.contentFont || 'Press Start 2P');
+        setSections(data.sections || [{ ...emptySection }]);
     };
 
-    const discardDraft = () => {
-        localStorage.removeItem('kelsiesblog_draft');
-        setDraftFound(false);
-    };
-
-    const handleR2Select = (urls: string[]) => {
-        if (!r2PickTarget) return;
-        if (r2PickTarget.kind === 'cover') {
-            setCoverImage(urls[0]);
-        } else {
-            const idx = r2PickTarget.index;
-            setSections(prev => prev.map((s, i) => {
-                if (i !== idx) return s;
-                const existing = s.images || [];
-                return { ...s, images: Array.from(new Set([...existing, ...urls])) };
-            }));
-        }
-    };
+    // --- Cover image upload ---
+    const coverFileInputRef = useRef<HTMLInputElement>(null);
+    const [coverUploading, setCoverUploading] = useState(false);
+    const [r2CoverOpen, setR2CoverOpen] = useState(false);
 
     const handleCoverFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (!file || !file.type.startsWith('image/')) return;
-
-        // Check file size (10MB limit)
         if (file.size > 10 * 1024 * 1024) {
             alert('File too large. Maximum size is 10MB.');
             e.target.value = '';
             return;
         }
-
         setCoverUploading(true);
         try {
             const result = await uploadImageToR2(file);
             setCoverImage(result.url);
         } catch (err: unknown) {
             console.error('Cover upload failed:', err);
-            const errorMsg = err instanceof Error ? err.message : 'Upload failed';
-            alert(`Upload failed: ${errorMsg}`);
+            alert(`Upload failed: ${err instanceof Error ? err.message : 'Upload failed'}`);
         } finally {
             setCoverUploading(false);
             e.target.value = '';
         }
     };
 
-    const handleSectionImageFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        const idx = sectionUploadingIndex;
-        if (!file || !file.type.startsWith('image/') || idx == null) return;
-        setSectionImageUploading(idx);
-        try {
-            const result = await uploadImageToR2(file);
-            setSections(prev => prev.map((s, i) =>
-                i === idx ? { ...s, images: [...(s.images || []), result.url] } : s
-            ));
-        } catch (err: unknown) {
-            console.error('Section image upload failed:', err);
-            alert(err instanceof Error ? err.message : 'Upload failed');
-        } finally {
-            setSectionUploadingIndex(null);
-            setSectionImageUploading(null);
-            e.target.value = '';
-        }
-    };
-
-
-
-    const availableCategories = CATEGORIES;
-
+    // --- Categories ---
     const toggleCategory = (cat: string) => {
         setCategories(prev =>
             prev.includes(cat) ? prev.filter(c => c !== cat) : [...prev, cat]
         );
     };
 
+    // --- City/Country ---
     const citiesForCountry = useMemo(() => {
         if (!country) return [];
         return (worldCities[country] || []).map(c => c.name);
@@ -213,87 +126,9 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
         return post?.coordinates || [0, 0];
     };
 
-    const addSection = () => {
-        setSections([...sections, { ...emptySection }]);
-    };
-
-    const removeSection = (index: number) => {
-        if (sections.length <= 1) return;
-        setSections(sections.filter((_, i) => i !== index));
-    };
-
-    const updateSection = (index: number, field: keyof Section, value: string) => {
-        const updated = sections.map((s, i) =>
-            i === index ? { ...s, [field]: value } : s
-        );
-        setSections(updated);
-    };
-
-
-
-
-
-    // --- Content helpers ---
-    const updateSectionContent = (index: number, html: string) => {
-        setSections(prev => prev.map((s, i) =>
-            i === index ? { ...s, content: html } : s
-        ));
-    };
-
-    // --- Image helpers for a section ---
-    const addImageToSection = (sectionIndex: number) => {
-        setSections(prev => prev.map((s, i) =>
-            i === sectionIndex ? { ...s, images: [...(s.images || []), ''] } : s
-        ));
-    };
-
-    const updateImageInSection = (sectionIndex: number, imgIndex: number, value: string) => {
-        setSections(prev => prev.map((s, i) => {
-            if (i !== sectionIndex) return s;
-            const imgs = [...(s.images || [])];
-            imgs[imgIndex] = value;
-            return { ...s, images: imgs };
-        }));
-    };
-
-    const removeImageFromSection = (sectionIndex: number, imgIndex: number) => {
-        setSections(prev => prev.map((s, i) => {
-            if (i !== sectionIndex) return s;
-            const imgs = (s.images || []).filter((_, j) => j !== imgIndex);
-            return { ...s, images: imgs };
-        }));
-    };
-
-    // --- Drive import for section images ---
-    const [driveImportIdx, setDriveImportIdx] = useState<number | null>(null);
-    const [driveUrl, setDriveUrl] = useState('');
-    const [driveLoading, setDriveLoading] = useState(false);
-    const [driveError, setDriveError] = useState('');
-
-    const handleDriveImportForSection = async (sectionIndex: number) => {
-        const folderId = parseFolderId(driveUrl);
-        if (!folderId) { setDriveError('INVALID DRIVE FOLDER LINK'); return; }
-
-        setDriveLoading(true);
-        setDriveError('');
-        try {
-            const files = await listDriveImages(folderId);
-            if (files.length === 0) { setDriveError('NO IMAGES FOUND'); setDriveLoading(false); return; }
-            const urls = files.map(f => driveThumbUrl(f.id));
-            setSections(prev => prev.map((s, i) => {
-                if (i !== sectionIndex) return s;
-                const existing = s.images || [];
-                return { ...s, images: [...existing, ...urls] };
-            }));
-            setDriveImportIdx(null);
-            setDriveUrl('');
-        } catch (err: unknown) {
-            setDriveError(err instanceof Error ? err.message : 'FAILED TO FETCH');
-        } finally {
-            setDriveLoading(false);
-        }
-    };
-
+    // --- Sections ---
+    const addSection = () => setSections([...sections, { ...emptySection }]);
+    const removeSection = (index: number) => { if (sections.length > 1) setSections(sections.filter((_, i) => i !== index)); };
     const moveSection = (index: number, direction: 'up' | 'down') => {
         const newIndex = direction === 'up' ? index - 1 : index + 1;
         if (newIndex < 0 || newIndex >= sections.length) return;
@@ -301,7 +136,37 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
         [updated[index], updated[newIndex]] = [updated[newIndex], updated[index]];
         setSections(updated);
     };
+    const updateSectionHeading = (index: number, heading: string) => {
+        setSections(prev => prev.map((s, i) => i === index ? { ...s, heading } : s));
+    };
+    const updateSectionContent = (index: number, html: string) => {
+        setSections(prev => prev.map((s, i) => i === index ? { ...s, content: html } : s));
+    };
+    const addImageToSection = (index: number) => {
+        setSections(prev => prev.map((s, i) => i === index ? { ...s, images: [...(s.images || []), ''] } : s));
+    };
+    const updateImageInSection = (index: number, imgIndex: number, value: string) => {
+        setSections(prev => prev.map((s, i) => {
+            if (i !== index) return s;
+            const imgs = [...(s.images || [])];
+            imgs[imgIndex] = value;
+            return { ...s, images: imgs };
+        }));
+    };
+    const removeImageFromSection = (index: number, imgIndex: number) => {
+        setSections(prev => prev.map((s, i) => {
+            if (i !== index) return s;
+            return { ...s, images: (s.images || []).filter((_, j) => j !== imgIndex) };
+        }));
+    };
+    const addImagesToSection = (index: number, urls: string[]) => {
+        setSections(prev => prev.map((s, i) => {
+            if (i !== index) return s;
+            return { ...s, images: Array.from(new Set([...(s.images || []), ...urls])) };
+        }));
+    };
 
+    // --- Submit ---
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
@@ -309,11 +174,10 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
             .filter(s => s.heading.trim() || (s.contents || []).some(c => c.trim()))
             .map(s => {
                 const imgs = (s.images || []).map(u => u.trim()).filter(Boolean);
-
                 return {
                     heading: s.heading.trim(),
                     content: s.content || '',
-                    contents: [], // Clear legacy
+                    contents: [],
                     ...(imgs.length ? { images: imgs } : {}),
                 };
             });
@@ -334,7 +198,6 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
             sections: cleanSections,
         };
 
-        // Save post immediately
         if (isEditing) {
             updatePost(post.id, postData);
         } else {
@@ -343,37 +206,28 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
 
         onSave();
 
-        // Fetch boundary in background (non-blocking) and save to Firestore
+        // Fetch boundary in background
         const postId = postData.id;
         fetchCityBoundary(cityTrimmed, countryTrimmed)
             .then(async (feature) => {
-                if (!feature?.geometry) {
-                    console.log('[Boundary] No boundary found for', cityTrimmed);
-                    return;
-                }
-                console.log('[Boundary] Saving boundary for', cityTrimmed, '- geometry size:', JSON.stringify(feature.geometry).length, 'bytes');
-                // Use setDoc with merge — safe for both new and existing documents
+                if (!feature?.geometry) return;
                 await mergePostFields(postId, { cityBoundary: feature.geometry });
-                console.log('[Boundary] Saved to Firestore successfully');
-                // Update in-memory store
                 useBlogStore.setState((state) => ({
                     posts: state.posts.map((p) =>
                         p.id === postId ? { ...p, cityBoundary: feature.geometry } : p
                     ),
                 }));
             })
-            .catch(err => console.error('[Boundary] Failed to save city boundary:', err));
+            .catch(err => console.error('[Boundary] Failed:', err));
 
-        // Clear draft
-        if (!isEditing) {
-            localStorage.removeItem('kelsiesblog_draft');
-        }
+        if (!isEditing) clearDraft();
     };
 
     const isValid = title.trim() && country.trim() && city.trim() && sections.some(s => s.heading.trim() && s.content?.trim());
 
     return (
         <form onSubmit={handleSubmit} style={{ maxWidth: '768px', margin: '0 auto' }}>
+            {/* Header */}
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '32px' }}>
                 <div>
                     <h2 style={{ ...FONT, fontSize: '12px', color: '#fff' }}>
@@ -387,13 +241,7 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                     type="button"
                     onClick={onCancel}
                     className="cursor-pointer"
-                    style={{
-                        background: 'none',
-                        border: '1px solid #333',
-                        color: '#555',
-                        padding: '8px',
-                        transition: 'all 0.3s',
-                    }}
+                    style={{ background: 'none', border: '1px solid #333', color: '#555', padding: '8px', transition: 'all 0.3s' }}
                     onMouseEnter={e => { e.currentTarget.style.color = '#FF00E4'; e.currentTarget.style.borderColor = '#FF00E4'; }}
                     onMouseLeave={e => { e.currentTarget.style.color = '#555'; e.currentTarget.style.borderColor = '#333'; }}
                 >
@@ -404,49 +252,21 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
             {/* Draft Banner */}
             {draftFound && (
                 <div style={{
-                    backgroundColor: '#1a1a00',
-                    border: '1px solid var(--neon-amber)',
-                    padding: '12px',
-                    marginBottom: '24px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between'
+                    backgroundColor: '#1a1a00', border: '1px solid var(--neon-amber)',
+                    padding: '12px', marginBottom: '24px',
+                    display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                         <Loader style={{ color: 'var(--neon-amber)', width: '16px', height: '16px' }} />
-                        <span style={{ ...FONT, fontSize: '8px', color: 'var(--neon-amber)' }}>
-                            UNSAVED DRAFT FOUND
-                        </span>
+                        <span style={{ ...FONT, fontSize: '8px', color: 'var(--neon-amber)' }}>UNSAVED DRAFT FOUND</span>
                     </div>
                     <div style={{ display: 'flex', gap: '8px' }}>
-                        <button
-                            type="button"
-                            onClick={restoreDraft}
-                            className="cursor-pointer"
-                            style={{
-                                ...FONT,
-                                fontSize: '8px',
-                                padding: '6px 12px',
-                                backgroundColor: 'var(--neon-amber)',
-                                color: '#000',
-                                border: 'none'
-                            }}
-                        >
+                        <button type="button" onClick={handleRestoreDraft} className="cursor-pointer"
+                            style={{ ...FONT, fontSize: '8px', padding: '6px 12px', backgroundColor: 'var(--neon-amber)', color: '#000', border: 'none' }}>
                             RESTORE
                         </button>
-                        <button
-                            type="button"
-                            onClick={discardDraft}
-                            className="cursor-pointer"
-                            style={{
-                                ...FONT,
-                                fontSize: '8px',
-                                padding: '6px 12px',
-                                backgroundColor: 'transparent',
-                                border: '1px solid var(--neon-amber)',
-                                color: 'var(--neon-amber)'
-                            }}
-                        >
+                        <button type="button" onClick={discardDraft} className="cursor-pointer"
+                            style={{ ...FONT, fontSize: '8px', padding: '6px 12px', backgroundColor: 'transparent', border: '1px solid var(--neon-amber)', color: 'var(--neon-amber)' }}>
                             DISCARD
                         </button>
                     </div>
@@ -454,12 +274,7 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
             )}
 
             {/* Basic Info */}
-            <div style={{
-                border: '1px solid #1a1a1a',
-                padding: '24px',
-                backgroundColor: '#050505',
-                marginBottom: '16px',
-            }}>
+            <div style={{ border: '1px solid #1a1a1a', padding: '24px', backgroundColor: '#050505', marginBottom: '16px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '24px' }}>
                     <Type style={{ width: '12px', height: '12px', color: 'var(--brand)' }} />
                     <h3 style={{ ...FONT, fontSize: '8px', color: 'var(--neon-amber)', textTransform: 'uppercase', letterSpacing: '0.15em' }}>
@@ -469,99 +284,57 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                    {/* Title */}
                     <div>
                         <label style={labelStyle}>TITLE</label>
-                        <input
-                            type="text"
-                            value={title}
-                            onChange={(e) => setTitle(e.target.value)}
-                            placeholder="ENTER POST TITLE..."
-                            style={inputStyle}
-                            onFocus={handleInputFocus}
-                            onBlur={handleInputBlur}
-                            required
-                        />
+                        <input type="text" value={title} onChange={e => setTitle(e.target.value)}
+                            placeholder="ENTER POST TITLE..." style={inputStyle}
+                            onFocus={handleInputFocus} onBlur={handleInputBlur} required />
                     </div>
 
+                    {/* Country / City */}
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
                         <div>
                             <label style={labelStyle}>COUNTRY</label>
-                            <select
-                                value={country}
-                                onChange={(e) => { setCountry(e.target.value); setCity(''); }}
+                            <select value={country} onChange={e => { setCountry(e.target.value); setCity(''); }}
                                 style={{ ...inputStyle, cursor: 'pointer', appearance: 'none' }}
-                                onFocus={handleInputFocus}
-                                onBlur={handleInputBlur}
-                                required
-                            >
+                                onFocus={handleInputFocus} onBlur={handleInputBlur} required>
                                 <option value="">SELECT...</option>
-                                {countryBounds.map((c) => (
-                                    <option key={c.code} value={c.name}>
-                                        {c.name}
-                                    </option>
-                                ))}
+                                {countryBounds.map(c => <option key={c.code} value={c.name}>{c.name}</option>)}
                             </select>
                         </div>
                         <div>
                             <label style={labelStyle}>CITY</label>
-                            <select
-                                value={city}
-                                onChange={(e) => setCity(e.target.value)}
+                            <select value={city} onChange={e => setCity(e.target.value)}
                                 style={{ ...inputStyle, cursor: 'pointer', appearance: 'none', opacity: country ? 1 : 0.4 }}
-                                onFocus={handleInputFocus}
-                                onBlur={handleInputBlur}
-                                required
-                                disabled={!country}
-                            >
+                                onFocus={handleInputFocus} onBlur={handleInputBlur} required disabled={!country}>
                                 <option value="">{country ? 'SELECT CITY...' : 'SELECT COUNTRY FIRST'}</option>
-                                {citiesForCountry.map((c: string) => (
-                                    <option key={c} value={c}>{c}</option>
-                                ))}
+                                {citiesForCountry.map(c => <option key={c} value={c}>{c}</option>)}
                             </select>
                         </div>
                     </div>
 
+                    {/* Categories */}
                     <div>
                         <label style={labelStyle}>
                             CATEGORIES
-                            {categories.length > 0 && (
-                                <span style={{ color: 'var(--neon-cyan)' }}>[ {categories.length} ]</span>
-                            )}
+                            {categories.length > 0 && <span style={{ color: 'var(--neon-cyan)' }}>[ {categories.length} ]</span>}
                         </label>
                         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-                            {availableCategories.map(cat => {
+                            {CATEGORIES.map(cat => {
                                 const isActive = categories.includes(cat);
                                 return (
-                                    <button
-                                        key={cat}
-                                        type="button"
-                                        onClick={() => toggleCategory(cat)}
-                                        className="cursor-pointer"
+                                    <button key={cat} type="button" onClick={() => toggleCategory(cat)} className="cursor-pointer"
                                         style={{
-                                            ...FONT,
-                                            fontSize: '7px',
-                                            padding: '8px 14px',
-                                            letterSpacing: '0.1em',
-                                            textTransform: 'uppercase',
-                                            border: '1px solid',
-                                            borderColor: isActive ? 'var(--neon-magenta)' : '#333',
+                                            ...FONT, fontSize: '7px', padding: '8px 14px', letterSpacing: '0.1em', textTransform: 'uppercase',
+                                            border: '1px solid', borderColor: isActive ? 'var(--neon-magenta)' : '#333',
                                             backgroundColor: isActive ? 'var(--neon-magenta)' : 'transparent',
                                             color: isActive ? '#000' : '#666',
                                             boxShadow: isActive ? '0 0 10px rgba(255, 0, 228, 0.3)' : 'none',
                                             transition: 'all 0.3s',
                                         }}
-                                        onMouseEnter={e => {
-                                            if (!isActive) {
-                                                e.currentTarget.style.borderColor = '#555';
-                                                e.currentTarget.style.color = '#aaa';
-                                            }
-                                        }}
-                                        onMouseLeave={e => {
-                                            if (!isActive) {
-                                                e.currentTarget.style.borderColor = '#333';
-                                                e.currentTarget.style.color = '#666';
-                                            }
-                                        }}
+                                        onMouseEnter={e => { if (!isActive) { e.currentTarget.style.borderColor = '#555'; e.currentTarget.style.color = '#aaa'; } }}
+                                        onMouseLeave={e => { if (!isActive) { e.currentTarget.style.borderColor = '#333'; e.currentTarget.style.color = '#666'; } }}
                                     >
                                         {cat}
                                     </button>
@@ -570,187 +343,96 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                         </div>
                     </div>
 
+                    {/* Date */}
                     <div>
                         <label style={labelStyle}>DATE</label>
-                        <input
-                            type="text"
-                            value={date}
-                            onChange={(e) => setDate(e.target.value)}
-                            placeholder="E.G. MARCH 2024"
-                            style={inputStyle}
-                            onFocus={handleInputFocus}
-                            onBlur={handleInputBlur}
-                        />
+                        <input type="text" value={date} onChange={e => setDate(e.target.value)}
+                            placeholder="E.G. MARCH 2024" style={inputStyle}
+                            onFocus={handleInputFocus} onBlur={handleInputBlur} />
                     </div>
 
                     {/* Content Font */}
                     <div>
                         <label style={labelStyle}>CONTENT FONT</label>
-                        <select
-                            value={contentFont}
-                            onChange={(e) => setContentFont(e.target.value)}
+                        <select value={contentFont} onChange={e => setContentFont(e.target.value)}
                             style={{ ...inputStyle, cursor: 'pointer', appearance: 'none' }}
-                            onFocus={handleInputFocus}
-                            onBlur={handleInputBlur}
-                        >
-                            {CONTENT_FONTS.map((f) => (
-                                <option key={f.value} value={f.value}>
-                                    {f.label}
-                                </option>
-                            ))}
+                            onFocus={handleInputFocus} onBlur={handleInputBlur}>
+                            {CONTENT_FONTS.map(f => <option key={f.value} value={f.value}>{f.label}</option>)}
                         </select>
-                        {/* Font preview */}
-                        <div style={{
-                            marginTop: '10px',
-                            padding: '14px',
-                            border: '1px solid #1a1a1a',
-                            backgroundColor: '#080808',
-                        }}>
-                            <span style={{
-                                fontFamily: getFontConfig(contentFont).family,
-                                fontSize: getFontConfig(contentFont).size,
-                                color: '#aaa',
-                                lineHeight: '2.2',
-                            }}>
+                        <div style={{ marginTop: '10px', padding: '14px', border: '1px solid #1a1a1a', backgroundColor: '#080808' }}>
+                            <span style={{ fontFamily: getFontConfig(contentFont).family, fontSize: getFontConfig(contentFont).size, color: '#aaa', lineHeight: '2.2' }}>
                                 The quick brown fox jumps over the lazy dog.
                             </span>
                         </div>
                     </div>
 
-                    {/* Cover Image URL */}
+                    {/* Cover Image */}
                     <div>
                         <label style={labelStyle}>COVER IMAGE URL</label>
                         <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
-                            <input
-                                type="url"
-                                value={coverImage}
-                                onChange={(e) => setCoverImage(e.target.value)}
+                            <input type="url" value={coverImage} onChange={e => setCoverImage(e.target.value)}
                                 placeholder="HTTPS://... VEYA BILGISAYARDAN YÜKLE"
                                 style={{ ...inputStyle, flex: '1 1 200px' }}
-                                onFocus={handleInputFocus}
-                                onBlur={handleInputBlur}
-                            />
-                            <input
-                                ref={coverFileInputRef}
-                                type="file"
-                                accept="image/*"
-                                style={{ display: 'none' }}
-                                onChange={handleCoverFileChange}
-                            />
-                            <button
-                                type="button"
-                                onClick={() => coverFileInputRef.current?.click()}
-                                disabled={coverUploading}
-                                className="cursor-pointer"
+                                onFocus={handleInputFocus} onBlur={handleInputBlur} />
+                            <input ref={coverFileInputRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={handleCoverFileChange} />
+                            <button type="button" onClick={() => coverFileInputRef.current?.click()} disabled={coverUploading} className="cursor-pointer"
                                 style={{
-                                    ...FONT,
-                                    fontSize: '7px',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '6px',
-                                    padding: '10px 14px',
-                                    border: '1px solid var(--neon-cyan)',
-                                    color: 'var(--neon-cyan)',
-                                    background: 'none',
-                                    letterSpacing: '0.1em',
-                                    transition: 'all 0.3s',
-                                    flexShrink: 0,
-                                }}
-                            >
+                                    ...FONT, fontSize: '7px', display: 'flex', alignItems: 'center', gap: '6px',
+                                    padding: '10px 14px', border: '1px solid var(--neon-cyan)', color: 'var(--neon-cyan)',
+                                    background: 'none', letterSpacing: '0.1em', transition: 'all 0.3s', flexShrink: 0,
+                                }}>
                                 {coverUploading ? <Loader style={{ width: '12px', height: '12px' }} className="animate-spin" /> : <UploadCloud style={{ width: '12px', height: '12px' }} />}
                                 {coverUploading ? 'YÜKLENİYOR...' : 'BILGISAYARDAN YÜKLE'}
                             </button>
-                            <button
-                                type="button"
-                                onClick={() => setR2PickTarget({ kind: 'cover' })}
-                                className="cursor-pointer"
+                            <button type="button" onClick={() => setR2CoverOpen(true)} className="cursor-pointer"
                                 style={{
-                                    ...FONT,
-                                    fontSize: '7px',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '6px',
-                                    padding: '10px 14px',
-                                    border: '1px solid #333',
-                                    color: '#aaa',
-                                    background: 'none',
-                                    letterSpacing: '0.1em',
-                                    transition: 'all 0.3s',
-                                    flexShrink: 0,
+                                    ...FONT, fontSize: '7px', display: 'flex', alignItems: 'center', gap: '6px',
+                                    padding: '10px 14px', border: '1px solid #333', color: '#aaa',
+                                    background: 'none', letterSpacing: '0.1em', transition: 'all 0.3s', flexShrink: 0,
                                 }}
                                 onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--neon-cyan)'; e.currentTarget.style.color = 'var(--neon-cyan)'; }}
-                                onMouseLeave={e => { e.currentTarget.style.borderColor = '#333'; e.currentTarget.style.color = '#aaa'; }}
-                            >
+                                onMouseLeave={e => { e.currentTarget.style.borderColor = '#333'; e.currentTarget.style.color = '#aaa'; }}>
                                 <ImagePlus style={{ width: '12px', height: '12px' }} />
                                 R2 MEDIA
                             </button>
                         </div>
 
-                        {/* R2 media browser */}
-                        {r2PickTarget?.kind === 'cover' && (
+                        {r2CoverOpen && (
                             <div style={{ marginTop: '10px' }}>
                                 <R2MediaBrowser
-                                    onClose={() => setR2PickTarget(null)}
-                                    onSelect={handleR2Select}
+                                    onClose={() => setR2CoverOpen(false)}
+                                    onSelect={(urls) => { setCoverImage(urls[0]); setR2CoverOpen(false); }}
                                 />
                             </div>
                         )}
                         {coverImage && (
-                            <div style={{
-                                marginTop: '10px',
-                                border: '1px solid var(--brand)',
-                                overflow: 'hidden',
-                                position: 'relative',
-                                height: '140px',
-                            }}>
+                            <div style={{ marginTop: '10px', border: '1px solid var(--brand)', overflow: 'hidden', position: 'relative', height: '140px' }}>
                                 <img src={coverImage} alt="Cover preview" style={{ width: '100%', height: '100%', objectFit: 'cover', filter: 'saturate(0.7) brightness(0.85)' }} />
                                 <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(0,0,0,0.5), transparent)' }} />
-                                <span style={{ ...FONT, fontSize: '6px', position: 'absolute', bottom: '8px', left: '10px', color: 'var(--brand)', letterSpacing: '0.1em' }}>
-                                    PREVIEW
-                                </span>
+                                <span style={{ ...FONT, fontSize: '6px', position: 'absolute', bottom: '8px', left: '10px', color: 'var(--brand)', letterSpacing: '0.1em' }}>PREVIEW</span>
                             </div>
                         )}
                     </div>
-
                 </div>
             </div>
 
-            {/* Sections */}
-            <div style={{
-                border: '1px solid #1a1a1a',
-                padding: '24px',
-                backgroundColor: '#050505',
-                marginBottom: '16px',
-            }}>
+            {/* Content Sections */}
+            <div style={{ border: '1px solid #1a1a1a', padding: '24px', backgroundColor: '#050505', marginBottom: '16px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                         <h3 style={{ ...FONT, fontSize: '8px', color: 'var(--neon-amber)', textTransform: 'uppercase', letterSpacing: '0.15em' }}>
                             CONTENT SECTIONS
                         </h3>
-                        <span style={{ ...FONT, fontSize: '7px', color: 'var(--neon-cyan)' }}>
-                            [ {sections.length} ]
-                        </span>
+                        <span style={{ ...FONT, fontSize: '7px', color: 'var(--neon-cyan)' }}>[ {sections.length} ]</span>
                     </div>
-                    <button
-                        type="button"
-                        onClick={addSection}
-                        className="cursor-pointer"
+                    <button type="button" onClick={addSection} className="cursor-pointer"
                         style={{
-                            ...FONT,
-                            fontSize: '7px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '6px',
-                            color: 'var(--brand)',
-                            background: 'none',
-                            border: '1px solid var(--brand)',
-                            padding: '8px 12px',
-                            letterSpacing: '0.1em',
-                            transition: 'all 0.3s',
+                            ...FONT, fontSize: '7px', display: 'flex', alignItems: 'center', gap: '6px',
+                            color: 'var(--brand)', background: 'none', border: '1px solid var(--brand)',
+                            padding: '8px 12px', letterSpacing: '0.1em', transition: 'all 0.3s',
                         }}
                         onMouseEnter={e => { e.currentTarget.style.backgroundColor = 'var(--brand)'; e.currentTarget.style.color = '#000'; }}
-                        onMouseLeave={e => { e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.color = 'var(--brand)'; }}
-                    >
+                        onMouseLeave={e => { e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.color = 'var(--brand)'; }}>
                         <Plus style={{ width: '12px', height: '12px' }} />
                         ADD
                     </button>
@@ -758,418 +440,42 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                     {sections.map((section, index) => (
-                        <motion.div
+                        <PostFormSectionEditor
                             key={index}
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            style={{
-                                border: '1px solid #1a1a1a',
-                                padding: '20px',
-                                position: 'relative',
-                                backgroundColor: '#080808',
-                                transition: 'border-color 0.3s',
-                            }}
-                            onMouseEnter={e => { e.currentTarget.style.borderColor = '#333'; }}
-                            onMouseLeave={e => { e.currentTarget.style.borderColor = '#1a1a1a'; }}
-                        >
-                            {/* Section header */}
-                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
-                                <span style={{ ...FONT, fontSize: '7px', color: 'var(--brand)' }}>
-                                    SEC_{String(index + 1).padStart(2, '0')}
-                                </span>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                                    <button
-                                        type="button"
-                                        onClick={() => moveSection(index, 'up')}
-                                        disabled={index === 0}
-                                        className="cursor-pointer"
-                                        style={{
-                                            width: '24px',
-                                            height: '24px',
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            justifyContent: 'center',
-                                            background: 'none',
-                                            border: '1px solid #333',
-                                            color: '#555',
-                                            opacity: index === 0 ? 0.3 : 1,
-                                        }}
-                                    >
-                                        <ChevronUp style={{ width: '12px', height: '12px' }} />
-                                    </button>
-                                    <button
-                                        type="button"
-                                        onClick={() => moveSection(index, 'down')}
-                                        disabled={index === sections.length - 1}
-                                        className="cursor-pointer"
-                                        style={{
-                                            width: '24px',
-                                            height: '24px',
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            justifyContent: 'center',
-                                            background: 'none',
-                                            border: '1px solid #333',
-                                            color: '#555',
-                                            opacity: index === sections.length - 1 ? 0.3 : 1,
-                                        }}
-                                    >
-                                        <ChevronDown style={{ width: '12px', height: '12px' }} />
-                                    </button>
-                                    <button
-                                        type="button"
-                                        onClick={() => removeSection(index)}
-                                        disabled={sections.length <= 1}
-                                        className="cursor-pointer"
-                                        style={{
-                                            width: '24px',
-                                            height: '24px',
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            justifyContent: 'center',
-                                            background: 'none',
-                                            border: '1px solid #333',
-                                            color: '#555',
-                                            opacity: sections.length <= 1 ? 0.3 : 1,
-                                            transition: 'all 0.3s',
-                                        }}
-                                        onMouseEnter={e => { if (sections.length > 1) { e.currentTarget.style.color = '#FF00E4'; e.currentTarget.style.borderColor = '#FF00E4'; } }}
-                                        onMouseLeave={e => { e.currentTarget.style.color = '#555'; e.currentTarget.style.borderColor = '#333'; }}
-                                    >
-                                        <Trash2 style={{ width: '12px', height: '12px' }} />
-                                    </button>
-                                </div>
-                            </div>
-
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                                <input
-                                    type="text"
-                                    value={section.heading}
-                                    onChange={(e) => updateSection(index, 'heading', e.target.value)}
-                                    placeholder="SECTION HEADING"
-                                    style={inputStyle}
-                                    onFocus={handleInputFocus}
-                                    onBlur={handleInputBlur}
-                                />
-
-                                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                                    <label style={{ ...labelStyle, marginBottom: '4px' }}>
-                                        <AlignLeft style={{ width: '10px', height: '10px' }} />
-                                        CONTENT
-                                    </label>
-                                    <RichTextEditor
-                                        content={section.content || ''}
-                                        onChange={(html) => updateSectionContent(index, html)}
-                                    />
-                                </div>
-
-                                {/* Images Manager */}
-                                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginTop: '12px' }}>
-                                    <label style={{ ...labelStyle, marginBottom: '4px' }}>
-                                        <ImagePlus style={{ width: '10px', height: '10px' }} />
-                                        IMAGES
-                                        {(section.images?.length || 0) > 0 && (
-                                            <span style={{ color: 'var(--neon-cyan)' }}>[ {section.images!.length} ]</span>
-                                        )}
-                                    </label>
-
-                                    {(section.images || []).map((imgUrl, imgIdx) => (
-                                        <div key={imgIdx} style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
-                                            <input
-                                                type="url"
-                                                value={imgUrl}
-                                                onChange={(e) => updateImageInSection(index, imgIdx, e.target.value)}
-                                                placeholder={`IMAGE URL ${imgIdx + 1}`}
-                                                style={{ ...inputStyle, flex: 1 }}
-                                                onFocus={handleInputFocus}
-                                                onBlur={handleInputBlur}
-                                            />
-                                            <button
-                                                type="button"
-                                                onClick={() => removeImageFromSection(index, imgIdx)}
-                                                className="cursor-pointer"
-                                                style={{
-                                                    width: '28px',
-                                                    height: '28px',
-                                                    display: 'flex',
-                                                    alignItems: 'center',
-                                                    justifyContent: 'center',
-                                                    background: 'none',
-                                                    border: '1px solid #333',
-                                                    color: '#555',
-                                                    flexShrink: 0,
-                                                    transition: 'all 0.3s',
-                                                }}
-                                                onMouseEnter={e => { e.currentTarget.style.color = '#FF00E4'; e.currentTarget.style.borderColor = '#FF00E4'; }}
-                                                onMouseLeave={e => { e.currentTarget.style.color = '#555'; e.currentTarget.style.borderColor = '#333'; }}
-                                            >
-                                                <X style={{ width: '12px', height: '12px' }} />
-                                            </button>
-                                        </div>
-                                    ))}
-
-                                    <input
-                                        ref={sectionImageFileInputRef}
-                                        type="file"
-                                        accept="image/*"
-                                        style={{ display: 'none' }}
-                                        onChange={handleSectionImageFileChange}
-                                    />
-
-                                    <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                                        <button
-                                            type="button"
-                                            onClick={() => addImageToSection(index)}
-                                            className="cursor-pointer"
-                                            style={{
-                                                ...FONT, fontSize: '6px', display: 'flex', alignItems: 'center', gap: '4px',
-                                                color: '#555', background: 'none', border: '1px dashed #333',
-                                                padding: '6px 10px', letterSpacing: '0.1em', transition: 'all 0.3s',
-                                            }}
-                                            onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--brand)'; e.currentTarget.style.color = 'var(--brand)'; }}
-                                            onMouseLeave={e => { e.currentTarget.style.borderColor = '#333'; e.currentTarget.style.color = '#555'; }}
-                                        >
-                                            <Plus style={{ width: '10px', height: '10px' }} />
-                                            ADD IMAGE
-                                        </button>
-                                        <button
-                                            type="button"
-                                            onClick={() => { setSectionUploadingIndex(index); sectionImageFileInputRef.current?.click(); }}
-                                            disabled={sectionImageUploading === index}
-                                            className="cursor-pointer"
-                                            style={{
-                                                ...FONT, fontSize: '6px', display: 'flex', alignItems: 'center', gap: '4px',
-                                                color: 'var(--neon-cyan)', background: 'none', border: '1px solid #333',
-                                                padding: '6px 10px', letterSpacing: '0.1em', transition: 'all 0.3s',
-                                            }}
-                                            onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--neon-cyan)'; }}
-                                            onMouseLeave={e => { e.currentTarget.style.borderColor = '#333'; }}
-                                        >
-                                            {sectionImageUploading === index ? <Loader style={{ width: '10px', height: '10px' }} className="animate-spin" /> : <UploadCloud style={{ width: '10px', height: '10px' }} />}
-                                            BILGISAYARDAN YÜKLE
-                                        </button>
-                                        <button
-                                            type="button"
-                                            onClick={() => setR2PickTarget({ kind: 'section', index })}
-                                            className="cursor-pointer"
-                                            style={{
-                                                ...FONT, fontSize: '6px', display: 'flex', alignItems: 'center', gap: '4px',
-                                                color: '#aaa', background: 'none', border: '1px solid #333',
-                                                padding: '6px 10px', letterSpacing: '0.1em', transition: 'all 0.3s',
-                                            }}
-                                            onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--neon-cyan)'; e.currentTarget.style.color = 'var(--neon-cyan)'; }}
-                                            onMouseLeave={e => { e.currentTarget.style.borderColor = '#333'; e.currentTarget.style.color = '#aaa'; }}
-                                        >
-                                            <ImagePlus style={{ width: '10px', height: '10px' }} />
-                                            STORAGE MEDIA
-                                        </button>
-                                        <button
-                                            type="button"
-                                            onClick={() => { setDriveImportIdx(driveImportIdx === index ? null : index); setDriveUrl(''); setDriveError(''); }}
-                                            className="cursor-pointer"
-                                            style={{
-                                                ...FONT, fontSize: '6px', display: 'flex', alignItems: 'center', gap: '4px',
-                                                color: driveImportIdx === index ? 'var(--brand)' : '#555',
-                                                background: 'none',
-                                                border: `1px dashed ${driveImportIdx === index ? 'var(--brand)' : '#333'}`,
-                                                padding: '6px 10px', letterSpacing: '0.1em', transition: 'all 0.3s',
-                                            }}
-                                            onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--brand)'; e.currentTarget.style.color = 'var(--brand)'; }}
-                                            onMouseLeave={e => { if (driveImportIdx !== index) { e.currentTarget.style.borderColor = '#333'; e.currentTarget.style.color = '#555'; } }}
-                                        >
-                                            <UploadCloud style={{ width: '10px', height: '10px' }} />
-                                            IMPORT DRIVE
-                                        </button>
-                                    </div>
-
-                                    {/* R2 media browser for section */}
-                                    {r2PickTarget?.kind === 'section' && r2PickTarget.index === index && (
-                                        <R2MediaBrowser
-                                            onClose={() => setR2PickTarget(null)}
-                                            onSelect={handleR2Select}
-                                        />
-                                    )}
-
-                                    {/* Drive import inline */}
-                                    {driveImportIdx === index && (
-                                        <div style={{ border: '1px solid var(--brand)', padding: '12px', backgroundColor: '#050505', marginTop: '6px' }}>
-                                            <div style={{ display: 'flex', gap: '6px', marginBottom: driveError ? '8px' : '0' }}>
-                                                <input
-                                                    type="text"
-                                                    value={driveUrl}
-                                                    onChange={e => { setDriveUrl(e.target.value); setDriveError(''); }}
-                                                    placeholder="GOOGLE DRIVE FOLDER LINK..."
-                                                    style={{ ...inputStyle, flex: 1, fontSize: '8px' }}
-                                                    onFocus={handleInputFocus}
-                                                    onBlur={handleInputBlur}
-                                                />
-                                                <button
-                                                    type="button"
-                                                    onClick={() => handleDriveImportForSection(index)}
-                                                    disabled={driveLoading || !driveUrl.trim()}
-                                                    className="cursor-pointer"
-                                                    style={{
-                                                        ...FONT, fontSize: '6px', padding: '8px 12px',
-                                                        backgroundColor: driveUrl.trim() ? 'var(--brand)' : '#1a1a1a',
-                                                        color: driveUrl.trim() ? '#000' : '#444',
-                                                        border: 'none', display: 'flex', alignItems: 'center', gap: '4px',
-                                                        cursor: driveUrl.trim() ? 'pointer' : 'not-allowed', flexShrink: 0,
-                                                    }}
-                                                >
-                                                    {driveLoading ? <Loader style={{ width: '10px', height: '10px' }} className="animate-spin" /> : <UploadCloud style={{ width: '10px', height: '10px' }} />}
-                                                    {driveLoading ? 'LOADING' : 'FETCH'}
-                                                </button>
-                                            </div>
-                                            {driveError && (
-                                                <p style={{ ...FONT, fontSize: '6px', color: 'var(--neon-magenta)' }}>{driveError}</p>
-                                            )}
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
-                        </motion.div>
+                            section={section}
+                            index={index}
+                            totalSections={sections.length}
+                            onUpdateHeading={(heading) => updateSectionHeading(index, heading)}
+                            onUpdateContent={(html) => updateSectionContent(index, html)}
+                            onRemove={() => removeSection(index)}
+                            onMoveUp={() => moveSection(index, 'up')}
+                            onMoveDown={() => moveSection(index, 'down')}
+                            onAddImage={() => addImageToSection(index)}
+                            onUpdateImage={(imgIdx, val) => updateImageInSection(index, imgIdx, val)}
+                            onRemoveImage={(imgIdx) => removeImageFromSection(index, imgIdx)}
+                            onAddImages={(urls) => addImagesToSection(index, urls)}
+                        />
                     ))}
                 </div>
             </div>
 
             {/* Preview */}
             {showPreview && (
-                <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    style={{
-                        border: '1px solid var(--neon-cyan)',
-                        padding: '24px',
-                        backgroundColor: '#050505',
-                        marginBottom: '16px',
-                        boxShadow: '0 0 15px rgba(0, 255, 255, 0.1)',
-                    }}
-                >
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '20px' }}>
-                        <div style={{ width: '6px', height: '6px', backgroundColor: 'var(--neon-cyan)' }} />
-                        <h3 style={{ ...FONT, fontSize: '8px', color: 'var(--neon-cyan)', textTransform: 'uppercase', letterSpacing: '0.15em' }}>
-                            PREVIEW
-                        </h3>
-                        <div style={{ flex: 1, height: '1px', background: 'linear-gradient(to right, rgba(0,255,255,0.3), transparent)' }} />
-                    </div>
-
-                    <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '8px', marginBottom: '12px' }}>
-                        {city && <span style={{ ...FONT, fontSize: '7px', color: 'var(--neon-cyan)' }}>{city}, {country}</span>}
-                        {categories.length > 0 && (
-                            <>
-                                <div style={{ width: '4px', height: '4px', backgroundColor: 'var(--neon-magenta)' }} />
-                                {categories.map(cat => (
-                                    <span key={cat} style={{ ...FONT, fontSize: '6px', color: '#000', backgroundColor: 'var(--neon-magenta)', padding: '3px 8px' }}>
-                                        {cat}
-                                    </span>
-                                ))}
-                            </>
-                        )}
-                        {date && (
-                            <>
-                                <div style={{ width: '4px', height: '4px', backgroundColor: '#555' }} />
-                                <span style={{ ...FONT, fontSize: '7px', color: '#555' }}>{date}</span>
-                            </>
-                        )}
-                    </div>
-
-                    <h2 style={{ ...FONT, fontSize: '14px', color: '#fff', marginBottom: '16px', lineHeight: '2' }}>
-                        {title || 'UNTITLED POST'}
-                    </h2>
-
-                    {sections.filter(s => s.heading || (s.contents || []).some(c => c.trim()) || s.content).map((section, i) => (
-                        <div key={i} style={{ marginBottom: '16px' }}>
-                            {section.heading && (
-                                <h3 style={{ ...FONT, fontSize: '10px', color: 'var(--brand)', marginBottom: '8px' }}>
-                                    {'>'} {section.heading}
-                                </h3>
-                            )}
-                            <div
-                                style={{ fontFamily: getFontConfig(contentFont).family, fontSize: getFontConfig(contentFont).size, color: '#aaa', lineHeight: '2.4', marginBottom: '1em' }}
-                                dangerouslySetInnerHTML={{ __html: section.content || '' }}
-                            />
-                            {(section.images || []).filter(Boolean).map((img, imgI) => (
-                                <div key={imgI} style={{ marginTop: '12px', overflow: 'hidden', height: '140px', border: '1px solid #1a1a1a' }}>
-                                    <img src={img} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                                </div>
-                            ))}
-                        </div>
-                    ))}
-                </motion.div>
+                <PostFormPreview
+                    title={title} city={city} country={country}
+                    date={date} categories={categories}
+                    contentFont={contentFont} sections={sections}
+                />
             )}
 
-            {/* Submit */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', justifyContent: 'flex-end' }}>
-                <button
-                    type="button"
-                    onClick={onCancel}
-                    className="cursor-pointer"
-                    style={{
-                        ...FONT,
-                        fontSize: '8px',
-                        padding: '12px 20px',
-                        background: 'none',
-                        border: '1px solid #333',
-                        color: '#555',
-                        letterSpacing: '0.1em',
-                        transition: 'all 0.3s',
-                    }}
-                    onMouseEnter={e => { e.currentTarget.style.borderColor = '#555'; e.currentTarget.style.color = '#888'; }}
-                    onMouseLeave={e => { e.currentTarget.style.borderColor = '#333'; e.currentTarget.style.color = '#555'; }}
-                >
-                    CANCEL
-                </button>
-                <button
-                    type="button"
-                    onClick={() => setShowPreview(!showPreview)}
-                    className="cursor-pointer"
-                    style={{
-                        ...FONT,
-                        fontSize: '8px',
-                        padding: '12px 20px',
-                        background: 'none',
-                        border: '1px solid',
-                        borderColor: showPreview ? 'var(--neon-cyan)' : '#333',
-                        color: showPreview ? 'var(--neon-cyan)' : '#555',
-                        letterSpacing: '0.1em',
-                        transition: 'all 0.3s',
-                        boxShadow: showPreview ? '0 0 8px rgba(0, 255, 255, 0.2)' : 'none',
-                    }}
-                    onMouseEnter={e => {
-                        if (!showPreview) { e.currentTarget.style.borderColor = 'var(--neon-cyan)'; e.currentTarget.style.color = 'var(--neon-cyan)'; }
-                    }}
-                    onMouseLeave={e => {
-                        if (!showPreview) { e.currentTarget.style.borderColor = '#333'; e.currentTarget.style.color = '#555'; }
-                    }}
-                >
-                    {showPreview ? 'HIDE PREVIEW' : 'PREVIEW'}
-                </button>
-                <button
-                    type="submit"
-                    disabled={!isValid}
-                    className="cursor-pointer"
-                    style={{
-                        ...FONT,
-                        fontSize: '8px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '8px',
-                        backgroundColor: isValid ? 'var(--brand)' : '#1a1a1a',
-                        color: isValid ? '#000' : '#444',
-                        border: 'none',
-                        padding: '12px 24px',
-                        letterSpacing: '0.1em',
-                        boxShadow: isValid ? '0 0 15px rgba(0, 255, 65, 0.3)' : 'none',
-                        transition: 'all 0.3s',
-                        cursor: isValid ? 'pointer' : 'not-allowed',
-                    }}
-                    onMouseEnter={e => { if (isValid) e.currentTarget.style.boxShadow = '0 0 25px rgba(0, 255, 65, 0.5)'; }}
-                    onMouseLeave={e => { if (isValid) e.currentTarget.style.boxShadow = '0 0 15px rgba(0, 255, 65, 0.3)'; }}
-                >
-                    <Save style={{ width: '14px', height: '14px' }} />
-                    {isEditing ? 'UPDATE' : 'PUBLISH'}
-                </button>
-            </div>
+            {/* Actions */}
+            <PostFormActions
+                isValid={!!isValid}
+                isEditing={isEditing}
+                showPreview={showPreview}
+                onCancel={onCancel}
+                onTogglePreview={() => setShowPreview(!showPreview)}
+            />
         </form>
     );
 }
