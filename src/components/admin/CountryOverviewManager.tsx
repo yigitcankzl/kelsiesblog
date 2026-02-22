@@ -38,9 +38,9 @@ export default function CountryOverviewManager() {
     return (
         <div>
             {/* Header */}
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '32px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                    <Globe2 className="w-4 h-4" style={{ color: 'var(--neon-cyan)' }} />
+            <div className="flex items-center justify-between mb-8">
+                <div className="flex items-center gap-3">
+                    <Globe2 className="w-4 h-4 text-[var(--neon-cyan)]" />
                     <div>
                         <h2 style={{ ...FONT, fontSize: '11px', color: '#fff' }}>COUNTRY OVERVIEWS</h2>
                         <p style={{ ...FONT, fontSize: '6px', color: '#555', marginTop: '4px', letterSpacing: '0.15em' }}>
@@ -55,13 +55,13 @@ export default function CountryOverviewManager() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3 }}
             >
-                <div style={{ border: '1px solid #1a1a1a', padding: '24px', marginBottom: '24px' }}>
+                <div className="border border-[#1a1a1a] p-6 mb-6">
                     <h3 style={{ ...FONT, fontSize: '9px', color: 'var(--neon-cyan)', marginBottom: '24px' }}>
                         {'>'} OVERVIEW EDITOR
                     </h3>
 
                     {/* Country selector */}
-                    <div style={{ marginBottom: '20px' }}>
+                    <div className="mb-5">
                         <label style={labelStyle}>Select Country</label>
                         <select
                             value={selectedCountry}
@@ -90,7 +90,7 @@ export default function CountryOverviewManager() {
                     </div>
 
                     {/* Overview textarea */}
-                    <div style={{ marginBottom: '16px' }}>
+                    <div className="mb-4">
                         <label style={labelStyle}>Overview Text</label>
                         <textarea
                             value={text}
@@ -104,7 +104,7 @@ export default function CountryOverviewManager() {
                     </div>
 
                     {/* Save button */}
-                    <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+                    <div className="flex gap-3 items-center">
                         <button
                             onClick={handleSave}
                             className="cursor-pointer"

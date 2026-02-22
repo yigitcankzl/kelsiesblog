@@ -72,26 +72,26 @@ export default function R2MediaBrowser({ onClose, onSelect, prefix = 'blog/' }: 
         <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            style={{ border: '1px solid var(--neon-cyan)', padding: '24px', marginBottom: '24px', backgroundColor: '#050505' }}
+            className="border border-[var(--neon-cyan)] p-6 mb-6 bg-[#050505]"
         >
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
+            <div className="flex items-center justify-between mb-4">
                 <h3 style={{ ...FONT, fontSize: '9px', color: 'var(--neon-cyan)' }}>{'>'} R2 MEDIA ({prefix})</h3>
-                <button type="button" onClick={onClose} className="cursor-pointer" style={{ background: 'none', border: '1px solid #333', color: '#555', padding: '6px' }}>
-                    <X style={{ width: '12px', height: '12px' }} />
+                <button type="button" onClick={onClose} className="cursor-pointer bg-transparent border border-[#333] text-[#555] p-1.5">
+                    <X className="w-3 h-3" />
                 </button>
             </div>
 
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px', flexWrap: 'wrap', marginBottom: '12px' }}>
+            <div className="flex items-center justify-between gap-2 flex-wrap mb-3">
                 <span style={{ ...FONT, fontSize: '7px', color: 'var(--neon-cyan)' }}>
                     {selected.size} / {items.length} SELECTED
                 </span>
-                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                <div className="flex gap-2 flex-wrap">
                     <button
                         type="button"
                         onClick={() => setSelected(new Set(items.map(i => i.key)))}
                         disabled={items.length === 0 || loading}
-                        className="cursor-pointer"
-                        style={{ ...FONT, fontSize: '6px', background: 'none', border: '1px solid #333', color: '#888', padding: '6px 10px' }}
+                        className="cursor-pointer bg-transparent border border-[#333] text-[#888] px-2.5 py-1.5"
+                        style={{ ...FONT, fontSize: '6px' }}
                     >
                         SELECT ALL
                     </button>
@@ -99,8 +99,8 @@ export default function R2MediaBrowser({ onClose, onSelect, prefix = 'blog/' }: 
                         type="button"
                         onClick={() => setSelected(new Set())}
                         disabled={selected.size === 0 || loading}
-                        className="cursor-pointer"
-                        style={{ ...FONT, fontSize: '6px', background: 'none', border: '1px solid #333', color: '#888', padding: '6px 10px' }}
+                        className="cursor-pointer bg-transparent border border-[#333] text-[#888] px-2.5 py-1.5"
+                        style={{ ...FONT, fontSize: '6px' }}
                     >
                         CLEAR
                     </button>
@@ -108,14 +108,10 @@ export default function R2MediaBrowser({ onClose, onSelect, prefix = 'blog/' }: 
                         type="button"
                         onClick={handleDelete}
                         disabled={selected.size === 0 || loading}
-                        className="cursor-pointer"
-                        style={{
-                            ...FONT, fontSize: '6px', display: 'flex', alignItems: 'center', gap: '6px',
-                            background: 'none', border: '1px solid var(--neon-magenta)', color: 'var(--neon-magenta)',
-                            padding: '6px 10px',
-                        }}
+                        className="cursor-pointer flex items-center gap-1.5 bg-transparent border border-[var(--neon-magenta)] text-[var(--neon-magenta)] px-2.5 py-1.5"
+                        style={{ ...FONT, fontSize: '6px' }}
                     >
-                        {loading ? <Loader style={{ width: '10px', height: '10px' }} className="animate-spin" /> : <Trash2 style={{ width: '10px', height: '10px' }} />}
+                        {loading ? <Loader className="w-2.5 h-2.5 animate-spin" /> : <Trash2 className="w-2.5 h-2.5" />}
                         DELETE
                     </button>
                     {onSelect && (
@@ -123,14 +119,10 @@ export default function R2MediaBrowser({ onClose, onSelect, prefix = 'blog/' }: 
                             type="button"
                             onClick={handleSelect}
                             disabled={selected.size === 0 || loading}
-                            className="cursor-pointer"
-                            style={{
-                                ...FONT, fontSize: '6px', display: 'flex', alignItems: 'center', gap: '6px',
-                                background: 'var(--neon-cyan)', color: '#000', border: 'none',
-                                padding: '6px 10px', opacity: selected.size === 0 ? 0.6 : 1,
-                            }}
+                            className="cursor-pointer flex items-center gap-1.5 bg-[var(--neon-cyan)] text-black border-none px-2.5 py-1.5"
+                            style={{ ...FONT, fontSize: '6px', opacity: selected.size === 0 ? 0.6 : 1 }}
                         >
-                            <ImagePlus style={{ width: '10px', height: '10px' }} />
+                            <ImagePlus className="w-2.5 h-2.5" />
                             USE SELECTED
                         </button>
                     )}
@@ -144,7 +136,7 @@ export default function R2MediaBrowser({ onClose, onSelect, prefix = 'blog/' }: 
             {loading && items.length === 0 ? (
                 <p style={{ ...FONT, fontSize: '7px', color: '#666' }}>LOADING...</p>
             ) : (
-                <div className="grid grid-cols-3 sm:grid-cols-5 gap-2" style={{ maxHeight: '280px', overflowY: 'auto' }}>
+                <div className="grid grid-cols-3 sm:grid-cols-5 gap-2 max-h-[280px] overflow-y-auto">
                     {items.map(item => {
                         const isSelected = selected.has(item.key);
                         return (
@@ -161,19 +153,14 @@ export default function R2MediaBrowser({ onClose, onSelect, prefix = 'blog/' }: 
                                 title={item.key}
                             >
                                 {item.url ? (
-                                    <img src={item.url} alt={item.key} style={{ width: '100%', aspectRatio: '1', objectFit: 'cover', display: 'block' }} />
+                                    <img src={item.url} alt={item.key} className="w-full aspect-square object-cover block" />
                                 ) : (
-                                    <div style={{ width: '100%', aspectRatio: '1', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#444' }}>
-                                        <ImagePlus style={{ width: '14px', height: '14px' }} />
+                                    <div className="w-full aspect-square flex items-center justify-center text-[#444]">
+                                        <ImagePlus className="w-3.5 h-3.5" />
                                     </div>
                                 )}
                                 {isSelected && (
-                                    <div style={{
-                                        position: 'absolute', top: '4px', right: '4px',
-                                        width: '14px', height: '14px', backgroundColor: 'var(--neon-cyan)',
-                                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                        fontSize: '9px', color: '#000', fontWeight: 'bold',
-                                    }}>&#10003;</div>
+                                    <div className="absolute top-1 right-1 w-3.5 h-3.5 bg-[var(--neon-cyan)] flex items-center justify-center text-[9px] text-black font-bold">&#10003;</div>
                                 )}
                             </div>
                         );

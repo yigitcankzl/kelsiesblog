@@ -42,25 +42,21 @@ export default function AuthGate() {
     };
 
     return (
-        <div style={{ minHeight: '100vh', backgroundColor: '#000', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px' }}>
+        <div className="min-h-screen bg-black flex items-center justify-center p-4">
             <motion.div
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
-                style={{ width: '100%', maxWidth: '420px' }}
+                className="w-full max-w-[420px]"
             >
-                <div style={{
-                    border: '2px solid #1a1a1a',
-                    padding: '40px 32px',
-                    backgroundColor: '#050505',
-                    boxShadow: '0 0 30px rgba(0, 255, 65, 0.05)',
-                }}>
+                <div className="border-2 border-[#1a1a1a] px-8 py-10 bg-[#050505]"
+                    style={{ boxShadow: '0 0 30px rgba(0, 255, 65, 0.05)' }}>
                     {/* Terminal header */}
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '32px' }}>
-                        <div style={{ width: '8px', height: '8px', backgroundColor: 'var(--brand)', boxShadow: '0 0 6px rgba(0,255,65,0.5)' }} />
-                        <div style={{ width: '8px', height: '8px', backgroundColor: 'var(--neon-amber)' }} />
-                        <div style={{ width: '8px', height: '8px', backgroundColor: '#333' }} />
-                        <span style={{ ...FONT, fontSize: '6px', color: '#444', marginLeft: '8px', letterSpacing: '0.2em' }}>
+                    <div className="flex items-center gap-2 mb-8">
+                        <div className="w-2 h-2 bg-[var(--brand)]" style={{ boxShadow: '0 0 6px rgba(0,255,65,0.5)' }} />
+                        <div className="w-2 h-2 bg-[var(--neon-amber)]" />
+                        <div className="w-2 h-2 bg-[#333]" />
+                        <span className="ml-2" style={{ ...FONT, fontSize: '6px', color: '#444', letterSpacing: '0.2em' }}>
                             TERMINAL
                         </span>
                     </div>
@@ -74,8 +70,8 @@ export default function AuthGate() {
 
                     <form onSubmit={handleSubmit}>
                         {/* Email */}
-                        <div style={{ position: 'relative', marginBottom: '12px' }}>
-                            <Mail style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', width: '14px', height: '14px', color: '#444' }} />
+                        <div className="relative mb-3">
+                            <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#444]" />
                             <input
                                 type="email"
                                 value={email}
@@ -88,8 +84,8 @@ export default function AuthGate() {
                         </div>
 
                         {/* Password */}
-                        <div style={{ position: 'relative', marginBottom: '16px' }}>
-                            <Lock style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', width: '14px', height: '14px', color: '#444' }} />
+                        <div className="relative mb-4">
+                            <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#444]" />
                             <input
                                 type={showPassword ? 'text' : 'password'}
                                 value={password}
@@ -106,8 +102,7 @@ export default function AuthGate() {
                             <button
                                 type="button"
                                 onClick={() => setShowPassword(!showPassword)}
-                                className="cursor-pointer"
-                                style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', color: '#444', padding: '4px' }}
+                                className="cursor-pointer absolute right-3.5 top-1/2 -translate-y-1/2 bg-transparent border-none text-[#444] p-1"
                             >
                                 {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                             </button>

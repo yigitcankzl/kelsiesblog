@@ -63,16 +63,16 @@ export default function DriveImportPanel({ onImport, onClose }: DriveImportPanel
         <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            style={{ border: '1px solid var(--brand)', padding: '24px', marginBottom: '24px', backgroundColor: '#050505' }}
+            className="border border-[var(--brand)] p-6 mb-6 bg-[#050505]"
         >
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
+            <div className="flex items-center justify-between mb-5">
                 <h3 style={{ ...FONT, fontSize: '9px', color: 'var(--brand)' }}>{'>'} IMPORT FROM GOOGLE DRIVE</h3>
-                <button type="button" onClick={onClose} className="cursor-pointer" style={{ background: 'none', border: '1px solid #333', color: '#555', padding: '6px' }}>
-                    <X style={{ width: '12px', height: '12px' }} />
+                <button type="button" onClick={onClose} className="cursor-pointer bg-transparent border border-[#333] text-[#555] p-1.5">
+                    <X className="w-3 h-3" />
                 </button>
             </div>
 
-            <div style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
+            <div className="flex gap-2 mb-4">
                 <input
                     type="text"
                     value={url}
@@ -93,7 +93,7 @@ export default function DriveImportPanel({ onImport, onClose }: DriveImportPanel
                         cursor: url.trim() ? 'pointer' : 'not-allowed',
                     }}
                 >
-                    {loading ? <Loader style={{ width: '12px', height: '12px' }} className="animate-spin" /> : <UploadCloud style={{ width: '12px', height: '12px' }} />}
+                    {loading ? <Loader className="w-3 h-3 animate-spin" /> : <UploadCloud className="w-3 h-3" />}
                     {loading ? 'LOADING...' : 'FETCH'}
                 </button>
             </div>
@@ -104,7 +104,7 @@ export default function DriveImportPanel({ onImport, onClose }: DriveImportPanel
 
             {results.length > 0 && (
                 <>
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
+                    <div className="flex items-center justify-between mb-3">
                         <span style={{ ...FONT, fontSize: '7px', color: 'var(--neon-cyan)' }}>
                             {selected.size} / {results.length} SELECTED
                         </span>
@@ -114,14 +114,14 @@ export default function DriveImportPanel({ onImport, onClose }: DriveImportPanel
                                 if (selected.size === results.length) setSelected(new Set());
                                 else setSelected(new Set(results.map(r => r.id)));
                             }}
-                            className="cursor-pointer"
-                            style={{ ...FONT, fontSize: '6px', background: 'none', border: '1px solid #333', color: '#888', padding: '4px 10px' }}
+                            className="cursor-pointer bg-transparent border border-[#333] text-[#888] px-2.5 py-1"
+                            style={{ ...FONT, fontSize: '6px' }}
                         >
                             {selected.size === results.length ? 'DESELECT ALL' : 'SELECT ALL'}
                         </button>
                     </div>
 
-                    <div className="grid grid-cols-3 sm:grid-cols-4 gap-3" style={{ maxHeight: '300px', overflowY: 'auto', marginBottom: '16px' }}>
+                    <div className="grid grid-cols-3 sm:grid-cols-4 gap-3 max-h-[300px] overflow-y-auto mb-4">
                         {results.map(r => {
                             const isSelected = selected.has(r.id);
                             return (
@@ -137,14 +137,9 @@ export default function DriveImportPanel({ onImport, onClose }: DriveImportPanel
                                     }}
                                 >
                                     <img src={r.url} alt={r.name} referrerPolicy="no-referrer"
-                                        style={{ width: '100%', aspectRatio: '1', objectFit: 'cover', display: 'block' }} />
+                                        className="w-full aspect-square object-cover block" />
                                     {isSelected && (
-                                        <div style={{
-                                            position: 'absolute', top: '4px', right: '4px',
-                                            width: '14px', height: '14px', backgroundColor: 'var(--brand)',
-                                            display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                            fontSize: '9px', color: '#000', fontWeight: 'bold',
-                                        }}>&#10003;</div>
+                                        <div className="absolute top-1 right-1 w-3.5 h-3.5 bg-[var(--brand)] flex items-center justify-center text-[9px] text-black font-bold">&#10003;</div>
                                     )}
                                 </div>
                             );

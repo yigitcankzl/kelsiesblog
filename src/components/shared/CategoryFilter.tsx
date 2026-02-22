@@ -7,7 +7,7 @@ interface CategoryFilterProps {
 
 export default function CategoryFilter({ activeCategory, onCategoryChange }: CategoryFilterProps) {
     return (
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
+        <div className="flex flex-wrap gap-2.5">
             <button
                 onClick={() => onCategoryChange(null)}
                 className="cursor-pointer"

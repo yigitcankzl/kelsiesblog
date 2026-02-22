@@ -11,7 +11,7 @@ export default function Footer() {
                 </span>
             </div>
 
-            <div className="flex items-center justify-between" style={{ maxWidth: '1024px', margin: '0 auto', paddingLeft: '24px', paddingRight: '24px', paddingTop: '24px', paddingBottom: '24px' }}>
+            <div className="flex items-center justify-between max-w-screen-lg mx-auto px-6 py-6">
                 {/* Brand + Copyright */}
                 <div className="flex items-center gap-4 flex-1">
                     <span className="text-[8px] font-bold tracking-tight text-white"

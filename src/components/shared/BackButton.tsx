@@ -10,25 +10,10 @@ export default function BackButton({ onClick, label = 'BACK' }: BackButtonProps)
     return (
         <button
             onClick={onClick}
-            className="cursor-pointer"
-            style={{
-                ...FONT,
-                fontSize: '7px',
-                padding: '10px 16px',
-                border: '2px solid var(--brand)',
-                backgroundColor: 'transparent',
-                color: 'var(--brand)',
-                letterSpacing: '0.12em',
-                textTransform: 'uppercase',
-                boxShadow: '0 0 8px rgba(0, 255, 65, 0.2)',
-                transition: 'all 0.3s',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
-                flexShrink: 0,
-            }}
+            className="cursor-pointer flex items-center gap-2 shrink-0 px-4 py-2.5 border-2 border-[var(--brand)] bg-transparent text-[var(--brand)] uppercase tracking-wide transition-all duration-300"
+            style={{ ...FONT, fontSize: '7px', boxShadow: '0 0 8px rgba(0, 255, 65, 0.2)' }}
         >
-            <ArrowLeft style={{ width: '12px', height: '12px' }} />
+            <ArrowLeft className="w-3 h-3" />
             &#x25C2; {label}
         </button>
     );

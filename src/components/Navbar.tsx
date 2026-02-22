@@ -16,7 +16,7 @@ export default function Navbar() {
     return (
         <nav className="fixed w-full z-[10000] bg-black border-b-2 border-[var(--brand)]"
             style={{ boxShadow: '0 2px 12px rgba(0, 255, 65, 0.2)' }}>
-            <div style={{ maxWidth: '1024px', margin: '0 auto', paddingLeft: '24px', paddingRight: '24px' }}>
+            <div className="max-w-screen-lg mx-auto px-6">
                 <div className="flex justify-between items-center h-20">
                     {/* Brand */}
                     <button
@@ -29,7 +29,7 @@ export default function Navbar() {
                             data-text="Kelsie Sharp."
                         >
                             Kelsie Sharp
-                            <span className="text-[var(--brand)] neon-glow text-lg sm:text-xl blink-cursor" style={{ marginLeft: 0 }}>.</span>
+                            <span className="text-[var(--brand)] neon-glow text-lg sm:text-xl blink-cursor ml-0">.</span>
                         </span>
                     </button>
 

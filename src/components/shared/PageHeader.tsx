@@ -18,8 +18,8 @@ export default function PageHeader({ onBack, backLabel, title, subtitle }: PageH
             transition={{ duration: 0.3 }}
         >
             <BackButton onClick={onBack} label={backLabel} />
-            <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                <div style={{ width: '1px', height: '40px', backgroundColor: 'var(--brand)', opacity: 0.3 }} />
+            <div className="flex items-center gap-4">
+                <div className="w-px h-10 bg-[var(--brand)] opacity-30" />
                 <div>
                     <h1 className="text-glitch" style={{ ...FONT, fontSize: '18px', color: '#fff', lineHeight: 1.4 }}
                         data-text={title}>
