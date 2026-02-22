@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowLeft, MapPin, Clock } from 'lucide-react';
+import { MapPin, Clock } from 'lucide-react';
+import BackButton from '@/components/shared/BackButton';
 import { useBlogStore } from '@/store/store';
 import { estimateReadTime, type BlogPost } from '@/types';
 import { FONT, CATEGORIES } from '@/lib/constants';
@@ -40,29 +41,7 @@ export default function AllStoriesPage() {
             <div style={{ maxWidth: '1024px', margin: '0 auto', paddingLeft: '24px', paddingRight: '24px' }}>
                 {/* Header row */}
                 <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '20px' }}>
-                    <button
-                        onClick={() => setActivePage('map')}
-                        className="cursor-pointer"
-                        style={{
-                            ...FONT,
-                            fontSize: '7px',
-                            padding: '10px 16px',
-                            border: '2px solid var(--brand)',
-                            backgroundColor: 'transparent',
-                            color: 'var(--brand)',
-                            letterSpacing: '0.12em',
-                            textTransform: 'uppercase' as const,
-                            boxShadow: '0 0 8px rgba(0, 255, 65, 0.2)',
-                            transition: 'all 0.3s',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '8px',
-                            flexShrink: 0,
-                        }}
-                    >
-                        <ArrowLeft style={{ width: '12px', height: '12px' }} />
-                        ◂ BACK
-                    </button>
+                    <BackButton onClick={() => setActivePage('map')} />
                     <div style={{ width: '1px', height: '32px', backgroundColor: 'var(--brand)', opacity: 0.3 }} />
                     <h1 className="text-glitch" style={{ ...FONT, fontSize: '16px', color: '#fff', lineHeight: 1.4 }}
                         data-text="ALL STORIES">

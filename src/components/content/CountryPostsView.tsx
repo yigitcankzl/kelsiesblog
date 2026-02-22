@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowLeft, MapPin } from 'lucide-react';
+import { MapPin } from 'lucide-react';
+import BackButton from '@/components/shared/BackButton';
 import { useBlogStore } from '@/store/store';
 import { estimateReadTime } from '@/types';
 import { getCountryDescription } from '@/data/countryDescriptions';
@@ -33,17 +34,7 @@ export default function CountryPostsView() {
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.3 }}
                 >
-                    <button
-                        onClick={() => setSelectedCountry(null)}
-                        className="flex items-center gap-2 text-[7px] font-medium text-[var(--brand)] px-4 py-2 border-2 border-[var(--brand)] hover:bg-[var(--brand)] hover:text-black transition-all duration-300 cursor-pointer uppercase tracking-[0.12em] group shrink-0"
-                        style={{
-                            fontFamily: "'Press Start 2P', monospace",
-                            boxShadow: '0 0 8px rgba(0, 255, 65, 0.2)',
-                        }}
-                    >
-                        <ArrowLeft className="w-3 h-3 group-hover:-translate-x-0.5 transition-transform" />
-                        ◂ BACK
-                    </button>
+                    <BackButton onClick={() => setSelectedCountry(null)} />
                     <div className="flex items-center gap-4">
                         <div className="w-px h-10 bg-[var(--brand)]" style={{ opacity: 0.3 }} />
                         <div>

@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
-import { ArrowLeft, MapPin, Globe, Camera, Plane, Instagram, Twitter, Mail, Github, Linkedin, Youtube, ExternalLink } from 'lucide-react';
+import { MapPin, Globe, Camera, Plane, Instagram, Twitter, Mail, Github, Linkedin, Youtube, ExternalLink } from 'lucide-react';
+import BackButton from '@/components/shared/BackButton';
 import { useBlogStore } from '@/store/store';
 import { FONT } from '@/lib/constants';
 
@@ -27,29 +28,7 @@ export default function AboutPage() {
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.3 }}
                 >
-                    <button
-                        onClick={() => setActivePage('map')}
-                        className="cursor-pointer"
-                        style={{
-                            ...FONT,
-                            fontSize: '7px',
-                            padding: '10px 16px',
-                            border: '2px solid var(--brand)',
-                            backgroundColor: 'transparent',
-                            color: 'var(--brand)',
-                            letterSpacing: '0.12em',
-                            textTransform: 'uppercase' as const,
-                            boxShadow: '0 0 8px rgba(0, 255, 65, 0.2)',
-                            transition: 'all 0.3s',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '8px',
-                            flexShrink: 0,
-                        }}
-                    >
-                        <ArrowLeft style={{ width: '12px', height: '12px' }} />
-                        ◂ BACK
-                    </button>
+                    <BackButton onClick={() => setActivePage('map')} />
                     <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
                         <div style={{ width: '1px', height: '40px', backgroundColor: 'var(--brand)', opacity: 0.3 }} />
                         <div>

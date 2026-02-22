@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
-import { ArrowLeft } from 'lucide-react';
 import { useBlogStore } from '@/store/store';
+import BackButton from '@/components/shared/BackButton';
 import { estimateReadTime, getFontConfig, resolveContents } from '@/types';
 
 export default function PostReader() {
@@ -20,17 +20,7 @@ export default function PostReader() {
                     transition={{ delay: 0.1 }}
                     className="mb-8"
                 >
-                    <button
-                        onClick={() => setSelectedPost(null)}
-                        className="flex items-center gap-2 text-[7px] font-medium text-[var(--brand)] px-4 py-2 border-2 border-[var(--brand)] hover:bg-[var(--brand)] hover:text-black transition-all duration-300 cursor-pointer uppercase tracking-[0.12em] group"
-                        style={{
-                            fontFamily: "'Press Start 2P', monospace",
-                            boxShadow: '0 0 8px rgba(0, 255, 65, 0.2)',
-                        }}
-                    >
-                        <ArrowLeft className="w-3 h-3 group-hover:-translate-x-0.5 transition-transform" />
-                        ◂ {selectedCountry || 'POSTS'}
-                    </button>
+                    <BackButton onClick={() => setSelectedPost(null)} label={selectedCountry || 'POSTS'} />
                 </motion.div>
 
                 {/* Post header */}
