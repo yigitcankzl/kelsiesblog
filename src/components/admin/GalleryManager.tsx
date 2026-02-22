@@ -4,7 +4,8 @@ import { Plus, Trash2, Edit2, Save, X, Image, UploadCloud, Loader } from 'lucide
 import { useBlogStore } from '@/store/store';
 import type { GalleryItem } from '@/types';
 import { parseFolderId, listDriveImages, driveThumbUrl } from '@/lib/googleDrive';
-import { uploadImageToR2, listR2Images, deleteR2Image, type R2Item } from '@/lib/r2Api';
+import { uploadImageToR2 } from '@/lib/r2Api';
+import R2MediaBrowser from './R2MediaBrowser';
 import { FONT } from '@/lib/constants';
 import { inputStyle, labelStyle } from '@/lib/adminStyles';
 
@@ -32,12 +33,8 @@ export default function GalleryManager() {
     const [driveResults, setDriveResults] = useState<{ id: string; name: string; url: string }[]>([]);
     const [driveSelected, setDriveSelected] = useState<Set<string>>(new Set());
 
-    // R2 media browser state
+    // R2 media browser
     const [showR2Browser, setShowR2Browser] = useState(false);
-    const [r2Loading, setR2Loading] = useState(false);
-    const [r2Error, setR2Error] = useState('');
-    const [r2Items, setR2Items] = useState<R2Item[]>([]);
-    const [r2Selected, setR2Selected] = useState<Set<string>>(new Set());
 
     const galleryFileInputRef = useRef<HTMLInputElement>(null);
     const [galleryUploading, setGalleryUploading] = useState(false);
@@ -166,57 +163,6 @@ export default function GalleryManager() {
         setDriveError('');
     };
 
-    const openR2Browser = async () => {
-        setShowR2Browser(true);
-        setR2Error('');
-        setR2Loading(true);
-        try {
-            const items = await listR2Images('blog/');
-            setR2Items(items);
-            setR2Selected(new Set());
-        } catch (err: any) {
-            setR2Error(err?.message || 'FAILED TO LIST R2');
-        } finally {
-            setR2Loading(false);
-        }
-    };
-
-    const closeR2Browser = () => {
-        setShowR2Browser(false);
-        setR2Error('');
-        setR2Items([]);
-        setR2Selected(new Set());
-        setR2Loading(false);
-    };
-
-    const toggleR2Select = (key: string) => {
-        setR2Selected(prev => {
-            const next = new Set(prev);
-            if (next.has(key)) next.delete(key); else next.add(key);
-            return next;
-        });
-    };
-
-    const handleR2DeleteSelected = async () => {
-        if (r2Selected.size === 0) return;
-        if (!confirm(`Delete ${r2Selected.size} file(s)? This cannot be undone.`)) return;
-        setR2Loading(true);
-        setR2Error('');
-        try {
-            const keys = Array.from(r2Selected);
-            for (const key of keys) {
-                await deleteR2Image(key);
-            }
-            const items = await listR2Images('blog/');
-            setR2Items(items);
-            setR2Selected(new Set());
-        } catch (err: any) {
-            setR2Error(err?.message || 'FAILED TO DELETE');
-        } finally {
-            setR2Loading(false);
-        }
-    };
-
     const showForm = isAdding || editingId !== null;
 
     return (
@@ -235,7 +181,7 @@ export default function GalleryManager() {
                 {!showForm && (
                     <div style={{ display: 'flex', gap: '12px' }}>
                         <button
-                            onClick={openR2Browser}
+                            onClick={() => setShowR2Browser(true)}
                             className="cursor-pointer"
                             style={{
                                 ...FONT,
@@ -301,111 +247,7 @@ export default function GalleryManager() {
 
             {/* R2 Browser */}
             {showR2Browser && (
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    style={{ border: '1px solid var(--neon-cyan)', padding: '24px', marginBottom: '24px', backgroundColor: '#050505' }}
-                >
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
-                        <h3 style={{ ...FONT, fontSize: '9px', color: 'var(--neon-cyan)' }}>{'>'} R2 MEDIA (blog/)</h3>
-                        <button onClick={closeR2Browser} className="cursor-pointer" style={{ background: 'none', border: '1px solid #333', color: '#555', padding: '6px' }}>
-                            <X className="w-3 h-3" />
-                        </button>
-                    </div>
-
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
-                        <span style={{ ...FONT, fontSize: '7px', color: 'var(--neon-cyan)' }}>
-                            {r2Selected.size} / {r2Items.length} SELECTED
-                        </span>
-                        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                            <button
-                                onClick={() => setR2Selected(new Set(r2Items.map(i => i.key)))}
-                                className="cursor-pointer"
-                                style={{ ...FONT, fontSize: '6px', background: 'none', border: '1px solid #333', color: '#888', padding: '4px 10px' }}
-                                disabled={r2Items.length === 0}
-                            >
-                                SELECT ALL
-                            </button>
-                            <button
-                                onClick={() => setR2Selected(new Set())}
-                                className="cursor-pointer"
-                                style={{ ...FONT, fontSize: '6px', background: 'none', border: '1px solid #333', color: '#888', padding: '4px 10px' }}
-                                disabled={r2Selected.size === 0}
-                            >
-                                CLEAR
-                            </button>
-                            <button
-                                onClick={handleR2DeleteSelected}
-                                className="cursor-pointer"
-                                style={{
-                                    ...FONT,
-                                    fontSize: '7px',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '6px',
-                                    background: 'none',
-                                    border: '1px solid var(--neon-magenta)',
-                                    color: 'var(--neon-magenta)',
-                                    padding: '8px 12px',
-                                    opacity: r2Selected.size === 0 ? 0.5 : 1,
-                                }}
-                                disabled={r2Selected.size === 0 || r2Loading}
-                            >
-                                {r2Loading ? <Loader className="w-3 h-3 animate-spin" /> : <Trash2 className="w-3 h-3" />}
-                                DELETE
-                            </button>
-                        </div>
-                    </div>
-
-                    {r2Error && (
-                        <p style={{ ...FONT, fontSize: '7px', color: 'var(--neon-magenta)', marginBottom: '12px' }}>{r2Error}</p>
-                    )}
-
-                    {r2Loading && r2Items.length === 0 ? (
-                        <p style={{ ...FONT, fontSize: '7px', color: '#666' }}>LOADING...</p>
-                    ) : (
-                        <div className="grid grid-cols-3 sm:grid-cols-4 gap-3" style={{ maxHeight: '300px', overflowY: 'auto' }}>
-                            {r2Items.map(item => {
-                                const selected = r2Selected.has(item.key);
-                                return (
-                                    <div
-                                        key={item.key}
-                                        onClick={() => toggleR2Select(item.key)}
-                                        className="cursor-pointer"
-                                        style={{
-                                            border: `2px solid ${selected ? 'var(--neon-cyan)' : '#1a1a1a'}`,
-                                            overflow: 'hidden',
-                                            position: 'relative',
-                                            opacity: selected ? 1 : 0.6,
-                                            transition: 'all 0.2s',
-                                        }}
-                                        title={item.key}
-                                    >
-                                        {item.url ? (
-                                            <img
-                                                src={item.url}
-                                                alt={item.key}
-                                                style={{ width: '100%', aspectRatio: '1', objectFit: 'cover', display: 'block' }}
-                                            />
-                                        ) : (
-                                            <div style={{ width: '100%', aspectRatio: '1', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#444' }}>
-                                                <Image className="w-5 h-5" />
-                                            </div>
-                                        )}
-                                        {selected && (
-                                            <div style={{
-                                                position: 'absolute', top: '4px', right: '4px',
-                                                width: '14px', height: '14px', backgroundColor: 'var(--neon-cyan)',
-                                                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                                fontSize: '9px', color: '#000', fontWeight: 'bold',
-                                            }}>✓</div>
-                                        )}
-                                    </div>
-                                );
-                            })}
-                        </div>
-                    )}
-                </motion.div>
+                <R2MediaBrowser onClose={() => setShowR2Browser(false)} />
             )}
 
             {/* Drive Import Dialog */}

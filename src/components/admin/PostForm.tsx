@@ -9,8 +9,9 @@ import { worldCities } from '@/data/worldCities';
 import { fetchCityBoundary } from '@/lib/cityBoundaryCache';
 import { mergePostFields } from '@/lib/firestore';
 import { parseFolderId, listDriveImages, driveThumbUrl } from '@/lib/googleDrive';
-import { uploadImageToR2, listR2Images, deleteR2Image, type R2Item } from '@/lib/r2Api';
+import { uploadImageToR2 } from '@/lib/r2Api';
 import RichTextEditor from './RichTextEditor';
+import R2MediaBrowser from './R2MediaBrowser';
 import { FONT, CATEGORIES } from '@/lib/constants';
 import { inputStyle, labelStyle, handleInputFocus, handleInputBlur } from '@/lib/adminStyles';
 
@@ -69,13 +70,8 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
     const [sectionUploadingIndex, setSectionUploadingIndex] = useState<number | null>(null);
     const [sectionImageUploading, setSectionImageUploading] = useState<number | null>(null);
 
-    // R2 media browser (pick existing + delete)
-    const [showR2Browser, setShowR2Browser] = useState(false);
-    const [r2PickTarget, setR2PickTarget] = useState<{ kind: 'cover' } | { kind: 'section'; index: number } | { kind: 'inline'; sectionIndex: number; contentIndex: number } | null>(null);
-    const [r2Loading, setR2Loading] = useState(false);
-    const [r2Error, setR2Error] = useState('');
-    const [r2Items, setR2Items] = useState<R2Item[]>([]);
-    const [r2Selected, setR2Selected] = useState<Set<string>>(new Set());
+    // R2 media browser pick target
+    const [r2PickTarget, setR2PickTarget] = useState<{ kind: 'cover' } | { kind: 'section'; index: number } | null>(null);
 
     // --- Drafts ---
     const [draftFound, setDraftFound] = useState(false);
@@ -136,97 +132,17 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
         setDraftFound(false);
     };
 
-    const loadR2 = async () => {
-        setR2Loading(true);
-        setR2Error('');
-        try {
-            const items = await listR2Images('blog/');
-            setR2Items(items);
-            setR2Selected(new Set());
-        } catch (err: any) {
-            setR2Error(err?.message || 'FAILED TO LIST R2');
-        } finally {
-            setR2Loading(false);
-        }
-    };
-
-    const openR2ForCover = async () => {
-        setR2PickTarget({ kind: 'cover' });
-        setShowR2Browser(true);
-        await loadR2();
-    };
-
-    const openR2ForSection = async (index: number) => {
-        setR2PickTarget({ kind: 'section', index });
-        setShowR2Browser(true);
-        await loadR2();
-    };
-
-
-
-    const closeR2 = () => {
-        setShowR2Browser(false);
-        setR2PickTarget(null);
-        setR2Loading(false);
-        setR2Error('');
-        setR2Items([]);
-        setR2Selected(new Set());
-    };
-
-    const toggleR2Select = (key: string) => {
-        setR2Selected(prev => {
-            const next = new Set(prev);
-            if (next.has(key)) next.delete(key); else next.add(key);
-            return next;
-        });
-    };
-
-    const insertSelectedFromR2 = () => {
+    const handleR2Select = (urls: string[]) => {
         if (!r2PickTarget) return;
-        const selectedItems = r2Items.filter(i => r2Selected.has(i.key));
-        const urls = selectedItems.map(i => i.url).filter(Boolean) as string[];
-        if (urls.length === 0) {
-            setR2Error('No selectable URLs.');
-            return;
-        }
-
         if (r2PickTarget.kind === 'cover') {
             setCoverImage(urls[0]);
-            closeR2();
-            return;
-        }
-
-        if (r2PickTarget.kind === 'section') {
+        } else {
             const idx = r2PickTarget.index;
             setSections(prev => prev.map((s, i) => {
                 if (i !== idx) return s;
                 const existing = s.images || [];
-                const merged = Array.from(new Set([...existing, ...urls]));
-                return { ...s, images: merged };
+                return { ...s, images: Array.from(new Set([...existing, ...urls])) };
             }));
-            closeR2();
-            return;
-        }
-
-        // Add logical fallthrough or additional handling if 'inline' is needed in future
-        closeR2();
-    };
-
-    const deleteSelectedFromR2 = async () => {
-        if (r2Selected.size === 0) return;
-        if (!confirm(`Delete ${r2Selected.size} file(s)? This cannot be undone.`)) return;
-        setR2Loading(true);
-        setR2Error('');
-        try {
-            const keys = Array.from(r2Selected);
-            for (const key of keys) {
-                await deleteR2Image(key);
-            }
-            await loadR2();
-        } catch (err: any) {
-            setR2Error(err?.message || 'FAILED TO DELETE');
-        } finally {
-            setR2Loading(false);
         }
     };
 
@@ -746,7 +662,7 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                             </button>
                             <button
                                 type="button"
-                                onClick={openR2ForCover}
+                                onClick={() => setR2PickTarget({ kind: 'cover' })}
                                 className="cursor-pointer"
                                 style={{
                                     ...FONT,
@@ -771,138 +687,12 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                         </div>
 
                         {/* R2 media browser */}
-                        {showR2Browser && (
-                            <div style={{ border: '1px solid var(--neon-cyan)', padding: '14px', backgroundColor: '#050505', marginTop: '10px' }}>
-                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
-                                    <span style={{ ...FONT, fontSize: '7px', color: 'var(--neon-cyan)', letterSpacing: '0.15em' }}>
-                                        {'>'} R2 MEDIA (blog/)
-                                    </span>
-                                    <button
-                                        type="button"
-                                        onClick={closeR2}
-                                        className="cursor-pointer"
-                                        style={{ background: 'none', border: '1px solid #333', color: '#555', padding: '4px' }}
-                                    >
-                                        <X style={{ width: '12px', height: '12px' }} />
-                                    </button>
-                                </div>
-
-                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px', flexWrap: 'wrap', marginBottom: '10px' }}>
-                                    <span style={{ ...FONT, fontSize: '6px', color: '#777' }}>
-                                        {r2Selected.size} / {r2Items.length} SELECTED
-                                    </span>
-                                    <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                                        <button
-                                            type="button"
-                                            onClick={() => setR2Selected(new Set(r2Items.map(i => i.key)))}
-                                            disabled={r2Items.length === 0 || r2Loading}
-                                            className="cursor-pointer"
-                                            style={{ ...FONT, fontSize: '6px', background: 'none', border: '1px solid #333', color: '#888', padding: '6px 10px' }}
-                                        >
-                                            SELECT ALL
-                                        </button>
-                                        <button
-                                            type="button"
-                                            onClick={() => setR2Selected(new Set())}
-                                            disabled={r2Selected.size === 0 || r2Loading}
-                                            className="cursor-pointer"
-                                            style={{ ...FONT, fontSize: '6px', background: 'none', border: '1px solid #333', color: '#888', padding: '6px 10px' }}
-                                        >
-                                            CLEAR
-                                        </button>
-                                        <button
-                                            type="button"
-                                            onClick={deleteSelectedFromR2}
-                                            disabled={r2Selected.size === 0 || r2Loading}
-                                            className="cursor-pointer"
-                                            style={{
-                                                ...FONT,
-                                                fontSize: '6px',
-                                                display: 'flex',
-                                                alignItems: 'center',
-                                                gap: '6px',
-                                                background: 'none',
-                                                border: '1px solid var(--neon-magenta)',
-                                                color: 'var(--neon-magenta)',
-                                                padding: '6px 10px',
-                                            }}
-                                        >
-                                            {r2Loading ? <Loader style={{ width: '10px', height: '10px' }} className="animate-spin" /> : <Trash2 style={{ width: '10px', height: '10px' }} />}
-                                            DELETE
-                                        </button>
-                                        <button
-                                            type="button"
-                                            onClick={insertSelectedFromR2}
-                                            disabled={r2Selected.size === 0 || r2Loading}
-                                            className="cursor-pointer"
-                                            style={{
-                                                ...FONT,
-                                                fontSize: '6px',
-                                                display: 'flex',
-                                                alignItems: 'center',
-                                                gap: '6px',
-                                                background: 'var(--neon-cyan)',
-                                                color: '#000',
-                                                border: 'none',
-                                                padding: '6px 10px',
-                                                opacity: r2Selected.size === 0 ? 0.6 : 1,
-                                            }}
-                                        >
-                                            <ImagePlus style={{ width: '10px', height: '10px' }} />
-                                            USE SELECTED
-                                        </button>
-                                    </div>
-                                </div>
-
-                                {r2Error && (
-                                    <p style={{ ...FONT, fontSize: '6px', color: 'var(--neon-magenta)', marginBottom: '8px' }}>{r2Error}</p>
-                                )}
-
-                                {r2Loading && r2Items.length === 0 ? (
-                                    <p style={{ ...FONT, fontSize: '6px', color: '#666' }}>LOADING...</p>
-                                ) : (
-                                    <div className="grid grid-cols-4 sm:grid-cols-6 gap-2" style={{ maxHeight: '240px', overflowY: 'auto' }}>
-                                        {r2Items.map(item => {
-                                            const selected = r2Selected.has(item.key);
-                                            return (
-                                                <div
-                                                    key={item.key}
-                                                    onClick={() => toggleR2Select(item.key)}
-                                                    className="cursor-pointer"
-                                                    style={{
-                                                        border: `2px solid ${selected ? 'var(--neon-cyan)' : '#1a1a1a'}`,
-                                                        overflow: 'hidden',
-                                                        position: 'relative',
-                                                        opacity: selected ? 1 : 0.65,
-                                                        transition: 'all 0.2s',
-                                                    }}
-                                                    title={item.key}
-                                                >
-
-                                                    {item.url ? (
-                                                        <img
-                                                            src={item.url}
-                                                            alt={item.key}
-                                                            style={{ width: '100%', aspectRatio: '1', objectFit: 'cover', display: 'block' }}
-                                                        />
-                                                    ) : (
-                                                        <div style={{ width: '100%', aspectRatio: '1', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#444' }}>
-                                                            <ImagePlus style={{ width: '14px', height: '14px' }} />
-                                                        </div>
-                                                    )}
-                                                    {selected && (
-                                                        <div style={{
-                                                            position: 'absolute', top: '4px', right: '4px',
-                                                            width: '14px', height: '14px', backgroundColor: 'var(--neon-cyan)',
-                                                            display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                                            fontSize: '9px', color: '#000', fontWeight: 'bold',
-                                                        }}>✓</div>
-                                                    )}
-                                                </div>
-                                            );
-                                        })}
-                                    </div>
-                                )}
+                        {r2PickTarget?.kind === 'cover' && (
+                            <div style={{ marginTop: '10px' }}>
+                                <R2MediaBrowser
+                                    onClose={() => setR2PickTarget(null)}
+                                    onSelect={handleR2Select}
+                                />
                             </div>
                         )}
                         {coverImage && (
@@ -1160,7 +950,7 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                                         </button>
                                         <button
                                             type="button"
-                                            onClick={() => openR2ForSection(index)}
+                                            onClick={() => setR2PickTarget({ kind: 'section', index })}
                                             className="cursor-pointer"
                                             style={{
                                                 ...FONT, fontSize: '6px', display: 'flex', alignItems: 'center', gap: '4px',
@@ -1191,6 +981,14 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                                             IMPORT DRIVE
                                         </button>
                                     </div>
+
+                                    {/* R2 media browser for section */}
+                                    {r2PickTarget?.kind === 'section' && r2PickTarget.index === index && (
+                                        <R2MediaBrowser
+                                            onClose={() => setR2PickTarget(null)}
+                                            onSelect={handleR2Select}
+                                        />
+                                    )}
 
                                     {/* Drive import inline */}
                                     {driveImportIdx === index && (
