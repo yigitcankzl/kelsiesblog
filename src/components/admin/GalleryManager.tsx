@@ -6,29 +6,7 @@ import type { GalleryItem } from '@/types';
 import { parseFolderId, listDriveImages, driveThumbUrl } from '@/lib/googleDrive';
 import { uploadImageToR2, listR2Images, deleteR2Image, type R2Item } from '@/lib/r2Api';
 import { FONT } from '@/lib/constants';
-
-const inputStyle: React.CSSProperties = {
-    // ... (keep usage of inputStyle implicitly or explicitly if not changing)
-    ...FONT,
-    fontSize: '9px',
-    width: '100%',
-    padding: '12px 14px',
-    backgroundColor: '#0a0a0a',
-    border: '1px solid #222',
-    color: '#ccc',
-    outline: 'none',
-    transition: 'border-color 0.3s, box-shadow 0.3s',
-};
-
-const labelStyle: React.CSSProperties = {
-    ...FONT,
-    fontSize: '7px',
-    color: '#888',
-    textTransform: 'uppercase',
-    letterSpacing: '0.15em',
-    marginBottom: '8px',
-    display: 'block',
-};
+import { inputStyle, labelStyle } from '@/lib/adminStyles';
 
 interface GalleryFormData {
     src: string;

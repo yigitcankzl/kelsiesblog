@@ -12,31 +12,7 @@ import { parseFolderId, listDriveImages, driveThumbUrl } from '@/lib/googleDrive
 import { uploadImageToR2, listR2Images, deleteR2Image, type R2Item } from '@/lib/r2Api';
 import RichTextEditor from './RichTextEditor';
 import { FONT, CATEGORIES } from '@/lib/constants';
-
-const inputStyle: React.CSSProperties = {
-    ...FONT,
-    fontSize: '9px',
-    width: '100%',
-    padding: '12px 14px',
-    backgroundColor: '#0a0a0a',
-    border: '1px solid #333',
-    color: 'var(--brand)',
-    outline: 'none',
-    transition: 'all 0.3s',
-    letterSpacing: '0.1em',
-};
-
-const labelStyle: React.CSSProperties = {
-    ...FONT,
-    fontSize: '7px',
-    color: '#888',
-    textTransform: 'uppercase',
-    letterSpacing: '0.15em',
-    marginBottom: '8px',
-    display: 'flex',
-    alignItems: 'center',
-    gap: '6px',
-};
+import { inputStyle, labelStyle, handleInputFocus, handleInputBlur } from '@/lib/adminStyles';
 
 interface PostFormProps {
     post: BlogPost | null;
@@ -479,16 +455,6 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
     };
 
     const isValid = title.trim() && country.trim() && city.trim() && sections.some(s => s.heading.trim() && s.content?.trim());
-
-    const handleInputFocus = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-        e.currentTarget.style.borderColor = 'var(--brand)';
-        e.currentTarget.style.boxShadow = '0 0 8px rgba(0, 255, 65, 0.15)';
-    };
-
-    const handleInputBlur = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-        e.currentTarget.style.borderColor = '#333';
-        e.currentTarget.style.boxShadow = 'none';
-    };
 
     return (
         <form onSubmit={handleSubmit} style={{ maxWidth: '768px', margin: '0 auto' }}>

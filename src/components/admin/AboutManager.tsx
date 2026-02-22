@@ -3,35 +3,7 @@ import { motion } from 'framer-motion';
 import { Save, User, Plus, Trash2 } from 'lucide-react';
 import { useBlogStore } from '@/store/store';
 import { FONT } from '@/lib/constants';
-
-const inputStyle: React.CSSProperties = {
-    ...FONT,
-    fontSize: '9px',
-    width: '100%',
-    padding: '12px 14px',
-    backgroundColor: '#0a0a0a',
-    border: '1px solid #222',
-    color: '#ccc',
-    outline: 'none',
-    transition: 'border-color 0.3s, box-shadow 0.3s',
-};
-
-const labelStyle: React.CSSProperties = {
-    ...FONT,
-    fontSize: '7px',
-    color: '#888',
-    textTransform: 'uppercase',
-    letterSpacing: '0.15em',
-    marginBottom: '8px',
-    display: 'block',
-};
-
-const textareaStyle: React.CSSProperties = {
-    ...inputStyle,
-    minHeight: '100px',
-    resize: 'vertical' as const,
-    lineHeight: '2.2',
-};
+import { inputStyle, labelStyle, textareaStyle } from '@/lib/adminStyles';
 
 export default function AboutManager() {
     const { aboutContent, updateAboutContent } = useBlogStore();
