@@ -2,12 +2,10 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { MapPin } from 'lucide-react';
 import BackButton from '@/components/shared/BackButton';
+import CategoryFilter from '@/components/shared/CategoryFilter';
 import { useBlogStore } from '@/store/store';
 import { estimateReadTime } from '@/types';
 import { getCountryDescription } from '@/data/countryDescriptions';
-import { CATEGORIES } from '@/lib/constants';
-
-const categories = CATEGORIES;
 
 export default function CountryPostsView() {
     const { selectedCountry, posts, setSelectedCountry, setSelectedPost, countryOverviews } = useBlogStore();
@@ -78,47 +76,7 @@ export default function CountryPostsView() {
                 )}
 
                 {/* Category filters */}
-                <div className="flex flex-wrap gap-5 sm:gap-6">
-                    <button
-                        onClick={() => setActiveCategory(null)}
-                        className="cursor-pointer transition-all duration-300"
-                        style={{
-                            fontFamily: "'Press Start 2P', monospace",
-                            fontSize: '9px',
-                            padding: '10px 20px',
-                            letterSpacing: '0.15em',
-                            textTransform: 'uppercase',
-                            border: '2px solid',
-                            borderColor: !activeCategory ? 'var(--brand)' : '#444',
-                            backgroundColor: !activeCategory ? 'var(--brand)' : 'transparent',
-                            color: !activeCategory ? '#000' : '#888',
-                            boxShadow: !activeCategory ? '0 0 12px rgba(0, 255, 65, 0.4)' : 'none',
-                        }}
-                    >
-                        ALL
-                    </button>
-                    {categories.map(cat => (
-                        <button
-                            key={cat}
-                            onClick={() => setActiveCategory(activeCategory === cat ? null : cat)}
-                            className="cursor-pointer transition-all duration-300"
-                            style={{
-                                fontFamily: "'Press Start 2P', monospace",
-                                fontSize: '9px',
-                                padding: '10px 20px',
-                                letterSpacing: '0.15em',
-                                textTransform: 'uppercase',
-                                border: '2px solid',
-                                borderColor: activeCategory === cat ? 'var(--neon-magenta)' : '#444',
-                                backgroundColor: activeCategory === cat ? 'var(--neon-magenta)' : 'transparent',
-                                color: activeCategory === cat ? '#000' : '#888',
-                                boxShadow: activeCategory === cat ? '0 0 12px rgba(255, 0, 228, 0.4)' : 'none',
-                            }}
-                        >
-                            {cat}
-                        </button>
-                    ))}
-                </div>
+                <CategoryFilter activeCategory={activeCategory} onCategoryChange={setActiveCategory} />
 
                 {/* List - adjusted to single column stack */}
                 <div className="flex flex-col gap-8">

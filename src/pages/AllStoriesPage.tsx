@@ -4,7 +4,8 @@ import { MapPin, Clock } from 'lucide-react';
 import BackButton from '@/components/shared/BackButton';
 import { useBlogStore } from '@/store/store';
 import { estimateReadTime, type BlogPost } from '@/types';
-import { FONT, CATEGORIES } from '@/lib/constants';
+import { FONT } from '@/lib/constants';
+import CategoryFilter from '@/components/shared/CategoryFilter';
 
 export default function AllStoriesPage() {
     const { posts, setSelectedCountry, setSelectedPost, setActivePage } = useBlogStore();
@@ -14,8 +15,6 @@ export default function AllStoriesPage() {
     useEffect(() => {
         window.scrollTo(0, 0);
     }, []);
-
-    const categories = CATEGORIES;
 
     const filteredPosts = activeCategory
         ? posts.filter(p =>
@@ -53,48 +52,8 @@ export default function AllStoriesPage() {
                 </div>
 
                 {/* Category filters */}
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', marginBottom: '32px' }}>
-                    <button
-                        onClick={() => setActiveCategory(null)}
-                        className="cursor-pointer"
-                        style={{
-                            ...FONT,
-                            fontSize: '8px',
-                            padding: '8px 16px',
-                            letterSpacing: '0.15em',
-                            textTransform: 'uppercase',
-                            border: '2px solid',
-                            borderColor: !activeCategory ? 'var(--brand)' : '#444',
-                            backgroundColor: !activeCategory ? 'var(--brand)' : 'transparent',
-                            color: !activeCategory ? '#000' : '#888',
-                            boxShadow: !activeCategory ? '0 0 12px rgba(0, 255, 65, 0.4)' : 'none',
-                            transition: 'all 0.3s',
-                        }}
-                    >
-                        ALL
-                    </button>
-                    {categories.map(cat => (
-                        <button
-                            key={cat}
-                            onClick={() => setActiveCategory(activeCategory === cat ? null : cat)}
-                            className="cursor-pointer"
-                            style={{
-                                ...FONT,
-                                fontSize: '8px',
-                                padding: '8px 16px',
-                                letterSpacing: '0.15em',
-                                textTransform: 'uppercase',
-                                border: '2px solid',
-                                borderColor: activeCategory === cat ? 'var(--neon-magenta)' : '#444',
-                                backgroundColor: activeCategory === cat ? 'var(--neon-magenta)' : 'transparent',
-                                color: activeCategory === cat ? '#000' : '#888',
-                                boxShadow: activeCategory === cat ? '0 0 12px rgba(255, 0, 228, 0.4)' : 'none',
-                                transition: 'all 0.3s',
-                            }}
-                        >
-                            {cat}
-                        </button>
-                    ))}
+                <div style={{ marginBottom: '32px' }}>
+                    <CategoryFilter activeCategory={activeCategory} onCategoryChange={setActiveCategory} />
                 </div>
 
                 {/* Posts grouped by country */}
