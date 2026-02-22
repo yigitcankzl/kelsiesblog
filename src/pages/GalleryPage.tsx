@@ -31,8 +31,8 @@ export default function GalleryPage() {
     const marqueeImages = [...allImages, ...allImages];
 
     return (
-        <section className="bg-black min-h-screen pb-16" style={{ paddingTop: '100px' }}>
-            <div style={{ maxWidth: '1024px', margin: '0 auto', paddingLeft: '24px', paddingRight: '24px' }}>
+        <section className="bg-black min-h-screen pb-16 pt-[100px]">
+            <div className="max-w-screen-lg mx-auto px-6">
                 {/* Header */}
                 <PageHeader
                     onBack={() => setActivePage('map')}
@@ -56,27 +56,19 @@ export default function GalleryPage() {
                             initial={{ opacity: 0, y: 16 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.05 + index * 0.04, duration: 0.4 }}
-                            className="group cursor-pointer retro-corners hover-glitch"
+                            className={`group cursor-pointer retro-corners hover-glitch relative overflow-hidden ${index % 5 === 0 ? 'aspect-square' : 'aspect-[4/3]'}`}
                             style={{
-                                position: 'relative',
-                                overflow: 'hidden',
-                                aspectRatio: index % 5 === 0 ? '1/1' : '4/3',
                                 boxShadow: '0 0 8px rgba(0, 255, 65, 0.1)',
                             }}
                             onClick={() => setLightbox(img)}
                         >
-                            <span className="rc-extra" style={{ position: 'absolute', inset: 0 }} />
+                            <span className="rc-extra absolute inset-0" />
                             <img
                                 src={img.src}
                                 alt={img.heading}
                                 referrerPolicy="no-referrer"
-                                style={{
-                                    width: '100%',
-                                    height: '100%',
-                                    objectFit: 'cover',
-                                    transition: 'transform 0.7s, filter 0.5s',
-                                    filter: 'saturate(0.8) brightness(0.85)',
-                                }}
+                                className="w-full h-full object-cover transition-all duration-700"
+                                style={{ filter: 'saturate(0.8) brightness(0.85)' }}
                                 onMouseEnter={e => {
                                     e.currentTarget.style.transform = 'scale(1.1)';
                                     e.currentTarget.style.filter = 'saturate(1) brightness(1)';
@@ -87,54 +79,22 @@ export default function GalleryPage() {
                                 }}
                             />
                             {/* Gradient overlay */}
-                            <div style={{
-                                position: 'absolute',
-                                inset: 0,
-                                background: 'linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 50%)',
-                                pointerEvents: 'none',
-                            }} />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent pointer-events-none" />
                             {/* Location */}
-                            <div style={{
-                                position: 'absolute',
-                                bottom: '10px',
-                                left: '10px',
-                                right: '10px',
-                            }}>
-                                <span style={{
-                                    ...FONT,
-                                    fontSize: '6px',
-                                    color: 'var(--brand)',
-                                    display: 'inline-flex',
-                                    alignItems: 'center',
-                                    gap: '4px',
-                                    textTransform: 'uppercase',
-                                    letterSpacing: '0.1em',
-                                }}>
-                                    <MapPin style={{ width: '8px', height: '8px' }} />
+                            <div className="absolute bottom-2.5 left-2.5 right-2.5">
+                                <span className="inline-flex items-center gap-1 uppercase tracking-wide text-[var(--brand)]"
+                                    style={{ ...FONT, fontSize: '6px' }}>
+                                    <MapPin className="w-2 h-2" />
                                     {img.city}
                                 </span>
-                                <p style={{
-                                    ...FONT,
-                                    fontSize: '5px',
-                                    color: '#666',
-                                    marginTop: '4px',
-                                    overflow: 'hidden',
-                                    textOverflow: 'ellipsis',
-                                    whiteSpace: 'nowrap',
-                                }}>
+                                <p className="mt-1 overflow-hidden text-ellipsis whitespace-nowrap text-[#666]"
+                                    style={{ ...FONT, fontSize: '5px' }}>
                                     {img.heading}
                                 </p>
                             </div>
                             {/* Index badge */}
-                            <span style={{
-                                position: 'absolute',
-                                top: '8px',
-                                right: '8px',
-                                ...FONT,
-                                fontSize: '5px',
-                                color: 'var(--neon-cyan)',
-                                opacity: 0.4,
-                            }}>
+                            <span className="absolute top-2 right-2 opacity-40 text-[var(--neon-cyan)]"
+                                style={{ ...FONT, fontSize: '5px' }}>
                                 #{String(index + 1).padStart(2, '0')}
                             </span>
                         </motion.div>
@@ -144,12 +104,12 @@ export default function GalleryPage() {
 
             {/* Rotating image strip at bottom */}
             <motion.div
-                style={{ marginTop: '60px' }}
+                className="mt-15"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.3, duration: 0.5 }}
             >
-                <div style={{ textAlign: 'center', marginBottom: '20px' }}>
+                <div className="text-center mb-5">
                     <span style={{ ...FONT, fontSize: '7px', color: '#333', letterSpacing: '0.2em', textTransform: 'uppercase' }}>
                         ◂ FILM STRIP ▸
                     </span>
@@ -171,13 +131,8 @@ export default function GalleryPage() {
                                     src={img.src}
                                     alt={img.heading}
                                     referrerPolicy="no-referrer"
-                                    style={{
-                                        width: '100%',
-                                        height: '100%',
-                                        objectFit: 'cover',
-                                        filter: 'saturate(0.6) brightness(0.8)',
-                                        transition: 'all 0.5s',
-                                    }}
+                                    className="w-full h-full object-cover transition-all duration-500"
+                                    style={{ filter: 'saturate(0.6) brightness(0.8)' }}
                                     onMouseEnter={e => {
                                         e.currentTarget.style.transform = 'scale(1.15)';
                                         e.currentTarget.style.filter = 'saturate(1) brightness(1)';
@@ -187,35 +142,13 @@ export default function GalleryPage() {
                                         e.currentTarget.style.filter = 'saturate(0.6) brightness(0.8)';
                                     }}
                                 />
-                                <div style={{
-                                    position: 'absolute',
-                                    inset: 0,
-                                    background: 'linear-gradient(to top, rgba(0,0,0,0.5) 0%, transparent 60%)',
-                                    pointerEvents: 'none',
-                                }} />
-                                <span style={{
-                                    position: 'absolute',
-                                    top: '6px',
-                                    left: '6px',
-                                    ...FONT,
-                                    fontSize: '5px',
-                                    color: 'var(--neon-cyan)',
-                                    opacity: 0.5,
-                                    letterSpacing: '0.1em',
-                                }}>
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent pointer-events-none" />
+                                <span className="absolute top-1.5 left-1.5 opacity-50 tracking-wide text-[var(--neon-cyan)]"
+                                    style={{ ...FONT, fontSize: '5px' }}>
                                     CH-{String((index % allImages.length) + 1).padStart(2, '0')}
                                 </span>
-                                <span style={{
-                                    position: 'absolute',
-                                    bottom: '8px',
-                                    left: '8px',
-                                    ...FONT,
-                                    fontSize: '6px',
-                                    color: 'var(--brand)',
-                                    letterSpacing: '0.15em',
-                                    textTransform: 'uppercase',
-                                    textShadow: '0 0 6px rgba(0, 255, 65, 0.5)',
-                                }}>
+                                <span className="absolute bottom-2 left-2 uppercase tracking-wider text-[var(--brand)]"
+                                    style={{ ...FONT, fontSize: '6px', textShadow: '0 0 6px rgba(0, 255, 65, 0.5)' }}>
                                     {img.city}
                                 </span>
                             </div>
@@ -227,56 +160,33 @@ export default function GalleryPage() {
             {/* Lightbox */}
             {lightbox && (
                 <div
-                    style={{
-                        position: 'fixed',
-                        inset: 0,
-                        zIndex: 9999,
-                        backgroundColor: 'rgba(0, 0, 0, 0.95)',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        padding: '24px',
-                    }}
+                    className="fixed inset-0 z-[9999] bg-black/95 flex items-center justify-center p-6"
                     onClick={() => setLightbox(null)}
                 >
                     <motion.div
                         initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ duration: 0.3 }}
-                        style={{ position: 'relative', maxWidth: '900px', width: '100%' }}
+                        className="relative max-w-[900px] w-full"
                         onClick={e => e.stopPropagation()}
                     >
                         <button
                             onClick={() => setLightbox(null)}
-                            className="cursor-pointer"
-                            style={{
-                                position: 'absolute',
-                                top: '-40px',
-                                right: '0',
-                                backgroundColor: 'transparent',
-                                border: '1px solid var(--brand)',
-                                color: 'var(--brand)',
-                                width: '32px',
-                                height: '32px',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                zIndex: 10,
-                            }}
+                            className="cursor-pointer absolute -top-10 right-0 bg-transparent border border-[var(--brand)] text-[var(--brand)] w-8 h-8 flex items-center justify-center z-10"
                         >
-                            <X style={{ width: '16px', height: '16px' }} />
+                            <X className="w-4 h-4" />
                         </button>
-                        <div className="retro-corners" style={{ overflow: 'hidden', boxShadow: '0 0 30px rgba(0, 255, 65, 0.3)' }}>
-                            <span className="rc-extra" style={{ position: 'absolute', inset: 0, zIndex: 2 }} />
+                        <div className="retro-corners overflow-hidden" style={{ boxShadow: '0 0 30px rgba(0, 255, 65, 0.3)' }}>
+                            <span className="rc-extra absolute inset-0 z-[2]" />
                             <img
                                 src={lightbox.src}
                                 alt={lightbox.heading}
                                 referrerPolicy="no-referrer"
-                                style={{ width: '100%', maxHeight: '80vh', objectFit: 'contain', backgroundColor: '#000' }}
+                                className="w-full max-h-[80vh] object-contain bg-black"
                             />
                         </div>
-                        <div style={{ marginTop: '16px', display: 'flex', alignItems: 'center', gap: '12px' }}>
-                            <MapPin style={{ width: '12px', height: '12px', color: 'var(--brand)' }} />
+                        <div className="mt-4 flex items-center gap-3">
+                            <MapPin className="w-3 h-3 text-[var(--brand)]" />
                             <span style={{ ...FONT, fontSize: '8px', color: 'var(--neon-cyan)' }}>
                                 {lightbox.city}, {lightbox.country}
                             </span>

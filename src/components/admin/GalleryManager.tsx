@@ -80,9 +80,9 @@ export default function GalleryManager() {
     return (
         <div>
             {/* Header */}
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '32px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                    <Image className="w-4 h-4" style={{ color: 'var(--neon-cyan)' }} />
+            <div className="flex items-center justify-between mb-8">
+                <div className="flex items-center gap-3">
+                    <Image className="w-4 h-4 text-[var(--neon-cyan)]" />
                     <div>
                         <h2 style={{ ...FONT, fontSize: '11px', color: '#fff' }}>GALLERY ITEMS</h2>
                         <p style={{ ...FONT, fontSize: '6px', color: '#555', marginTop: '4px', letterSpacing: '0.15em' }}>
@@ -91,7 +91,7 @@ export default function GalleryManager() {
                     </div>
                 </div>
                 {!showForm && (
-                    <div style={{ display: 'flex', gap: '12px' }}>
+                    <div className="flex gap-3">
                         <button onClick={() => setShowR2Browser(true)} className="cursor-pointer"
                             style={{ ...FONT, fontSize: '7px', display: 'flex', alignItems: 'center', gap: '8px', backgroundColor: 'transparent', color: 'var(--neon-cyan)', border: '1px solid var(--neon-cyan)', padding: '10px 16px', letterSpacing: '0.1em', transition: 'all 0.3s' }}>
                             <Image className="w-3 h-3" /> R2 MEDIA

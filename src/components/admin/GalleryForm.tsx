@@ -46,15 +46,15 @@ export default function GalleryForm({
     };
 
     return (
-        <div style={{ border: '1px solid #1a1a1a', padding: '24px', marginBottom: '24px' }}>
+        <div className="border border-[#1a1a1a] p-6 mb-6">
             <h3 style={{ ...FONT, fontSize: '9px', color: 'var(--neon-cyan)', marginBottom: '24px' }}>
                 {isEditing ? '> EDIT IMAGE' : '> NEW IMAGE'}
             </h3>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
-                <div style={{ gridColumn: '1 / -1' }}>
+            <div className="grid grid-cols-2 gap-4 mb-4">
+                <div className="col-span-full">
                     <label style={labelStyle}>Image URL</label>
-                    <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
+                    <div className="flex gap-2 items-center flex-wrap">
                         <input
                             type="text"
                             value={form.src}
@@ -62,7 +62,7 @@ export default function GalleryForm({
                             placeholder="https://... veya bilgisayardan yükle"
                             style={{ ...inputStyle, flex: '1 1 200px' }}
                         />
-                        <input ref={fileInputRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={handleFileChange} />
+                        <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleFileChange} />
                         <button
                             type="button"
                             onClick={() => fileInputRef.current?.click()}
@@ -79,7 +79,7 @@ export default function GalleryForm({
                         </button>
                     </div>
                 </div>
-                <div style={{ gridColumn: '1 / -1' }}>
+                <div className="col-span-full">
                     <label style={labelStyle}>Caption</label>
                     <input
                         type="text"
@@ -122,18 +122,18 @@ export default function GalleryForm({
 
             {/* Preview */}
             {form.src && !previewError && (
-                <div style={{ marginBottom: '16px' }}>
+                <div className="mb-4">
                     <label style={labelStyle}>Preview</label>
-                    <div style={{ width: '200px', height: '140px', overflow: 'hidden', border: '1px solid #222' }}>
+                    <div className="w-[200px] h-[140px] overflow-hidden border border-[#222]">
                         <img src={form.src} alt="preview" referrerPolicy="no-referrer"
-                            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                            className="w-full h-full object-cover"
                             onError={() => setPreviewError(true)} />
                     </div>
                 </div>
             )}
 
             {/* Actions */}
-            <div style={{ display: 'flex', gap: '12px', marginTop: '20px' }}>
+            <div className="flex gap-3 mt-5">
                 <button onClick={onSave} className="cursor-pointer"
                     style={{
                         ...FONT, fontSize: '7px', display: 'flex', alignItems: 'center', gap: '8px',

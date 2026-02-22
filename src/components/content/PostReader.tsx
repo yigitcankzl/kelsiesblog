@@ -12,7 +12,7 @@ export default function PostReader() {
     return (
         <article className="pb-20 bg-black">
             {/* Content */}
-            <div style={{ maxWidth: '1024px', margin: '0 auto', paddingLeft: '24px', paddingRight: '24px', paddingTop: '40px' }}>
+            <div className="max-w-screen-lg mx-auto px-6 pt-10">
                 {/* Back button */}
                 <motion.div
                     initial={{ opacity: 0, x: -12 }}
@@ -28,7 +28,7 @@ export default function PostReader() {
                     initial={{ opacity: 0, y: 16 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.15, duration: 0.5 }}
-                    style={{ marginBottom: '40px' }}
+                    className="mb-10"
                 >
                     {/* Location badge */}
                     <span className="inline-flex items-center gap-2 px-4 py-1.5 bg-[var(--brand)] text-black text-[8px] font-bold uppercase tracking-[0.14em]"
@@ -71,7 +71,7 @@ export default function PostReader() {
                     </div>
 
                     {/* Divider */}
-                    <div style={{ height: '1px', background: 'linear-gradient(to right, var(--brand), transparent)', marginTop: '24px', opacity: 0.3 }} />
+                    <div className="h-px mt-6 opacity-30 bg-gradient-to-r from-[var(--brand)] to-transparent" />
                 </motion.div>
 
                 {/* Sections */}

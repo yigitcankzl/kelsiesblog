@@ -19,8 +19,8 @@ export default function AboutPage() {
     const totalPosts = posts.length;
 
     return (
-        <section className="bg-black min-h-screen pb-16" style={{ paddingTop: '100px' }}>
-            <div style={{ maxWidth: '1024px', margin: '0 auto', paddingLeft: '24px', paddingRight: '24px' }}>
+        <section className="bg-black min-h-screen pb-16 pt-[100px]">
+            <div className="max-w-screen-lg mx-auto px-6">
                 {/* Header */}
                 <PageHeader
                     onBack={() => setActivePage('map')}
@@ -32,26 +32,23 @@ export default function AboutPage() {
                 />
 
                 {/* Main content */}
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '32px' }}>
+                <div className="grid grid-cols-1 gap-8">
 
                     {/* Bio section */}
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.1, duration: 0.4 }}
-                        className="retro-corners"
+                        className="retro-corners relative p-8 border border-[#1a1a1a]"
                         style={{
-                            position: 'relative',
-                            padding: '32px',
-                            border: '1px solid #1a1a1a',
                             background: 'linear-gradient(135deg, #0a0a0a 0%, #111 100%)',
                             boxShadow: '0 0 20px rgba(0, 255, 65, 0.05)',
                         }}
                     >
-                        <span className="rc-extra" style={{ position: 'absolute', inset: 0 }} />
+                        <span className="rc-extra absolute inset-0" />
 
                         {/* Terminal-style header */}
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '24px' }}>
+                        <div className="flex items-center gap-2 mb-6">
                             <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: 'var(--brand)', boxShadow: '0 0 8px rgba(0,255,65,0.5)' }} />
                             <span style={{ ...FONT, fontSize: '10px', color: 'var(--neon-amber)', letterSpacing: '0.15em', textTransform: 'uppercase' }}>
                                 ▸ PLAYER.BIO
@@ -62,7 +59,7 @@ export default function AboutPage() {
                             Hey, I'm <span style={{ color: 'var(--brand)', textShadow: '0 0 10px rgba(0,255,65,0.4)' }}>{aboutContent.name}</span>
                         </h2>
 
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                        <div className="flex flex-col gap-4">
                             <p style={{
                                 ...FONT,
                                 fontSize: '11px',
@@ -92,7 +89,7 @@ export default function AboutPage() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.2, duration: 0.4 }}
-                        style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px' }}
+                        className="grid grid-cols-3 gap-4"
                     >
                         {[
                             { icon: Globe, label: 'COUNTRIES', value: countriesVisited, color: 'var(--brand)' },
@@ -101,17 +98,10 @@ export default function AboutPage() {
                         ].map((stat) => (
                             <div
                                 key={stat.label}
-                                className="retro-corners"
-                                style={{
-                                    position: 'relative',
-                                    padding: '24px',
-                                    border: '1px solid #1a1a1a',
-                                    background: '#0a0a0a',
-                                    textAlign: 'center',
-                                    boxShadow: `0 0 12px ${stat.color}15`,
-                                }}
+                                className="retro-corners relative p-6 border border-[#1a1a1a] bg-[#0a0a0a] text-center"
+                                style={{ boxShadow: `0 0 12px ${stat.color}15` }}
                             >
-                                <span className="rc-extra" style={{ position: 'absolute', inset: 0 }} />
+                                <span className="rc-extra absolute inset-0" />
                                 <stat.icon style={{
                                     width: '20px',
                                     height: '20px',
@@ -140,36 +130,29 @@ export default function AboutPage() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.3, duration: 0.4 }}
-                        className="retro-corners"
+                        className="retro-corners relative p-8 border border-[#1a1a1a]"
                         style={{
-                            position: 'relative',
-                            padding: '32px',
-                            border: '1px solid #1a1a1a',
                             background: 'linear-gradient(135deg, #0a0a0a 0%, #111 100%)',
                             boxShadow: '0 0 20px rgba(0, 255, 255, 0.05)',
                         }}
                     >
-                        <span className="rc-extra" style={{ position: 'absolute', inset: 0 }} />
+                        <span className="rc-extra absolute inset-0" />
 
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '24px' }}>
-                            <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: 'var(--neon-cyan)', boxShadow: '0 0 8px rgba(0,255,255,0.5)' }} />
-                            <span style={{ ...FONT, fontSize: '10px', color: 'var(--neon-amber)', letterSpacing: '0.15em', textTransform: 'uppercase' }}>
+                        <div className="flex items-center gap-2 mb-6">
+                            <span className="w-2 h-2 rounded-full bg-[var(--neon-cyan)]" style={{ boxShadow: '0 0 8px rgba(0,255,255,0.5)' }} />
+                            <span className="uppercase tracking-wider text-[var(--neon-amber)]" style={{ ...FONT, fontSize: '10px' }}>
                                 ▸ QUEST.LOG
                             </span>
                         </div>
 
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+                        <div className="grid grid-cols-2 gap-5">
                             {aboutContent.quests.map((item, i) => (
                                 <motion.div
                                     key={item.title}
                                     initial={{ opacity: 0, x: -10 }}
                                     animate={{ opacity: 1, x: 0 }}
                                     transition={{ delay: 0.4 + i * 0.08, duration: 0.3 }}
-                                    style={{
-                                        padding: '16px',
-                                        borderLeft: '2px solid var(--brand)',
-                                        borderBottom: '1px solid #1a1a1a',
-                                    }}
+                                    className="p-4 border-l-2 border-l-[var(--brand)] border-b border-b-[#1a1a1a]"
                                 >
                                     <p style={{ ...FONT, fontSize: '11px', color: '#fff', marginBottom: '8px' }}>
                                         {item.title}
@@ -188,25 +171,22 @@ export default function AboutPage() {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.35, duration: 0.4 }}
-                            className="retro-corners"
+                            className="retro-corners relative p-8 border border-[#1a1a1a]"
                             style={{
-                                position: 'relative',
-                                padding: '32px',
-                                border: '1px solid #1a1a1a',
                                 background: 'linear-gradient(135deg, #0a0a0a 0%, #111 100%)',
                                 boxShadow: '0 0 20px rgba(255, 0, 128, 0.05)',
                             }}
                         >
-                            <span className="rc-extra" style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }} />
+                            <span className="rc-extra absolute inset-0 pointer-events-none" />
 
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '24px' }}>
-                                <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: 'var(--neon-magenta, #ff0080)', boxShadow: '0 0 8px rgba(255,0,128,0.5)' }} />
-                                <span style={{ ...FONT, fontSize: '10px', color: 'var(--neon-amber)', letterSpacing: '0.15em', textTransform: 'uppercase' }}>
+                            <div className="flex items-center gap-2 mb-6">
+                                <span className="w-2 h-2 rounded-full bg-[var(--neon-magenta,#ff0080)]" style={{ boxShadow: '0 0 8px rgba(255,0,128,0.5)' }} />
+                                <span className="uppercase tracking-wider text-[var(--neon-amber)]" style={{ ...FONT, fontSize: '10px' }}>
                                     ▸ SOCIAL.LINKS
                                 </span>
                             </div>
 
-                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
+                            <div className="flex flex-wrap gap-3">
                                 {aboutContent.socials.map((social, i) => {
                                     const IconComponent = iconMap[social.icon] || ExternalLink;
                                     return (
@@ -218,25 +198,14 @@ export default function AboutPage() {
                                             initial={{ opacity: 0, y: 10 }}
                                             animate={{ opacity: 1, y: 0 }}
                                             transition={{ delay: 0.45 + i * 0.08, duration: 0.3 }}
-                                            style={{
-                                                display: 'flex',
-                                                alignItems: 'center',
-                                                gap: '10px',
-                                                padding: '14px 20px',
-                                                border: '1px solid #222',
-                                                backgroundColor: '#0a0a0a',
-                                                color: '#999',
-                                                textDecoration: 'none',
-                                                transition: 'all 0.3s',
-                                                cursor: 'pointer',
-                                            }}
+                                            className="flex items-center gap-2.5 px-5 py-3.5 border border-[#222] bg-[#0a0a0a] text-[#999] no-underline transition-all duration-300 cursor-pointer"
                                             whileHover={{
                                                 borderColor: 'var(--brand)',
                                                 color: '#fff',
                                                 boxShadow: '0 0 16px rgba(0,255,65,0.15)',
                                             }}
                                         >
-                                            <IconComponent style={{ width: '14px', height: '14px', color: 'var(--brand)', flexShrink: 0 }} />
+                                            <IconComponent className="w-3.5 h-3.5 text-[var(--brand)] shrink-0" />
                                             <span style={{ ...FONT, fontSize: '9px', letterSpacing: '0.12em', textTransform: 'uppercase' }}>
                                                 {social.label}
                                             </span>
@@ -252,50 +221,24 @@ export default function AboutPage() {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ delay: 0.5, duration: 0.4 }}
-                        style={{ textAlign: 'center', padding: '40px 0' }}
+                        className="text-center py-10"
                     >
                         <p style={{ ...FONT, fontSize: '10px', color: '#444', letterSpacing: '0.15em', marginBottom: '20px' }}>
                             ◂ READY TO EXPLORE? ▸
                         </p>
-                        <div style={{ display: 'flex', justifyContent: 'center', gap: '16px', flexWrap: 'wrap' }}>
+                        <div className="flex justify-center gap-4 flex-wrap">
                             <button
                                 onClick={() => setActivePage('map')}
-                                className="cursor-pointer"
-                                style={{
-                                    ...FONT,
-                                    fontSize: '10px',
-                                    padding: '12px 20px',
-                                    border: '2px solid var(--brand)',
-                                    backgroundColor: 'transparent',
-                                    color: 'var(--brand)',
-                                    letterSpacing: '0.12em',
-                                    boxShadow: '0 0 12px rgba(0, 255, 65, 0.2)',
-                                    transition: 'all 0.3s',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '8px',
-                                }}
+                                className="cursor-pointer flex items-center gap-2 px-5 py-3 border-2 border-[var(--brand)] bg-transparent text-[var(--brand)] tracking-wide transition-all duration-300"
+                                style={{ ...FONT, fontSize: '10px', boxShadow: '0 0 12px rgba(0, 255, 65, 0.2)' }}
                             >
-                                <MapPin style={{ width: '12px', height: '12px' }} />
+                                <MapPin className="w-3 h-3" />
                                 VIEW MAP
                             </button>
                             <button
                                 onClick={() => setActivePage('stories')}
-                                className="cursor-pointer"
-                                style={{
-                                    ...FONT,
-                                    fontSize: '10px',
-                                    padding: '12px 20px',
-                                    border: '2px solid var(--neon-cyan)',
-                                    backgroundColor: 'transparent',
-                                    color: 'var(--neon-cyan)',
-                                    letterSpacing: '0.12em',
-                                    boxShadow: '0 0 12px rgba(0, 255, 255, 0.2)',
-                                    transition: 'all 0.3s',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '8px',
-                                }}
+                                className="cursor-pointer flex items-center gap-2 px-5 py-3 border-2 border-[var(--neon-cyan)] bg-transparent text-[var(--neon-cyan)] tracking-wide transition-all duration-300"
+                                style={{ ...FONT, fontSize: '10px', boxShadow: '0 0 12px rgba(0, 255, 255, 0.2)' }}
                             >
                                 READ STORIES
                             </button>

@@ -24,7 +24,7 @@ export default function CountryPostsView() {
 
     return (
         <section className="py-20 sm:py-24 bg-black">
-            <div style={{ maxWidth: '1024px', margin: '0 auto', paddingLeft: '24px', paddingRight: '24px' }} className="space-y-16">
+            <div className="max-w-screen-lg mx-auto px-6 space-y-16">
                 {/* Header */}
                 <PageHeader
                     onBack={() => setSelectedCountry(null)}
@@ -75,13 +75,8 @@ export default function CountryPostsView() {
                             className="group cursor-pointer flex flex-col sm:flex-row gap-6 items-start"
                         >
                             {/* Image - reduced size and fixed width on desktop */}
-                            <div className="retro-corners hover-glitch w-full sm:w-48 md:w-64 shrink-0"
-                                style={{
-                                    position: 'relative',
-                                    overflow: 'hidden',
-                                    aspectRatio: '4/3',
-                                    boxShadow: '0 0 10px rgba(0, 255, 65, 0.15)'
-                                }}>
+                            <div className="retro-corners hover-glitch w-full sm:w-48 md:w-64 shrink-0 relative overflow-hidden aspect-[4/3]"
+                                style={{ boxShadow: '0 0 10px rgba(0, 255, 65, 0.15)' }}>
                                 <span className="rc-extra absolute inset-0" />
                                 <img
                                     src={post.coverImage}

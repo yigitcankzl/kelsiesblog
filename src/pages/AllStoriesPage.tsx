@@ -36,8 +36,8 @@ export default function AllStoriesPage() {
     };
 
     return (
-        <section className="bg-black min-h-screen pb-16" style={{ paddingTop: '100px' }}>
-            <div style={{ maxWidth: '1024px', margin: '0 auto', paddingLeft: '24px', paddingRight: '24px' }}>
+        <section className="bg-black min-h-screen pb-16 pt-[100px]">
+            <div className="max-w-screen-lg mx-auto px-6">
                 {/* Header row */}
                 <PageHeader
                     onBack={() => setActivePage('map')}
@@ -49,12 +49,12 @@ export default function AllStoriesPage() {
                 />
 
                 {/* Category filters */}
-                <div style={{ marginBottom: '32px' }}>
+                <div className="mb-8">
                     <CategoryFilter activeCategory={activeCategory} onCategoryChange={setActiveCategory} />
                 </div>
 
                 {/* Posts grouped by country */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '40px' }}>
+                <div className="flex flex-col gap-10">
                     {Object.entries(grouped).map(([country, countryPosts]) => (
                         <motion.div
                             key={country}
@@ -63,12 +63,12 @@ export default function AllStoriesPage() {
                             transition={{ duration: 0.4 }}
                         >
                             {/* Country header */}
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px' }}>
-                                <MapPin style={{ width: '12px', height: '12px', color: 'var(--brand)' }} />
+                            <div className="flex items-center gap-2.5 mb-5">
+                                <MapPin className="w-3 h-3 text-[var(--brand)]" />
                                 <h2 style={{ ...FONT, fontSize: '12px', color: 'var(--neon-amber)', textTransform: 'uppercase', letterSpacing: '0.15em' }}>
                                     {country}
                                 </h2>
-                                <div style={{ flex: 1, height: '1px', background: 'linear-gradient(to right, #333, transparent)' }} />
+                                <div className="flex-1 h-px bg-gradient-to-r from-[#333] to-transparent" />
                                 <span style={{ ...FONT, fontSize: '8px', color: '#444' }}>
                                     {countryPosts.length} {countryPosts.length === 1 ? 'ENTRY' : 'ENTRIES'}
                                 </span>
@@ -83,55 +83,33 @@ export default function AllStoriesPage() {
                                         animate={{ opacity: 1, y: 0 }}
                                         transition={{ delay: index * 0.06, duration: 0.4 }}
                                         onClick={() => handlePostClick(post)}
-                                        className="group cursor-pointer flex flex-col sm:flex-row gap-6 items-start"
-                                        style={{ transition: 'transform 0.5s' }}
+                                        className="group cursor-pointer flex flex-col sm:flex-row gap-6 items-start transition-transform duration-500"
                                         onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; }}
                                         onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; }}
                                     >
                                         {/* Image - reduced size and fixed width on desktop */}
-                                        <div className="retro-corners hover-glitch w-full sm:w-48 md:w-64 shrink-0" style={{
-                                            position: 'relative',
-                                            overflow: 'hidden',
-                                            aspectRatio: '4/3',
-                                            boxShadow: '0 0 10px rgba(0, 255, 65, 0.15)',
-                                        }}>
-                                            <span className="rc-extra" style={{ position: 'absolute', inset: 0 }} />
+                                        <div className="retro-corners hover-glitch w-full sm:w-48 md:w-64 shrink-0 relative overflow-hidden aspect-[4/3]"
+                                            style={{ boxShadow: '0 0 10px rgba(0, 255, 65, 0.15)' }}>
+                                            <span className="rc-extra absolute inset-0" />
                                             <img
                                                 src={post.coverImage}
                                                 alt={post.title}
-                                                style={{
-                                                    width: '100%',
-                                                    height: '100%',
-                                                    objectFit: 'cover',
-                                                    transition: 'transform 0.7s',
-                                                }}
+                                                className="w-full h-full object-cover transition-transform duration-700"
                                                 onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.1)'; }}
                                                 onMouseLeave={e => { e.currentTarget.style.transform = 'scale(1)'; }}
                                             />
-                                            <div style={{
-                                                position: 'absolute',
-                                                inset: 0,
-                                                background: 'linear-gradient(to top, rgba(0,0,0,0.6), transparent)',
-                                            }} />
+                                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                                         </div>
 
                                         {/* Content side */}
                                         <div className="flex-1 min-w-0">
                                             {/* Meta */}
-                                            <div style={{
-                                                display: 'flex',
-                                                alignItems: 'center',
-                                                gap: '10px',
-                                                marginBottom: '8px',
-                                                ...FONT,
-                                                fontSize: '7px',
-                                                textTransform: 'uppercase',
-                                                letterSpacing: '0.12em',
-                                            }}>
+                                            <div className="flex items-center gap-2.5 mb-2 uppercase tracking-wide"
+                                                style={{ ...FONT, fontSize: '7px' }}>
                                                 <span style={{ color: 'var(--neon-cyan)' }}>{post.date}</span>
                                                 <span style={{ width: '4px', height: '4px', backgroundColor: 'var(--neon-magenta)' }} />
-                                                <span style={{ color: '#555', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                                                    <Clock style={{ width: '10px', height: '10px' }} />
+                                                <span className="flex items-center gap-1 text-[#555]">
+                                                    <Clock className="w-2.5 h-2.5" />
                                                     {estimateReadTime(post.sections)} MIN
                                                 </span>
                                             </div>
@@ -170,7 +148,7 @@ export default function AllStoriesPage() {
                                             </p>
 
                                             {/* Categories */}
-                                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+                                            <div className="flex flex-wrap gap-1.5">
                                                 {post.category.map(cat => (
                                                     <span key={cat} style={{
                                                         ...FONT,
@@ -195,7 +173,7 @@ export default function AllStoriesPage() {
 
                 {/* Empty state */}
                 {filteredPosts.length === 0 && (
-                    <div style={{ textAlign: 'center', padding: '80px 0' }}>
+                    <div className="text-center py-20">
                         <h3 style={{ ...FONT, fontSize: '14px', color: '#555', marginBottom: '8px' }}>
                             NO STORIES FOUND
                         </h3>

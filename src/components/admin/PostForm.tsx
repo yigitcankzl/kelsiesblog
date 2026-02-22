@@ -226,9 +226,9 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
     const isValid = title.trim() && country.trim() && city.trim() && sections.some(s => s.heading.trim() && s.content?.trim());
 
     return (
-        <form onSubmit={handleSubmit} style={{ maxWidth: '768px', margin: '0 auto' }}>
+        <form onSubmit={handleSubmit} className="max-w-3xl mx-auto">
             {/* Header */}
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '32px' }}>
+            <div className="flex items-center justify-between mb-8">
                 <div>
                     <h2 style={{ ...FONT, fontSize: '12px', color: '#fff' }}>
                         {isEditing ? 'EDIT POST' : 'NEW POST'}
@@ -240,27 +240,23 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                 <button
                     type="button"
                     onClick={onCancel}
-                    className="cursor-pointer"
-                    style={{ background: 'none', border: '1px solid #333', color: '#555', padding: '8px', transition: 'all 0.3s' }}
+                    className="cursor-pointer transition-all duration-300"
+                    style={{ background: 'none', border: '1px solid #333', color: '#555', padding: '8px' }}
                     onMouseEnter={e => { e.currentTarget.style.color = '#FF00E4'; e.currentTarget.style.borderColor = '#FF00E4'; }}
                     onMouseLeave={e => { e.currentTarget.style.color = '#555'; e.currentTarget.style.borderColor = '#333'; }}
                 >
-                    <X style={{ width: '16px', height: '16px' }} />
+                    <X className="w-4 h-4" />
                 </button>
             </div>
 
             {/* Draft Banner */}
             {draftFound && (
-                <div style={{
-                    backgroundColor: '#1a1a00', border: '1px solid var(--neon-amber)',
-                    padding: '12px', marginBottom: '24px',
-                    display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <Loader style={{ color: 'var(--neon-amber)', width: '16px', height: '16px' }} />
+                <div className="flex items-center justify-between p-3 mb-6 bg-[#1a1a00] border border-[var(--neon-amber)]">
+                    <div className="flex items-center gap-2">
+                        <Loader className="w-4 h-4 text-[var(--neon-amber)]" />
                         <span style={{ ...FONT, fontSize: '8px', color: 'var(--neon-amber)' }}>UNSAVED DRAFT FOUND</span>
                     </div>
-                    <div style={{ display: 'flex', gap: '8px' }}>
+                    <div className="flex gap-2">
                         <button type="button" onClick={handleRestoreDraft} className="cursor-pointer"
                             style={{ ...FONT, fontSize: '8px', padding: '6px 12px', backgroundColor: 'var(--neon-amber)', color: '#000', border: 'none' }}>
                             RESTORE
@@ -274,16 +270,16 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
             )}
 
             {/* Basic Info */}
-            <div style={{ border: '1px solid #1a1a1a', padding: '24px', backgroundColor: '#050505', marginBottom: '16px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '24px' }}>
-                    <Type style={{ width: '12px', height: '12px', color: 'var(--brand)' }} />
+            <div className="p-6 mb-4 border border-[#1a1a1a] bg-[#050505]">
+                <div className="flex items-center gap-2 mb-6">
+                    <Type className="w-3 h-3 text-[var(--brand)]" />
                     <h3 style={{ ...FONT, fontSize: '8px', color: 'var(--neon-amber)', textTransform: 'uppercase', letterSpacing: '0.15em' }}>
                         BASIC INFO
                     </h3>
-                    <div style={{ flex: 1, height: '1px', background: 'linear-gradient(to right, #333, transparent)' }} />
+                    <div className="flex-1 h-px bg-gradient-to-r from-[#333] to-transparent" />
                 </div>
 
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                <div className="flex flex-col gap-4">
                     {/* Title */}
                     <div>
                         <label style={labelStyle}>TITLE</label>
@@ -293,7 +289,7 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                     </div>
 
                     {/* Country / City */}
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                    <div className="grid grid-cols-2 gap-4">
                         <div>
                             <label style={labelStyle}>COUNTRY</label>
                             <select value={country} onChange={e => { setCountry(e.target.value); setCity(''); }}
@@ -320,7 +316,7 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                             CATEGORIES
                             {categories.length > 0 && <span style={{ color: 'var(--neon-cyan)' }}>[ {categories.length} ]</span>}
                         </label>
-                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                        <div className="flex flex-wrap gap-2">
                             {CATEGORIES.map(cat => {
                                 const isActive = categories.includes(cat);
                                 return (
@@ -369,7 +365,7 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                     {/* Cover Image */}
                     <div>
                         <label style={labelStyle}>COVER IMAGE URL</label>
-                        <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
+                        <div className="flex gap-2 items-center flex-wrap">
                             <input type="url" value={coverImage} onChange={e => setCoverImage(e.target.value)}
                                 placeholder="HTTPS://... VEYA BILGISAYARDAN YÜKLE"
                                 style={{ ...inputStyle, flex: '1 1 200px' }}
@@ -417,9 +413,9 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
             </div>
 
             {/* Content Sections */}
-            <div style={{ border: '1px solid #1a1a1a', padding: '24px', backgroundColor: '#050505', marginBottom: '16px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <div className="p-6 mb-4 border border-[#1a1a1a] bg-[#050505]">
+                <div className="flex items-center justify-between mb-6">
+                    <div className="flex items-center gap-2">
                         <h3 style={{ ...FONT, fontSize: '8px', color: 'var(--neon-amber)', textTransform: 'uppercase', letterSpacing: '0.15em' }}>
                             CONTENT SECTIONS
                         </h3>
@@ -433,12 +429,12 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                         }}
                         onMouseEnter={e => { e.currentTarget.style.backgroundColor = 'var(--brand)'; e.currentTarget.style.color = '#000'; }}
                         onMouseLeave={e => { e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.color = 'var(--brand)'; }}>
-                        <Plus style={{ width: '12px', height: '12px' }} />
+                        <Plus className="w-3 h-3" />
                         ADD
                     </button>
                 </div>
 
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                <div className="flex flex-col gap-4">
                     {sections.map((section, index) => (
                         <PostFormSectionEditor
                             key={index}
