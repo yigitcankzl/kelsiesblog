@@ -3,9 +3,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, Trash2, Edit2, Save, X, Image, UploadCloud, Loader } from 'lucide-react';
 import { useBlogStore } from '@/store/store';
 import type { GalleryItem } from '@/types';
-import { parseFolderId, listDriveImages, driveThumbUrl } from '@/lib/googleDrive';
 import { uploadImageToR2 } from '@/lib/r2Api';
 import R2MediaBrowser from './R2MediaBrowser';
+import DriveImportPanel from './DriveImportPanel';
 import { FONT } from '@/lib/constants';
 import { inputStyle, labelStyle } from '@/lib/adminStyles';
 
@@ -25,13 +25,8 @@ export default function GalleryManager() {
     const [form, setForm] = useState<GalleryFormData>(emptyForm);
     const [previewError, setPreviewError] = useState(false);
 
-    // Drive import state
+    // Drive import
     const [showDriveImport, setShowDriveImport] = useState(false);
-    const [driveUrl, setDriveUrl] = useState('');
-    const [driveLoading, setDriveLoading] = useState(false);
-    const [driveError, setDriveError] = useState('');
-    const [driveResults, setDriveResults] = useState<{ id: string; name: string; url: string }[]>([]);
-    const [driveSelected, setDriveSelected] = useState<Set<string>>(new Set());
 
     // R2 media browser
     const [showR2Browser, setShowR2Browser] = useState(false);
@@ -104,40 +99,8 @@ export default function GalleryManager() {
         cancel();
     };
 
-    // Drive import helpers
-    const handleDriveFetch = async () => {
-        const folderId = parseFolderId(driveUrl);
-        if (!folderId) { setDriveError('INVALID DRIVE FOLDER LINK'); return; }
-
-        setDriveLoading(true);
-        setDriveError('');
-        setDriveResults([]);
-        setDriveSelected(new Set());
-
-        try {
-            const files = await listDriveImages(folderId);
-            if (files.length === 0) { setDriveError('NO IMAGES FOUND IN FOLDER'); setDriveLoading(false); return; }
-            const results = files.map(f => ({ id: f.id, name: f.name, url: driveThumbUrl(f.id) }));
-            setDriveResults(results);
-            setDriveSelected(new Set(results.map(r => r.id))); // select all by default
-        } catch (err: any) {
-            setDriveError(err.message || 'FAILED TO FETCH FROM DRIVE');
-        } finally {
-            setDriveLoading(false);
-        }
-    };
-
-    const toggleDriveSelect = (id: string) => {
-        setDriveSelected(prev => {
-            const next = new Set(prev);
-            if (next.has(id)) next.delete(id); else next.add(id);
-            return next;
-        });
-    };
-
-    const handleDriveImport = () => {
-        const toImport = driveResults.filter(r => driveSelected.has(r.id));
-        toImport.forEach(img => {
+    const handleDriveImport = (images: { id: string; name: string; url: string }[]) => {
+        images.forEach(img => {
             if (!galleryItems.some(item => item.src === img.url)) {
                 addGalleryItem({
                     id: `gallery-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`,
@@ -148,19 +111,6 @@ export default function GalleryManager() {
                 });
             }
         });
-        setShowDriveImport(false);
-        setDriveUrl('');
-        setDriveResults([]);
-        setDriveSelected(new Set());
-        setDriveError('');
-    };
-
-    const closeDriveImport = () => {
-        setShowDriveImport(false);
-        setDriveUrl('');
-        setDriveResults([]);
-        setDriveSelected(new Set());
-        setDriveError('');
     };
 
     const showForm = isAdding || editingId !== null;
@@ -252,113 +202,10 @@ export default function GalleryManager() {
 
             {/* Drive Import Dialog */}
             {showDriveImport && (
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    style={{ border: '1px solid var(--brand)', padding: '24px', marginBottom: '24px', backgroundColor: '#050505' }}
-                >
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
-                        <h3 style={{ ...FONT, fontSize: '9px', color: 'var(--brand)' }}>{'>'} IMPORT FROM GOOGLE DRIVE</h3>
-                        <button onClick={closeDriveImport} className="cursor-pointer" style={{ background: 'none', border: '1px solid #333', color: '#555', padding: '6px' }}>
-                            <X className="w-3 h-3" />
-                        </button>
-                    </div>
-
-                    <div style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
-                        <input
-                            type="text"
-                            value={driveUrl}
-                            onChange={e => { setDriveUrl(e.target.value); setDriveError(''); }}
-                            placeholder="PASTE GOOGLE DRIVE FOLDER LINK..."
-                            style={{ ...inputStyle, flex: 1 }}
-                        />
-                        <button
-                            onClick={handleDriveFetch}
-                            disabled={driveLoading || !driveUrl.trim()}
-                            className="cursor-pointer"
-                            style={{
-                                ...FONT, fontSize: '7px', padding: '10px 16px', letterSpacing: '0.1em',
-                                backgroundColor: driveUrl.trim() ? 'var(--brand)' : '#1a1a1a',
-                                color: driveUrl.trim() ? '#000' : '#444',
-                                border: 'none', display: 'flex', alignItems: 'center', gap: '6px',
-                                cursor: driveUrl.trim() ? 'pointer' : 'not-allowed',
-                            }}
-                        >
-                            {driveLoading ? <Loader className="w-3 h-3 animate-spin" /> : <UploadCloud className="w-3 h-3" />}
-                            {driveLoading ? 'LOADING...' : 'FETCH'}
-                        </button>
-                    </div>
-
-                    {driveError && (
-                        <p style={{ ...FONT, fontSize: '7px', color: 'var(--neon-magenta)', marginBottom: '12px' }}>{driveError}</p>
-                    )}
-
-                    {driveResults.length > 0 && (
-                        <>
-                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
-                                <span style={{ ...FONT, fontSize: '7px', color: 'var(--neon-cyan)' }}>
-                                    {driveSelected.size} / {driveResults.length} SELECTED
-                                </span>
-                                <button
-                                    onClick={() => {
-                                        if (driveSelected.size === driveResults.length) setDriveSelected(new Set());
-                                        else setDriveSelected(new Set(driveResults.map(r => r.id)));
-                                    }}
-                                    className="cursor-pointer"
-                                    style={{ ...FONT, fontSize: '6px', background: 'none', border: '1px solid #333', color: '#888', padding: '4px 10px' }}
-                                >
-                                    {driveSelected.size === driveResults.length ? 'DESELECT ALL' : 'SELECT ALL'}
-                                </button>
-                            </div>
-
-                            <div className="grid grid-cols-3 sm:grid-cols-4 gap-3" style={{ maxHeight: '300px', overflowY: 'auto', marginBottom: '16px' }}>
-                                {driveResults.map(r => {
-                                    const selected = driveSelected.has(r.id);
-                                    return (
-                                        <div
-                                            key={r.id}
-                                            onClick={() => toggleDriveSelect(r.id)}
-                                            className="cursor-pointer"
-                                            style={{
-                                                border: `2px solid ${selected ? 'var(--brand)' : '#1a1a1a'}`,
-                                                overflow: 'hidden', position: 'relative',
-                                                opacity: selected ? 1 : 0.4,
-                                                transition: 'all 0.2s',
-                                            }}
-                                        >
-                                            <img src={r.url} alt={r.name} referrerPolicy="no-referrer"
-                                                style={{ width: '100%', aspectRatio: '1', objectFit: 'cover', display: 'block' }} />
-                                            {selected && (
-                                                <div style={{
-                                                    position: 'absolute', top: '4px', right: '4px',
-                                                    width: '14px', height: '14px', backgroundColor: 'var(--brand)',
-                                                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                                    fontSize: '9px', color: '#000', fontWeight: 'bold',
-                                                }}>✓</div>
-                                            )}
-                                        </div>
-                                    );
-                                })}
-                            </div>
-
-                            <button
-                                onClick={handleDriveImport}
-                                disabled={driveSelected.size === 0}
-                                className="cursor-pointer"
-                                style={{
-                                    ...FONT, fontSize: '8px', padding: '12px 24px', letterSpacing: '0.1em',
-                                    backgroundColor: driveSelected.size > 0 ? 'var(--brand)' : '#1a1a1a',
-                                    color: driveSelected.size > 0 ? '#000' : '#444',
-                                    border: 'none',
-                                    boxShadow: driveSelected.size > 0 ? '0 0 15px rgba(0, 255, 65, 0.3)' : 'none',
-                                    cursor: driveSelected.size > 0 ? 'pointer' : 'not-allowed',
-                                }}
-                            >
-                                IMPORT {driveSelected.size} IMAGE{driveSelected.size !== 1 ? 'S' : ''}
-                            </button>
-                        </>
-                    )}
-                </motion.div>
+                <DriveImportPanel
+                    onImport={handleDriveImport}
+                    onClose={() => setShowDriveImport(false)}
+                />
             )}
 
             <AnimatePresence mode="wait">
