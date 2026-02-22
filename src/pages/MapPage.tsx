@@ -137,7 +137,7 @@ export default function MapPage() {
             <section className="relative w-full h-[75vh] min-h-[500px] bg-black flex flex-col items-center overflow-hidden scanlines" style={{ paddingTop: '100px' }}>
 
                 {/* 3D Globe intro overlay — zooms into the map */}
-                {!globeDone && <GlobeIntro onFinished={() => setGlobeDone(true)} />}
+                {!globeDone && <GlobeIntro onFinished={() => setGlobeDone(true)} countriesWithPosts={countriesWithPosts} />}
 
                 {/* Map container — always rendered, globe overlays on top then dissolves */}
                 <div

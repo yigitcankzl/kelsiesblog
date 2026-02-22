@@ -17,10 +17,10 @@
     "@tiptap/starter-kit": "^3.20.0",
     "@turf/helpers": "^7.3.4",
     "@turf/intersect": "^7.3.4",
+    "@types/three": "^0.183.1",
     "@vercel/node": "^3.0.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
-    "cobe": "^0.6.5",
     "firebase": "^12.9.0",
     "firebase-admin": "^13.6.1",
     "formidable": "^2.1.1",
@@ -33,6 +33,7 @@
     "react-leaflet": "^5.0.0",
     "react-router-dom": "^7.13.0",
     "tailwind-merge": "^3.4.0",
+    "three": "^0.183.1",
     "zustand": "^5.0.11"
   },
   "devDependencies": {
