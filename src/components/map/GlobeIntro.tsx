@@ -155,6 +155,8 @@ function runGlobeAnimation(
     renderer.setSize(container.clientWidth, container.clientHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.setClearColor(0x000000, 1);
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    renderer.toneMapping = THREE.NoToneMapping;
     container.appendChild(renderer.domElement);
 
     /* Stars */
@@ -203,6 +205,12 @@ function runGlobeAnimation(
     }
 
     const texture = new THREE.CanvasTexture(mapCanvas);
+    // Canvas pixels are sRGB — tell Three.js so it doesn't double-gamma
+    texture.colorSpace = THREE.SRGBColorSpace;
+    // Sharp labels: skip mipmap generation
+    texture.minFilter = THREE.LinearFilter;
+    texture.generateMipmaps = false;
+
     const material = new THREE.MeshBasicMaterial({ map: texture });
     const globe = new THREE.Mesh(geo, material);
     scene.add(globe);
