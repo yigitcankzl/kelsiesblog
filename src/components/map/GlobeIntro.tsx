@@ -281,52 +281,44 @@ function runGlobeAnimation(
 
     const yOffset = yLatOffset + yContainerOffset;
 
-    /* Timeline — globe spins, then morphs while continuing to rotate forward */
-    const SPIN_ONLY = 800, MORPH = 1400, FADE = 100;
-    const MORPH_START = SPIN_ONLY;
-    const TOTAL = MORPH_START + MORPH + FADE;
+    /* Timeline */
+    const SPIN = 1400, MORPH = 1400, FADE = 100;
+    const TOTAL = SPIN + MORPH + FADE;
     const zStart = 3.2;
     const startTime = performance.now();
     let rotY = 0, animId = 0;
-    let morphStartRotY = -1, targetRotY = 0;
 
     function animate(time: number) {
         animId = requestAnimationFrame(animate);
         const elapsed = time - startTime;
 
-        // Pure spin phase
-        if (elapsed < MORPH_START) {
+        if (elapsed < SPIN) {
             rotY += 0.025;
             globe.rotation.y = rotY;
             atmosphere.rotation.y = rotY;
         }
 
-        if (elapsed >= MORPH_START && elapsed < MORPH_START + MORPH) {
-            const rawT = (elapsed - MORPH_START) / MORPH;
+        if (elapsed >= SPIN && elapsed < SPIN + MORPH) {
+            const rawT = (elapsed - SPIN) / MORPH;
             const t = easeInOutCubic(rawT);
             applyMorph(t);
 
-            // First morph frame: capture rotation & pick a target that
-            // continues FORWARD (same spin direction) to the next full
-            // revolution so the plane ends face-on (rot ≡ 0 mod 2π).
-            if (morphStartRotY < 0) {
-                morphStartRotY = rotY;
-                targetRotY = Math.ceil(rotY / (2 * Math.PI)) * (2 * Math.PI);
-                if (targetRotY - morphStartRotY < Math.PI) targetRotY += 2 * Math.PI;
-            }
-
-            // Ease-out: keeps spin momentum, then settles smoothly
-            const rotT = rawT * (2 - rawT);
-            globe.rotation.y = morphStartRotY + (targetRotY - morphStartRotY) * rotT;
+            // Rotation: stop adding speed early, decay cubically so it
+            // reaches ≈ 0 well before the plane is fully flat.
+            if (t < 0.3) rotY += 0.025 * (1 - t);
+            const rotDecay = Math.pow(1 - t, 3);     // cubic → fast decay
+            globe.rotation.y = rotY * rotDecay;
             atmosphere.rotation.y = globe.rotation.y;
-
             camera.position.z = zStart + (zEnd - zStart) * t;
+
+            // Shift globe down so Leaflet center (20 °N) aligns with camera
             globe.position.y = -yOffset * t;
             atmosphere.position.y = globe.position.y;
         }
 
-        if (elapsed >= MORPH_START + MORPH) {
-            const fadeRaw = Math.min((elapsed - MORPH_START - MORPH) / FADE, 1);
+        if (elapsed >= SPIN + MORPH) {
+            const fadeRaw = Math.min((elapsed - SPIN - MORPH) / FADE, 1);
+            // Ease-out quadratic for smooth dissolve
             const fadeT = fadeRaw * (2 - fadeRaw);
             renderer.domElement.style.opacity = `${1 - fadeT}`;
         }
