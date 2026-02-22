@@ -12,8 +12,7 @@ import PostForm from '@/components/admin/PostForm';
 import GalleryManager from '@/components/admin/GalleryManager';
 import AboutManager from '@/components/admin/AboutManager';
 import CountryOverviewManager from '@/components/admin/CountryOverviewManager';
-
-const font = { fontFamily: "'Press Start 2P', monospace" } as const;
+import { FONT } from '@/lib/constants';
 
  type AdminTab = 'posts' | 'gallery' | 'about' | 'countries';
 
@@ -53,7 +52,7 @@ export default function AdminPage() {
                             onClick={() => navigate('/')}
                             className="cursor-pointer"
                             style={{
-                                ...font,
+                                ...FONT,
                                 fontSize: '7px',
                                 color: 'var(--brand)',
                                 background: 'none',
@@ -71,10 +70,10 @@ export default function AdminPage() {
                             <Globe className="w-3 h-3" />
                         </button>
                         <div>
-                            <h1 style={{ ...font, fontSize: '12px', color: '#fff' }}>
+                            <h1 style={{ ...FONT, fontSize: '12px', color: '#fff' }}>
                                 ADMIN PANEL
                             </h1>
-                            <p style={{ ...font, fontSize: '6px', color: '#555', marginTop: '4px', letterSpacing: '0.15em' }}>
+                            <p style={{ ...FONT, fontSize: '6px', color: '#555', marginTop: '4px', letterSpacing: '0.15em' }}>
                                 SYSTEM CONTROL
                             </p>
                         </div>
@@ -85,7 +84,7 @@ export default function AdminPage() {
                                 onClick={() => setIsCreating(true)}
                                 className="cursor-pointer"
                                 style={{
-                                    ...font,
+                                    ...FONT,
                                     fontSize: '7px',
                                     display: 'flex',
                                     alignItems: 'center',
@@ -110,7 +109,7 @@ export default function AdminPage() {
                             onClick={handleLogout}
                             className="cursor-pointer"
                             style={{
-                                ...font,
+                                ...FONT,
                                 fontSize: '7px',
                                 display: 'flex',
                                 alignItems: 'center',
@@ -148,7 +147,7 @@ export default function AdminPage() {
                                 }}
                                 className="cursor-pointer"
                                 style={{
-                                    ...font,
+                                    ...FONT,
                                     fontSize: '7px',
                                     padding: '14px 24px',
                                     background: 'none',

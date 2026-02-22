@@ -2,8 +2,7 @@ import { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowLeft, MapPin, X } from 'lucide-react';
 import { useBlogStore } from '@/store/store';
-
-const font = { fontFamily: "'Press Start 2P', monospace" } as const;
+import { FONT } from '@/lib/constants';
 
 interface GalleryImage {
     src: string;
@@ -44,7 +43,7 @@ export default function GalleryPage() {
                         onClick={() => setActivePage('map')}
                         className="cursor-pointer"
                         style={{
-                            ...font,
+                            ...FONT,
                             fontSize: '7px',
                             padding: '10px 16px',
                             border: '2px solid var(--brand)',
@@ -66,11 +65,11 @@ export default function GalleryPage() {
                     <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
                         <div style={{ width: '1px', height: '40px', backgroundColor: 'var(--brand)', opacity: 0.3 }} />
                         <div>
-                            <h1 className="text-glitch" style={{ ...font, fontSize: '18px', color: '#fff', lineHeight: 1.4 }}
+                            <h1 className="text-glitch" style={{ ...FONT, fontSize: '18px', color: '#fff', lineHeight: 1.4 }}
                                 data-text="GALLERY">
                                 GALLERY
                             </h1>
-                            <p style={{ ...font, fontSize: '6px', marginTop: '8px', textTransform: 'uppercase', letterSpacing: '0.15em' }}>
+                            <p style={{ ...FONT, fontSize: '6px', marginTop: '8px', textTransform: 'uppercase', letterSpacing: '0.15em' }}>
                                 <span style={{ color: 'var(--neon-cyan)' }}>{allImages.length}</span>
                                 <span style={{ color: '#555' }}> IMAGES CAPTURED</span>
                             </p>
@@ -136,7 +135,7 @@ export default function GalleryPage() {
                                 right: '10px',
                             }}>
                                 <span style={{
-                                    ...font,
+                                    ...FONT,
                                     fontSize: '6px',
                                     color: 'var(--brand)',
                                     display: 'inline-flex',
@@ -149,7 +148,7 @@ export default function GalleryPage() {
                                     {img.city}
                                 </span>
                                 <p style={{
-                                    ...font,
+                                    ...FONT,
                                     fontSize: '5px',
                                     color: '#666',
                                     marginTop: '4px',
@@ -165,7 +164,7 @@ export default function GalleryPage() {
                                 position: 'absolute',
                                 top: '8px',
                                 right: '8px',
-                                ...font,
+                                ...FONT,
                                 fontSize: '5px',
                                 color: 'var(--neon-cyan)',
                                 opacity: 0.4,
@@ -185,7 +184,7 @@ export default function GalleryPage() {
                 transition={{ delay: 0.3, duration: 0.5 }}
             >
                 <div style={{ textAlign: 'center', marginBottom: '20px' }}>
-                    <span style={{ ...font, fontSize: '7px', color: '#333', letterSpacing: '0.2em', textTransform: 'uppercase' }}>
+                    <span style={{ ...FONT, fontSize: '7px', color: '#333', letterSpacing: '0.2em', textTransform: 'uppercase' }}>
                         ◂ FILM STRIP ▸
                     </span>
                 </div>
@@ -232,7 +231,7 @@ export default function GalleryPage() {
                                     position: 'absolute',
                                     top: '6px',
                                     left: '6px',
-                                    ...font,
+                                    ...FONT,
                                     fontSize: '5px',
                                     color: 'var(--neon-cyan)',
                                     opacity: 0.5,
@@ -244,7 +243,7 @@ export default function GalleryPage() {
                                     position: 'absolute',
                                     bottom: '8px',
                                     left: '8px',
-                                    ...font,
+                                    ...FONT,
                                     fontSize: '6px',
                                     color: 'var(--brand)',
                                     letterSpacing: '0.15em',
@@ -312,15 +311,15 @@ export default function GalleryPage() {
                         </div>
                         <div style={{ marginTop: '16px', display: 'flex', alignItems: 'center', gap: '12px' }}>
                             <MapPin style={{ width: '12px', height: '12px', color: 'var(--brand)' }} />
-                            <span style={{ ...font, fontSize: '8px', color: 'var(--neon-cyan)' }}>
+                            <span style={{ ...FONT, fontSize: '8px', color: 'var(--neon-cyan)' }}>
                                 {lightbox.city}, {lightbox.country}
                             </span>
                             <span style={{ width: '4px', height: '4px', backgroundColor: 'var(--neon-magenta)' }} />
-                            <span style={{ ...font, fontSize: '7px', color: '#555' }}>
+                            <span style={{ ...FONT, fontSize: '7px', color: '#555' }}>
                                 {lightbox.heading}
                             </span>
                         </div>
-                        <p style={{ ...font, fontSize: '9px', color: '#888', marginTop: '8px', lineHeight: '2' }}>
+                        <p style={{ ...FONT, fontSize: '9px', color: '#888', marginTop: '8px', lineHeight: '2' }}>
                             {lightbox.title}
                         </p>
                     </motion.div>

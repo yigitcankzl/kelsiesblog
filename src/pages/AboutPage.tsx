@@ -1,8 +1,7 @@
 import { motion } from 'framer-motion';
 import { ArrowLeft, MapPin, Globe, Camera, Plane, Instagram, Twitter, Mail, Github, Linkedin, Youtube, ExternalLink } from 'lucide-react';
 import { useBlogStore } from '@/store/store';
-
-const font = { fontFamily: "'Press Start 2P', monospace" } as const;
+import { FONT } from '@/lib/constants';
 
 const iconMap: Record<string, React.ComponentType<React.SVGProps<SVGSVGElement>>> = {
     instagram: Instagram,
@@ -32,7 +31,7 @@ export default function AboutPage() {
                         onClick={() => setActivePage('map')}
                         className="cursor-pointer"
                         style={{
-                            ...font,
+                            ...FONT,
                             fontSize: '7px',
                             padding: '10px 16px',
                             border: '2px solid var(--brand)',
@@ -54,11 +53,11 @@ export default function AboutPage() {
                     <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
                         <div style={{ width: '1px', height: '40px', backgroundColor: 'var(--brand)', opacity: 0.3 }} />
                         <div>
-                            <h1 className="text-glitch" style={{ ...font, fontSize: '24px', color: '#fff', lineHeight: 1.4 }}
+                            <h1 className="text-glitch" style={{ ...FONT, fontSize: '24px', color: '#fff', lineHeight: 1.4 }}
                                 data-text="ABOUT ME">
                                 ABOUT ME
                             </h1>
-                            <p style={{ ...font, fontSize: '9px', marginTop: '8px', textTransform: 'uppercase', letterSpacing: '0.15em' }}>
+                            <p style={{ ...FONT, fontSize: '9px', marginTop: '8px', textTransform: 'uppercase', letterSpacing: '0.15em' }}>
                                 <span style={{ color: 'var(--neon-cyan)' }}>PLAYER PROFILE</span>
                                 <span style={{ color: '#555' }}> // LOADED</span>
                             </p>
@@ -88,18 +87,18 @@ export default function AboutPage() {
                         {/* Terminal-style header */}
                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '24px' }}>
                             <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: 'var(--brand)', boxShadow: '0 0 8px rgba(0,255,65,0.5)' }} />
-                            <span style={{ ...font, fontSize: '10px', color: 'var(--neon-amber)', letterSpacing: '0.15em', textTransform: 'uppercase' }}>
+                            <span style={{ ...FONT, fontSize: '10px', color: 'var(--neon-amber)', letterSpacing: '0.15em', textTransform: 'uppercase' }}>
                                 ▸ PLAYER.BIO
                             </span>
                         </div>
 
-                        <h2 style={{ ...font, fontSize: '18px', color: '#fff', marginBottom: '20px', lineHeight: 1.8 }}>
+                        <h2 style={{ ...FONT, fontSize: '18px', color: '#fff', marginBottom: '20px', lineHeight: 1.8 }}>
                             Hey, I'm <span style={{ color: 'var(--brand)', textShadow: '0 0 10px rgba(0,255,65,0.4)' }}>{aboutContent.name}</span>
                         </h2>
 
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                             <p style={{
-                                ...font,
+                                ...FONT,
                                 fontSize: '11px',
                                 color: '#999',
                                 lineHeight: '2.4',
@@ -110,7 +109,7 @@ export default function AboutPage() {
                             </p>
 
                             <p style={{
-                                ...font,
+                                ...FONT,
                                 fontSize: '11px',
                                 color: '#777',
                                 lineHeight: '2.4',
@@ -155,7 +154,7 @@ export default function AboutPage() {
                                     filter: `drop-shadow(0 0 6px ${stat.color})`,
                                 }} />
                                 <p style={{
-                                    ...font,
+                                    ...FONT,
                                     fontSize: typeof stat.value === 'number' ? '22px' : '13px',
                                     color: stat.color,
                                     textShadow: `0 0 10px ${stat.color}`,
@@ -163,7 +162,7 @@ export default function AboutPage() {
                                 }}>
                                     {stat.value}
                                 </p>
-                                <p style={{ ...font, fontSize: '9px', color: '#555', letterSpacing: '0.15em' }}>
+                                <p style={{ ...FONT, fontSize: '9px', color: '#555', letterSpacing: '0.15em' }}>
                                     {stat.label}
                                 </p>
                             </div>
@@ -188,7 +187,7 @@ export default function AboutPage() {
 
                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '24px' }}>
                             <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: 'var(--neon-cyan)', boxShadow: '0 0 8px rgba(0,255,255,0.5)' }} />
-                            <span style={{ ...font, fontSize: '10px', color: 'var(--neon-amber)', letterSpacing: '0.15em', textTransform: 'uppercase' }}>
+                            <span style={{ ...FONT, fontSize: '10px', color: 'var(--neon-amber)', letterSpacing: '0.15em', textTransform: 'uppercase' }}>
                                 ▸ QUEST.LOG
                             </span>
                         </div>
@@ -206,10 +205,10 @@ export default function AboutPage() {
                                         borderBottom: '1px solid #1a1a1a',
                                     }}
                                 >
-                                    <p style={{ ...font, fontSize: '11px', color: '#fff', marginBottom: '8px' }}>
+                                    <p style={{ ...FONT, fontSize: '11px', color: '#fff', marginBottom: '8px' }}>
                                         {item.title}
                                     </p>
-                                    <p style={{ ...font, fontSize: '9px', color: '#666', lineHeight: '2', letterSpacing: '0.05em' }}>
+                                    <p style={{ ...FONT, fontSize: '9px', color: '#666', lineHeight: '2', letterSpacing: '0.05em' }}>
                                         {item.desc}
                                     </p>
                                 </motion.div>
@@ -236,7 +235,7 @@ export default function AboutPage() {
 
                             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '24px' }}>
                                 <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: 'var(--neon-magenta, #ff0080)', boxShadow: '0 0 8px rgba(255,0,128,0.5)' }} />
-                                <span style={{ ...font, fontSize: '10px', color: 'var(--neon-amber)', letterSpacing: '0.15em', textTransform: 'uppercase' }}>
+                                <span style={{ ...FONT, fontSize: '10px', color: 'var(--neon-amber)', letterSpacing: '0.15em', textTransform: 'uppercase' }}>
                                     ▸ SOCIAL.LINKS
                                 </span>
                             </div>
@@ -272,7 +271,7 @@ export default function AboutPage() {
                                             }}
                                         >
                                             <IconComponent style={{ width: '14px', height: '14px', color: 'var(--brand)', flexShrink: 0 }} />
-                                            <span style={{ ...font, fontSize: '9px', letterSpacing: '0.12em', textTransform: 'uppercase' }}>
+                                            <span style={{ ...FONT, fontSize: '9px', letterSpacing: '0.12em', textTransform: 'uppercase' }}>
                                                 {social.label}
                                             </span>
                                         </motion.a>
@@ -289,7 +288,7 @@ export default function AboutPage() {
                         transition={{ delay: 0.5, duration: 0.4 }}
                         style={{ textAlign: 'center', padding: '40px 0' }}
                     >
-                        <p style={{ ...font, fontSize: '10px', color: '#444', letterSpacing: '0.15em', marginBottom: '20px' }}>
+                        <p style={{ ...FONT, fontSize: '10px', color: '#444', letterSpacing: '0.15em', marginBottom: '20px' }}>
                             ◂ READY TO EXPLORE? ▸
                         </p>
                         <div style={{ display: 'flex', justifyContent: 'center', gap: '16px', flexWrap: 'wrap' }}>
@@ -297,7 +296,7 @@ export default function AboutPage() {
                                 onClick={() => setActivePage('map')}
                                 className="cursor-pointer"
                                 style={{
-                                    ...font,
+                                    ...FONT,
                                     fontSize: '10px',
                                     padding: '12px 20px',
                                     border: '2px solid var(--brand)',
@@ -318,7 +317,7 @@ export default function AboutPage() {
                                 onClick={() => setActivePage('stories')}
                                 className="cursor-pointer"
                                 style={{
-                                    ...font,
+                                    ...FONT,
                                     fontSize: '10px',
                                     padding: '12px 20px',
                                     border: '2px solid var(--neon-cyan)',

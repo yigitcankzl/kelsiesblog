@@ -5,12 +5,11 @@ import { useBlogStore } from '@/store/store';
 import type { GalleryItem } from '@/types';
 import { parseFolderId, listDriveImages, driveThumbUrl } from '@/lib/googleDrive';
 import { uploadImageToR2, listR2Images, deleteR2Image, type R2Item } from '@/lib/r2Api';
-
-const font = { fontFamily: "'Press Start 2P', monospace" } as const;
+import { FONT } from '@/lib/constants';
 
 const inputStyle: React.CSSProperties = {
     // ... (keep usage of inputStyle implicitly or explicitly if not changing)
-    ...font,
+    ...FONT,
     fontSize: '9px',
     width: '100%',
     padding: '12px 14px',
@@ -22,7 +21,7 @@ const inputStyle: React.CSSProperties = {
 };
 
 const labelStyle: React.CSSProperties = {
-    ...font,
+    ...FONT,
     fontSize: '7px',
     color: '#888',
     textTransform: 'uppercase',
@@ -249,8 +248,8 @@ export default function GalleryManager() {
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                     <Image className="w-4 h-4" style={{ color: 'var(--neon-cyan)' }} />
                     <div>
-                        <h2 style={{ ...font, fontSize: '11px', color: '#fff' }}>GALLERY ITEMS</h2>
-                        <p style={{ ...font, fontSize: '6px', color: '#555', marginTop: '4px', letterSpacing: '0.15em' }}>
+                        <h2 style={{ ...FONT, fontSize: '11px', color: '#fff' }}>GALLERY ITEMS</h2>
+                        <p style={{ ...FONT, fontSize: '6px', color: '#555', marginTop: '4px', letterSpacing: '0.15em' }}>
                             {galleryItems.length} {galleryItems.length === 1 ? 'IMAGE' : 'IMAGES'} LOADED
                         </p>
                     </div>
@@ -261,7 +260,7 @@ export default function GalleryManager() {
                             onClick={openR2Browser}
                             className="cursor-pointer"
                             style={{
-                                ...font,
+                                ...FONT,
                                 fontSize: '7px',
                                 display: 'flex',
                                 alignItems: 'center',
@@ -281,7 +280,7 @@ export default function GalleryManager() {
                             onClick={() => setShowDriveImport(true)}
                             className="cursor-pointer"
                             style={{
-                                ...font,
+                                ...FONT,
                                 fontSize: '7px',
                                 display: 'flex',
                                 alignItems: 'center',
@@ -301,7 +300,7 @@ export default function GalleryManager() {
                             onClick={startAdd}
                             className="cursor-pointer"
                             style={{
-                                ...font,
+                                ...FONT,
                                 fontSize: '7px',
                                 display: 'flex',
                                 alignItems: 'center',
@@ -330,21 +329,21 @@ export default function GalleryManager() {
                     style={{ border: '1px solid var(--neon-cyan)', padding: '24px', marginBottom: '24px', backgroundColor: '#050505' }}
                 >
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
-                        <h3 style={{ ...font, fontSize: '9px', color: 'var(--neon-cyan)' }}>{'>'} R2 MEDIA (blog/)</h3>
+                        <h3 style={{ ...FONT, fontSize: '9px', color: 'var(--neon-cyan)' }}>{'>'} R2 MEDIA (blog/)</h3>
                         <button onClick={closeR2Browser} className="cursor-pointer" style={{ background: 'none', border: '1px solid #333', color: '#555', padding: '6px' }}>
                             <X className="w-3 h-3" />
                         </button>
                     </div>
 
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
-                        <span style={{ ...font, fontSize: '7px', color: 'var(--neon-cyan)' }}>
+                        <span style={{ ...FONT, fontSize: '7px', color: 'var(--neon-cyan)' }}>
                             {r2Selected.size} / {r2Items.length} SELECTED
                         </span>
                         <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
                             <button
                                 onClick={() => setR2Selected(new Set(r2Items.map(i => i.key)))}
                                 className="cursor-pointer"
-                                style={{ ...font, fontSize: '6px', background: 'none', border: '1px solid #333', color: '#888', padding: '4px 10px' }}
+                                style={{ ...FONT, fontSize: '6px', background: 'none', border: '1px solid #333', color: '#888', padding: '4px 10px' }}
                                 disabled={r2Items.length === 0}
                             >
                                 SELECT ALL
@@ -352,7 +351,7 @@ export default function GalleryManager() {
                             <button
                                 onClick={() => setR2Selected(new Set())}
                                 className="cursor-pointer"
-                                style={{ ...font, fontSize: '6px', background: 'none', border: '1px solid #333', color: '#888', padding: '4px 10px' }}
+                                style={{ ...FONT, fontSize: '6px', background: 'none', border: '1px solid #333', color: '#888', padding: '4px 10px' }}
                                 disabled={r2Selected.size === 0}
                             >
                                 CLEAR
@@ -361,7 +360,7 @@ export default function GalleryManager() {
                                 onClick={handleR2DeleteSelected}
                                 className="cursor-pointer"
                                 style={{
-                                    ...font,
+                                    ...FONT,
                                     fontSize: '7px',
                                     display: 'flex',
                                     alignItems: 'center',
@@ -381,11 +380,11 @@ export default function GalleryManager() {
                     </div>
 
                     {r2Error && (
-                        <p style={{ ...font, fontSize: '7px', color: 'var(--neon-magenta)', marginBottom: '12px' }}>{r2Error}</p>
+                        <p style={{ ...FONT, fontSize: '7px', color: 'var(--neon-magenta)', marginBottom: '12px' }}>{r2Error}</p>
                     )}
 
                     {r2Loading && r2Items.length === 0 ? (
-                        <p style={{ ...font, fontSize: '7px', color: '#666' }}>LOADING...</p>
+                        <p style={{ ...FONT, fontSize: '7px', color: '#666' }}>LOADING...</p>
                     ) : (
                         <div className="grid grid-cols-3 sm:grid-cols-4 gap-3" style={{ maxHeight: '300px', overflowY: 'auto' }}>
                             {r2Items.map(item => {
@@ -439,7 +438,7 @@ export default function GalleryManager() {
                     style={{ border: '1px solid var(--brand)', padding: '24px', marginBottom: '24px', backgroundColor: '#050505' }}
                 >
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
-                        <h3 style={{ ...font, fontSize: '9px', color: 'var(--brand)' }}>{'>'} IMPORT FROM GOOGLE DRIVE</h3>
+                        <h3 style={{ ...FONT, fontSize: '9px', color: 'var(--brand)' }}>{'>'} IMPORT FROM GOOGLE DRIVE</h3>
                         <button onClick={closeDriveImport} className="cursor-pointer" style={{ background: 'none', border: '1px solid #333', color: '#555', padding: '6px' }}>
                             <X className="w-3 h-3" />
                         </button>
@@ -458,7 +457,7 @@ export default function GalleryManager() {
                             disabled={driveLoading || !driveUrl.trim()}
                             className="cursor-pointer"
                             style={{
-                                ...font, fontSize: '7px', padding: '10px 16px', letterSpacing: '0.1em',
+                                ...FONT, fontSize: '7px', padding: '10px 16px', letterSpacing: '0.1em',
                                 backgroundColor: driveUrl.trim() ? 'var(--brand)' : '#1a1a1a',
                                 color: driveUrl.trim() ? '#000' : '#444',
                                 border: 'none', display: 'flex', alignItems: 'center', gap: '6px',
@@ -471,13 +470,13 @@ export default function GalleryManager() {
                     </div>
 
                     {driveError && (
-                        <p style={{ ...font, fontSize: '7px', color: 'var(--neon-magenta)', marginBottom: '12px' }}>{driveError}</p>
+                        <p style={{ ...FONT, fontSize: '7px', color: 'var(--neon-magenta)', marginBottom: '12px' }}>{driveError}</p>
                     )}
 
                     {driveResults.length > 0 && (
                         <>
                             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
-                                <span style={{ ...font, fontSize: '7px', color: 'var(--neon-cyan)' }}>
+                                <span style={{ ...FONT, fontSize: '7px', color: 'var(--neon-cyan)' }}>
                                     {driveSelected.size} / {driveResults.length} SELECTED
                                 </span>
                                 <button
@@ -486,7 +485,7 @@ export default function GalleryManager() {
                                         else setDriveSelected(new Set(driveResults.map(r => r.id)));
                                     }}
                                     className="cursor-pointer"
-                                    style={{ ...font, fontSize: '6px', background: 'none', border: '1px solid #333', color: '#888', padding: '4px 10px' }}
+                                    style={{ ...FONT, fontSize: '6px', background: 'none', border: '1px solid #333', color: '#888', padding: '4px 10px' }}
                                 >
                                     {driveSelected.size === driveResults.length ? 'DESELECT ALL' : 'SELECT ALL'}
                                 </button>
@@ -527,7 +526,7 @@ export default function GalleryManager() {
                                 disabled={driveSelected.size === 0}
                                 className="cursor-pointer"
                                 style={{
-                                    ...font, fontSize: '8px', padding: '12px 24px', letterSpacing: '0.1em',
+                                    ...FONT, fontSize: '8px', padding: '12px 24px', letterSpacing: '0.1em',
                                     backgroundColor: driveSelected.size > 0 ? 'var(--brand)' : '#1a1a1a',
                                     color: driveSelected.size > 0 ? '#000' : '#444',
                                     border: 'none',
@@ -552,7 +551,7 @@ export default function GalleryManager() {
                         transition={{ duration: 0.3 }}
                     >
                         <div style={{ border: '1px solid #1a1a1a', padding: '24px', marginBottom: '24px' }}>
-                            <h3 style={{ ...font, fontSize: '9px', color: 'var(--neon-cyan)', marginBottom: '24px' }}>
+                            <h3 style={{ ...FONT, fontSize: '9px', color: 'var(--neon-cyan)', marginBottom: '24px' }}>
                                 {editingId ? '> EDIT IMAGE' : '> NEW IMAGE'}
                             </h3>
 
@@ -580,7 +579,7 @@ export default function GalleryManager() {
                                             disabled={galleryUploading}
                                             className="cursor-pointer"
                                             style={{
-                                                ...font,
+                                                ...FONT,
                                                 fontSize: '7px',
                                                 display: 'flex',
                                                 alignItems: 'center',
@@ -671,7 +670,7 @@ export default function GalleryManager() {
                                     onClick={handleSave}
                                     className="cursor-pointer"
                                     style={{
-                                        ...font,
+                                        ...FONT,
                                         fontSize: '7px',
                                         display: 'flex',
                                         alignItems: 'center',
@@ -691,7 +690,7 @@ export default function GalleryManager() {
                                     onClick={cancel}
                                     className="cursor-pointer"
                                     style={{
-                                        ...font,
+                                        ...FONT,
                                         fontSize: '7px',
                                         display: 'flex',
                                         alignItems: 'center',
@@ -719,10 +718,10 @@ export default function GalleryManager() {
                         {galleryItems.length === 0 ? (
                             <div style={{ textAlign: 'center', padding: '60px 0' }}>
                                 <Image className="w-8 h-8 mx-auto" style={{ color: '#333', marginBottom: '16px' }} />
-                                <p style={{ ...font, fontSize: '9px', color: '#444', lineHeight: '2' }}>
+                                <p style={{ ...FONT, fontSize: '9px', color: '#444', lineHeight: '2' }}>
                                     NO GALLERY IMAGES YET
                                 </p>
-                                <p style={{ ...font, fontSize: '7px', color: '#333', marginTop: '8px' }}>
+                                <p style={{ ...FONT, fontSize: '7px', color: '#333', marginTop: '8px' }}>
                                     {'>'} ADD YOUR FIRST IMAGE_
                                 </p>
                             </div>
@@ -754,10 +753,10 @@ export default function GalleryManager() {
                                             />
                                         </div>
                                         <div style={{ padding: '12px' }}>
-                                            <p style={{ ...font, fontSize: '7px', color: '#ccc', marginBottom: '4px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                            <p style={{ ...FONT, fontSize: '7px', color: '#ccc', marginBottom: '4px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                                                 {item.caption || 'Untitled'}
                                             </p>
-                                            <p style={{ ...font, fontSize: '6px', color: 'var(--brand)', letterSpacing: '0.1em' }}>
+                                            <p style={{ ...FONT, fontSize: '6px', color: 'var(--brand)', letterSpacing: '0.1em' }}>
                                                 {item.city}{item.city && item.country ? ', ' : ''}{item.country}
                                             </p>
                                             <div style={{ display: 'flex', gap: '8px', marginTop: '10px' }}>
@@ -765,7 +764,7 @@ export default function GalleryManager() {
                                                     onClick={() => startEdit(item)}
                                                     className="cursor-pointer"
                                                     style={{
-                                                        ...font,
+                                                        ...FONT,
                                                         fontSize: '6px',
                                                         display: 'flex',
                                                         alignItems: 'center',
@@ -784,7 +783,7 @@ export default function GalleryManager() {
                                                     onClick={() => deleteGalleryItem(item.id)}
                                                     className="cursor-pointer"
                                                     style={{
-                                                        ...font,
+                                                        ...FONT,
                                                         fontSize: '6px',
                                                         display: 'flex',
                                                         alignItems: 'center',

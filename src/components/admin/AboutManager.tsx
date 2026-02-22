@@ -2,11 +2,10 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Save, User, Plus, Trash2 } from 'lucide-react';
 import { useBlogStore } from '@/store/store';
-
-const font = { fontFamily: "'Press Start 2P', monospace" } as const;
+import { FONT } from '@/lib/constants';
 
 const inputStyle: React.CSSProperties = {
-    ...font,
+    ...FONT,
     fontSize: '9px',
     width: '100%',
     padding: '12px 14px',
@@ -18,7 +17,7 @@ const inputStyle: React.CSSProperties = {
 };
 
 const labelStyle: React.CSSProperties = {
-    ...font,
+    ...FONT,
     fontSize: '7px',
     color: '#888',
     textTransform: 'uppercase',
@@ -80,8 +79,8 @@ export default function AboutManager() {
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                     <User className="w-4 h-4" style={{ color: 'var(--neon-cyan)' }} />
                     <div>
-                        <h2 style={{ ...font, fontSize: '11px', color: '#fff' }}>ABOUT ME</h2>
-                        <p style={{ ...font, fontSize: '6px', color: '#555', marginTop: '4px', letterSpacing: '0.15em' }}>
+                        <h2 style={{ ...FONT, fontSize: '11px', color: '#fff' }}>ABOUT ME</h2>
+                        <p style={{ ...FONT, fontSize: '6px', color: '#555', marginTop: '4px', letterSpacing: '0.15em' }}>
                             EDIT YOUR PROFILE
                         </p>
                     </div>
@@ -94,7 +93,7 @@ export default function AboutManager() {
                 transition={{ duration: 0.3 }}
             >
                 <div style={{ border: '1px solid #1a1a1a', padding: '24px', marginBottom: '24px' }}>
-                    <h3 style={{ ...font, fontSize: '9px', color: 'var(--neon-cyan)', marginBottom: '24px' }}>
+                    <h3 style={{ ...FONT, fontSize: '9px', color: 'var(--neon-cyan)', marginBottom: '24px' }}>
                         {'>'} PROFILE INFO
                     </h3>
 
@@ -136,14 +135,14 @@ export default function AboutManager() {
                 {/* Quests / Interests */}
                 <div style={{ border: '1px solid #1a1a1a', padding: '24px', marginBottom: '24px' }}>
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px' }}>
-                        <h3 style={{ ...font, fontSize: '9px', color: 'var(--neon-cyan)' }}>
+                        <h3 style={{ ...FONT, fontSize: '9px', color: 'var(--neon-cyan)' }}>
                             {'>'} QUEST LOG
                         </h3>
                         <button
                             onClick={addQuest}
                             className="cursor-pointer"
                             style={{
-                                ...font,
+                                ...FONT,
                                 fontSize: '7px',
                                 display: 'flex',
                                 alignItems: 'center',
@@ -195,7 +194,7 @@ export default function AboutManager() {
                                     onClick={() => removeQuest(index)}
                                     className="cursor-pointer"
                                     style={{
-                                        ...font,
+                                        ...FONT,
                                         fontSize: '6px',
                                         background: 'none',
                                         border: '1px solid #333',
@@ -215,14 +214,14 @@ export default function AboutManager() {
                 {/* Social Links */}
                 <div style={{ border: '1px solid #1a1a1a', padding: '24px', marginBottom: '24px' }}>
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px' }}>
-                        <h3 style={{ ...font, fontSize: '9px', color: 'var(--neon-cyan)' }}>
+                        <h3 style={{ ...FONT, fontSize: '9px', color: 'var(--neon-cyan)' }}>
                             {'>'} SOCIAL LINKS
                         </h3>
                         <button
                             onClick={addSocial}
                             className="cursor-pointer"
                             style={{
-                                ...font,
+                                ...FONT,
                                 fontSize: '7px',
                                 display: 'flex',
                                 alignItems: 'center',
@@ -239,7 +238,7 @@ export default function AboutManager() {
                         </button>
                     </div>
 
-                    <p style={{ ...font, fontSize: '6px', color: '#555', marginBottom: '16px', letterSpacing: '0.12em', lineHeight: '1.8' }}>
+                    <p style={{ ...FONT, fontSize: '6px', color: '#555', marginBottom: '16px', letterSpacing: '0.12em', lineHeight: '1.8' }}>
                         ICON OPTIONS: instagram, twitter, mail, github, linkedin, youtube
                     </p>
 
@@ -288,7 +287,7 @@ export default function AboutManager() {
                                     onClick={() => removeSocial(index)}
                                     className="cursor-pointer"
                                     style={{
-                                        ...font,
+                                        ...FONT,
                                         fontSize: '6px',
                                         background: 'none',
                                         border: '1px solid #333',
@@ -311,7 +310,7 @@ export default function AboutManager() {
                         onClick={handleSave}
                         className="cursor-pointer"
                         style={{
-                            ...font,
+                            ...FONT,
                             fontSize: '7px',
                             display: 'flex',
                             alignItems: 'center',
@@ -333,7 +332,7 @@ export default function AboutManager() {
                             initial={{ opacity: 0, x: -10 }}
                             animate={{ opacity: 1, x: 0 }}
                             exit={{ opacity: 0 }}
-                            style={{ ...font, fontSize: '7px', color: 'var(--brand)' }}
+                            style={{ ...FONT, fontSize: '7px', color: 'var(--brand)' }}
                         >
                             ✓ SAVED
                         </motion.span>

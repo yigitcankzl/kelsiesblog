@@ -4,11 +4,10 @@ import { Lock, Mail, Eye, EyeOff } from 'lucide-react';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
 import { useBlogStore } from '@/store/store';
-
-const font = { fontFamily: "'Press Start 2P', monospace" } as const;
+import { FONT } from '@/lib/constants';
 
 const inputStyle: React.CSSProperties = {
-    ...font,
+    ...FONT,
     fontSize: '10px',
     width: '100%',
     padding: '14px 16px 14px 42px',
@@ -61,15 +60,15 @@ export default function AuthGate() {
                         <div style={{ width: '8px', height: '8px', backgroundColor: 'var(--brand)', boxShadow: '0 0 6px rgba(0,255,65,0.5)' }} />
                         <div style={{ width: '8px', height: '8px', backgroundColor: 'var(--neon-amber)' }} />
                         <div style={{ width: '8px', height: '8px', backgroundColor: '#333' }} />
-                        <span style={{ ...font, fontSize: '6px', color: '#444', marginLeft: '8px', letterSpacing: '0.2em' }}>
+                        <span style={{ ...FONT, fontSize: '6px', color: '#444', marginLeft: '8px', letterSpacing: '0.2em' }}>
                             TERMINAL
                         </span>
                     </div>
 
-                    <h2 style={{ ...font, fontSize: '14px', color: '#fff', marginBottom: '8px', textTransform: 'uppercase' }}>
+                    <h2 style={{ ...FONT, fontSize: '14px', color: '#fff', marginBottom: '8px', textTransform: 'uppercase' }}>
                         ACCESS DENIED
                     </h2>
-                    <p style={{ ...font, fontSize: '7px', color: '#555', marginBottom: '32px', lineHeight: '2' }}>
+                    <p style={{ ...FONT, fontSize: '7px', color: '#555', marginBottom: '32px', lineHeight: '2' }}>
                         {'>'} ENTER CREDENTIALS TO PROCEED_
                     </p>
 
@@ -118,7 +117,7 @@ export default function AuthGate() {
                             <motion.p
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
-                                style={{ ...font, fontSize: '7px', color: '#FF00E4', marginBottom: '12px', textAlign: 'center' }}
+                                style={{ ...FONT, fontSize: '7px', color: '#FF00E4', marginBottom: '12px', textAlign: 'center' }}
                             >
                                 ✗ ACCESS DENIED — INVALID CREDENTIALS
                             </motion.p>
@@ -129,7 +128,7 @@ export default function AuthGate() {
                             disabled={loading}
                             className="cursor-pointer"
                             style={{
-                                ...font,
+                                ...FONT,
                                 fontSize: '9px',
                                 width: '100%',
                                 padding: '14px',
@@ -149,7 +148,7 @@ export default function AuthGate() {
                     </form>
                 </div>
 
-                <p style={{ ...font, fontSize: '5px', textAlign: 'center', color: '#333', marginTop: '20px', letterSpacing: '0.2em' }}>
+                <p style={{ ...FONT, fontSize: '5px', textAlign: 'center', color: '#333', marginTop: '20px', letterSpacing: '0.2em' }}>
                     SYSTEM ONLINE — ADMIN PORTAL
                 </p>
             </motion.div>

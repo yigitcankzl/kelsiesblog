@@ -3,8 +3,7 @@ import { motion } from 'framer-motion';
 import { ArrowLeft, MapPin, Clock } from 'lucide-react';
 import { useBlogStore } from '@/store/store';
 import { estimateReadTime, type BlogPost } from '@/types';
-
-const font = { fontFamily: "'Press Start 2P', monospace" } as const;
+import { FONT, CATEGORIES } from '@/lib/constants';
 
 export default function AllStoriesPage() {
     const { posts, setSelectedCountry, setSelectedPost, setActivePage } = useBlogStore();
@@ -15,7 +14,7 @@ export default function AllStoriesPage() {
         window.scrollTo(0, 0);
     }, []);
 
-    const categories = ['Culture', 'History', 'Tourism', 'Transportation', 'Politic', 'Food and Drink', 'Personal Story'];
+    const categories = CATEGORIES;
 
     const filteredPosts = activeCategory
         ? posts.filter(p =>
@@ -45,7 +44,7 @@ export default function AllStoriesPage() {
                         onClick={() => setActivePage('map')}
                         className="cursor-pointer"
                         style={{
-                            ...font,
+                            ...FONT,
                             fontSize: '7px',
                             padding: '10px 16px',
                             border: '2px solid var(--brand)',
@@ -65,11 +64,11 @@ export default function AllStoriesPage() {
                         ◂ BACK
                     </button>
                     <div style={{ width: '1px', height: '32px', backgroundColor: 'var(--brand)', opacity: 0.3 }} />
-                    <h1 className="text-glitch" style={{ ...font, fontSize: '16px', color: '#fff', lineHeight: 1.4 }}
+                    <h1 className="text-glitch" style={{ ...FONT, fontSize: '16px', color: '#fff', lineHeight: 1.4 }}
                         data-text="ALL STORIES">
                         ALL STORIES
                     </h1>
-                    <span style={{ ...font, fontSize: '6px', color: 'var(--neon-cyan)', textTransform: 'uppercase', letterSpacing: '0.15em' }}>
+                    <span style={{ ...FONT, fontSize: '6px', color: 'var(--neon-cyan)', textTransform: 'uppercase', letterSpacing: '0.15em' }}>
                         {filteredPosts.length} {filteredPosts.length === 1 ? 'STORY' : 'STORIES'}
                     </span>
                 </div>
@@ -80,7 +79,7 @@ export default function AllStoriesPage() {
                         onClick={() => setActiveCategory(null)}
                         className="cursor-pointer"
                         style={{
-                            ...font,
+                            ...FONT,
                             fontSize: '8px',
                             padding: '8px 16px',
                             letterSpacing: '0.15em',
@@ -101,7 +100,7 @@ export default function AllStoriesPage() {
                             onClick={() => setActiveCategory(activeCategory === cat ? null : cat)}
                             className="cursor-pointer"
                             style={{
-                                ...font,
+                                ...FONT,
                                 fontSize: '8px',
                                 padding: '8px 16px',
                                 letterSpacing: '0.15em',
@@ -131,11 +130,11 @@ export default function AllStoriesPage() {
                             {/* Country header */}
                             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px' }}>
                                 <MapPin style={{ width: '12px', height: '12px', color: 'var(--brand)' }} />
-                                <h2 style={{ ...font, fontSize: '12px', color: 'var(--neon-amber)', textTransform: 'uppercase', letterSpacing: '0.15em' }}>
+                                <h2 style={{ ...FONT, fontSize: '12px', color: 'var(--neon-amber)', textTransform: 'uppercase', letterSpacing: '0.15em' }}>
                                     {country}
                                 </h2>
                                 <div style={{ flex: 1, height: '1px', background: 'linear-gradient(to right, #333, transparent)' }} />
-                                <span style={{ ...font, fontSize: '8px', color: '#444' }}>
+                                <span style={{ ...FONT, fontSize: '8px', color: '#444' }}>
                                     {countryPosts.length} {countryPosts.length === 1 ? 'ENTRY' : 'ENTRIES'}
                                 </span>
                             </div>
@@ -189,7 +188,7 @@ export default function AllStoriesPage() {
                                                 alignItems: 'center',
                                                 gap: '10px',
                                                 marginBottom: '8px',
-                                                ...font,
+                                                ...FONT,
                                                 fontSize: '7px',
                                                 textTransform: 'uppercase',
                                                 letterSpacing: '0.12em',
@@ -207,7 +206,7 @@ export default function AllStoriesPage() {
                                                 className="text-glitch"
                                                 data-text={post.title}
                                                 style={{
-                                                    ...font,
+                                                    ...FONT,
                                                     fontSize: '11px',
                                                     color: '#fff',
                                                     marginBottom: '8px',
@@ -222,7 +221,7 @@ export default function AllStoriesPage() {
 
                                             {/* Excerpt */}
                                             <p style={{
-                                                ...font,
+                                                ...FONT,
                                                 fontSize: '8px',
                                                 color: '#666',
                                                 lineHeight: '2.2',
@@ -239,7 +238,7 @@ export default function AllStoriesPage() {
                                             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
                                                 {post.category.map(cat => (
                                                     <span key={cat} style={{
-                                                        ...font,
+                                                        ...FONT,
                                                         fontSize: '5px',
                                                         padding: '4px 8px',
                                                         border: '1px solid #333',
@@ -262,10 +261,10 @@ export default function AllStoriesPage() {
                 {/* Empty state */}
                 {filteredPosts.length === 0 && (
                     <div style={{ textAlign: 'center', padding: '80px 0' }}>
-                        <h3 style={{ ...font, fontSize: '14px', color: '#555', marginBottom: '8px' }}>
+                        <h3 style={{ ...FONT, fontSize: '14px', color: '#555', marginBottom: '8px' }}>
                             NO STORIES FOUND
                         </h3>
-                        <p style={{ ...font, fontSize: '9px', color: '#444', lineHeight: '2' }}>
+                        <p style={{ ...FONT, fontSize: '9px', color: '#444', lineHeight: '2' }}>
                             {'>'} TRY A DIFFERENT CATEGORY_
                         </p>
                     </div>

@@ -11,11 +11,10 @@ import { mergePostFields } from '@/lib/firestore';
 import { parseFolderId, listDriveImages, driveThumbUrl } from '@/lib/googleDrive';
 import { uploadImageToR2, listR2Images, deleteR2Image, type R2Item } from '@/lib/r2Api';
 import RichTextEditor from './RichTextEditor';
-
-const font = { fontFamily: "'Press Start 2P', monospace" } as const;
+import { FONT, CATEGORIES } from '@/lib/constants';
 
 const inputStyle: React.CSSProperties = {
-    ...font,
+    ...FONT,
     fontSize: '9px',
     width: '100%',
     padding: '12px 14px',
@@ -28,7 +27,7 @@ const inputStyle: React.CSSProperties = {
 };
 
 const labelStyle: React.CSSProperties = {
-    ...font,
+    ...FONT,
     fontSize: '7px',
     color: '#888',
     textTransform: 'uppercase',
@@ -302,7 +301,7 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
 
 
 
-    const availableCategories = ['Culture', 'History', 'Tourism', 'Transportation', 'Politic', 'Food and Drink', 'Personal Story'];
+    const availableCategories = CATEGORIES;
 
     const toggleCategory = (cat: string) => {
         setCategories(prev =>
@@ -495,10 +494,10 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
         <form onSubmit={handleSubmit} style={{ maxWidth: '768px', margin: '0 auto' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '32px' }}>
                 <div>
-                    <h2 style={{ ...font, fontSize: '12px', color: '#fff' }}>
+                    <h2 style={{ ...FONT, fontSize: '12px', color: '#fff' }}>
                         {isEditing ? 'EDIT POST' : 'NEW POST'}
                     </h2>
-                    <p style={{ ...font, fontSize: '6px', color: '#555', marginTop: '6px', letterSpacing: '0.15em' }}>
+                    <p style={{ ...FONT, fontSize: '6px', color: '#555', marginTop: '6px', letterSpacing: '0.15em' }}>
                         {'>'} {isEditing ? 'MODIFYING EXISTING ENTRY_' : 'CREATING NEW ENTRY_'}
                     </p>
                 </div>
@@ -533,7 +532,7 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                         <Loader style={{ color: 'var(--neon-amber)', width: '16px', height: '16px' }} />
-                        <span style={{ ...font, fontSize: '8px', color: 'var(--neon-amber)' }}>
+                        <span style={{ ...FONT, fontSize: '8px', color: 'var(--neon-amber)' }}>
                             UNSAVED DRAFT FOUND
                         </span>
                     </div>
@@ -543,7 +542,7 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                             onClick={restoreDraft}
                             className="cursor-pointer"
                             style={{
-                                ...font,
+                                ...FONT,
                                 fontSize: '8px',
                                 padding: '6px 12px',
                                 backgroundColor: 'var(--neon-amber)',
@@ -558,7 +557,7 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                             onClick={discardDraft}
                             className="cursor-pointer"
                             style={{
-                                ...font,
+                                ...FONT,
                                 fontSize: '8px',
                                 padding: '6px 12px',
                                 backgroundColor: 'transparent',
@@ -581,7 +580,7 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
             }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '24px' }}>
                     <Type style={{ width: '12px', height: '12px', color: 'var(--brand)' }} />
-                    <h3 style={{ ...font, fontSize: '8px', color: 'var(--neon-amber)', textTransform: 'uppercase', letterSpacing: '0.15em' }}>
+                    <h3 style={{ ...FONT, fontSize: '8px', color: 'var(--neon-amber)', textTransform: 'uppercase', letterSpacing: '0.15em' }}>
                         BASIC INFO
                     </h3>
                     <div style={{ flex: 1, height: '1px', background: 'linear-gradient(to right, #333, transparent)' }} />
@@ -657,7 +656,7 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                                         onClick={() => toggleCategory(cat)}
                                         className="cursor-pointer"
                                         style={{
-                                            ...font,
+                                            ...FONT,
                                             fontSize: '7px',
                                             padding: '8px 14px',
                                             letterSpacing: '0.1em',
@@ -762,7 +761,7 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                                 disabled={coverUploading}
                                 className="cursor-pointer"
                                 style={{
-                                    ...font,
+                                    ...FONT,
                                     fontSize: '7px',
                                     display: 'flex',
                                     alignItems: 'center',
@@ -784,7 +783,7 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                                 onClick={openR2ForCover}
                                 className="cursor-pointer"
                                 style={{
-                                    ...font,
+                                    ...FONT,
                                     fontSize: '7px',
                                     display: 'flex',
                                     alignItems: 'center',
@@ -809,7 +808,7 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                         {showR2Browser && (
                             <div style={{ border: '1px solid var(--neon-cyan)', padding: '14px', backgroundColor: '#050505', marginTop: '10px' }}>
                                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
-                                    <span style={{ ...font, fontSize: '7px', color: 'var(--neon-cyan)', letterSpacing: '0.15em' }}>
+                                    <span style={{ ...FONT, fontSize: '7px', color: 'var(--neon-cyan)', letterSpacing: '0.15em' }}>
                                         {'>'} R2 MEDIA (blog/)
                                     </span>
                                     <button
@@ -823,7 +822,7 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                                 </div>
 
                                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px', flexWrap: 'wrap', marginBottom: '10px' }}>
-                                    <span style={{ ...font, fontSize: '6px', color: '#777' }}>
+                                    <span style={{ ...FONT, fontSize: '6px', color: '#777' }}>
                                         {r2Selected.size} / {r2Items.length} SELECTED
                                     </span>
                                     <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
@@ -832,7 +831,7 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                                             onClick={() => setR2Selected(new Set(r2Items.map(i => i.key)))}
                                             disabled={r2Items.length === 0 || r2Loading}
                                             className="cursor-pointer"
-                                            style={{ ...font, fontSize: '6px', background: 'none', border: '1px solid #333', color: '#888', padding: '6px 10px' }}
+                                            style={{ ...FONT, fontSize: '6px', background: 'none', border: '1px solid #333', color: '#888', padding: '6px 10px' }}
                                         >
                                             SELECT ALL
                                         </button>
@@ -841,7 +840,7 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                                             onClick={() => setR2Selected(new Set())}
                                             disabled={r2Selected.size === 0 || r2Loading}
                                             className="cursor-pointer"
-                                            style={{ ...font, fontSize: '6px', background: 'none', border: '1px solid #333', color: '#888', padding: '6px 10px' }}
+                                            style={{ ...FONT, fontSize: '6px', background: 'none', border: '1px solid #333', color: '#888', padding: '6px 10px' }}
                                         >
                                             CLEAR
                                         </button>
@@ -851,7 +850,7 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                                             disabled={r2Selected.size === 0 || r2Loading}
                                             className="cursor-pointer"
                                             style={{
-                                                ...font,
+                                                ...FONT,
                                                 fontSize: '6px',
                                                 display: 'flex',
                                                 alignItems: 'center',
@@ -871,7 +870,7 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                                             disabled={r2Selected.size === 0 || r2Loading}
                                             className="cursor-pointer"
                                             style={{
-                                                ...font,
+                                                ...FONT,
                                                 fontSize: '6px',
                                                 display: 'flex',
                                                 alignItems: 'center',
@@ -890,11 +889,11 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                                 </div>
 
                                 {r2Error && (
-                                    <p style={{ ...font, fontSize: '6px', color: 'var(--neon-magenta)', marginBottom: '8px' }}>{r2Error}</p>
+                                    <p style={{ ...FONT, fontSize: '6px', color: 'var(--neon-magenta)', marginBottom: '8px' }}>{r2Error}</p>
                                 )}
 
                                 {r2Loading && r2Items.length === 0 ? (
-                                    <p style={{ ...font, fontSize: '6px', color: '#666' }}>LOADING...</p>
+                                    <p style={{ ...FONT, fontSize: '6px', color: '#666' }}>LOADING...</p>
                                 ) : (
                                     <div className="grid grid-cols-4 sm:grid-cols-6 gap-2" style={{ maxHeight: '240px', overflowY: 'auto' }}>
                                         {r2Items.map(item => {
@@ -950,7 +949,7 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                             }}>
                                 <img src={coverImage} alt="Cover preview" style={{ width: '100%', height: '100%', objectFit: 'cover', filter: 'saturate(0.7) brightness(0.85)' }} />
                                 <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(0,0,0,0.5), transparent)' }} />
-                                <span style={{ ...font, fontSize: '6px', position: 'absolute', bottom: '8px', left: '10px', color: 'var(--brand)', letterSpacing: '0.1em' }}>
+                                <span style={{ ...FONT, fontSize: '6px', position: 'absolute', bottom: '8px', left: '10px', color: 'var(--brand)', letterSpacing: '0.1em' }}>
                                     PREVIEW
                                 </span>
                             </div>
@@ -969,10 +968,10 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
             }}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <h3 style={{ ...font, fontSize: '8px', color: 'var(--neon-amber)', textTransform: 'uppercase', letterSpacing: '0.15em' }}>
+                        <h3 style={{ ...FONT, fontSize: '8px', color: 'var(--neon-amber)', textTransform: 'uppercase', letterSpacing: '0.15em' }}>
                             CONTENT SECTIONS
                         </h3>
-                        <span style={{ ...font, fontSize: '7px', color: 'var(--neon-cyan)' }}>
+                        <span style={{ ...FONT, fontSize: '7px', color: 'var(--neon-cyan)' }}>
                             [ {sections.length} ]
                         </span>
                     </div>
@@ -981,7 +980,7 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                         onClick={addSection}
                         className="cursor-pointer"
                         style={{
-                            ...font,
+                            ...FONT,
                             fontSize: '7px',
                             display: 'flex',
                             alignItems: 'center',
@@ -1019,7 +1018,7 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                         >
                             {/* Section header */}
                             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
-                                <span style={{ ...font, fontSize: '7px', color: 'var(--brand)' }}>
+                                <span style={{ ...FONT, fontSize: '7px', color: 'var(--brand)' }}>
                                     SEC_{String(index + 1).padStart(2, '0')}
                                 </span>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
@@ -1167,7 +1166,7 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                                             onClick={() => addImageToSection(index)}
                                             className="cursor-pointer"
                                             style={{
-                                                ...font, fontSize: '6px', display: 'flex', alignItems: 'center', gap: '4px',
+                                                ...FONT, fontSize: '6px', display: 'flex', alignItems: 'center', gap: '4px',
                                                 color: '#555', background: 'none', border: '1px dashed #333',
                                                 padding: '6px 10px', letterSpacing: '0.1em', transition: 'all 0.3s',
                                             }}
@@ -1183,7 +1182,7 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                                             disabled={sectionImageUploading === index}
                                             className="cursor-pointer"
                                             style={{
-                                                ...font, fontSize: '6px', display: 'flex', alignItems: 'center', gap: '4px',
+                                                ...FONT, fontSize: '6px', display: 'flex', alignItems: 'center', gap: '4px',
                                                 color: 'var(--neon-cyan)', background: 'none', border: '1px solid #333',
                                                 padding: '6px 10px', letterSpacing: '0.1em', transition: 'all 0.3s',
                                             }}
@@ -1198,7 +1197,7 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                                             onClick={() => openR2ForSection(index)}
                                             className="cursor-pointer"
                                             style={{
-                                                ...font, fontSize: '6px', display: 'flex', alignItems: 'center', gap: '4px',
+                                                ...FONT, fontSize: '6px', display: 'flex', alignItems: 'center', gap: '4px',
                                                 color: '#aaa', background: 'none', border: '1px solid #333',
                                                 padding: '6px 10px', letterSpacing: '0.1em', transition: 'all 0.3s',
                                             }}
@@ -1213,7 +1212,7 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                                             onClick={() => { setDriveImportIdx(driveImportIdx === index ? null : index); setDriveUrl(''); setDriveError(''); }}
                                             className="cursor-pointer"
                                             style={{
-                                                ...font, fontSize: '6px', display: 'flex', alignItems: 'center', gap: '4px',
+                                                ...FONT, fontSize: '6px', display: 'flex', alignItems: 'center', gap: '4px',
                                                 color: driveImportIdx === index ? 'var(--brand)' : '#555',
                                                 background: 'none',
                                                 border: `1px dashed ${driveImportIdx === index ? 'var(--brand)' : '#333'}`,
@@ -1246,7 +1245,7 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                                                     disabled={driveLoading || !driveUrl.trim()}
                                                     className="cursor-pointer"
                                                     style={{
-                                                        ...font, fontSize: '6px', padding: '8px 12px',
+                                                        ...FONT, fontSize: '6px', padding: '8px 12px',
                                                         backgroundColor: driveUrl.trim() ? 'var(--brand)' : '#1a1a1a',
                                                         color: driveUrl.trim() ? '#000' : '#444',
                                                         border: 'none', display: 'flex', alignItems: 'center', gap: '4px',
@@ -1258,7 +1257,7 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                                                 </button>
                                             </div>
                                             {driveError && (
-                                                <p style={{ ...font, fontSize: '6px', color: 'var(--neon-magenta)' }}>{driveError}</p>
+                                                <p style={{ ...FONT, fontSize: '6px', color: 'var(--neon-magenta)' }}>{driveError}</p>
                                             )}
                                         </div>
                                     )}
@@ -1284,19 +1283,19 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                 >
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '20px' }}>
                         <div style={{ width: '6px', height: '6px', backgroundColor: 'var(--neon-cyan)' }} />
-                        <h3 style={{ ...font, fontSize: '8px', color: 'var(--neon-cyan)', textTransform: 'uppercase', letterSpacing: '0.15em' }}>
+                        <h3 style={{ ...FONT, fontSize: '8px', color: 'var(--neon-cyan)', textTransform: 'uppercase', letterSpacing: '0.15em' }}>
                             PREVIEW
                         </h3>
                         <div style={{ flex: 1, height: '1px', background: 'linear-gradient(to right, rgba(0,255,255,0.3), transparent)' }} />
                     </div>
 
                     <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '8px', marginBottom: '12px' }}>
-                        {city && <span style={{ ...font, fontSize: '7px', color: 'var(--neon-cyan)' }}>{city}, {country}</span>}
+                        {city && <span style={{ ...FONT, fontSize: '7px', color: 'var(--neon-cyan)' }}>{city}, {country}</span>}
                         {categories.length > 0 && (
                             <>
                                 <div style={{ width: '4px', height: '4px', backgroundColor: 'var(--neon-magenta)' }} />
                                 {categories.map(cat => (
-                                    <span key={cat} style={{ ...font, fontSize: '6px', color: '#000', backgroundColor: 'var(--neon-magenta)', padding: '3px 8px' }}>
+                                    <span key={cat} style={{ ...FONT, fontSize: '6px', color: '#000', backgroundColor: 'var(--neon-magenta)', padding: '3px 8px' }}>
                                         {cat}
                                     </span>
                                 ))}
@@ -1305,19 +1304,19 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                         {date && (
                             <>
                                 <div style={{ width: '4px', height: '4px', backgroundColor: '#555' }} />
-                                <span style={{ ...font, fontSize: '7px', color: '#555' }}>{date}</span>
+                                <span style={{ ...FONT, fontSize: '7px', color: '#555' }}>{date}</span>
                             </>
                         )}
                     </div>
 
-                    <h2 style={{ ...font, fontSize: '14px', color: '#fff', marginBottom: '16px', lineHeight: '2' }}>
+                    <h2 style={{ ...FONT, fontSize: '14px', color: '#fff', marginBottom: '16px', lineHeight: '2' }}>
                         {title || 'UNTITLED POST'}
                     </h2>
 
                     {sections.filter(s => s.heading || (s.contents || []).some(c => c.trim()) || s.content).map((section, i) => (
                         <div key={i} style={{ marginBottom: '16px' }}>
                             {section.heading && (
-                                <h3 style={{ ...font, fontSize: '10px', color: 'var(--brand)', marginBottom: '8px' }}>
+                                <h3 style={{ ...FONT, fontSize: '10px', color: 'var(--brand)', marginBottom: '8px' }}>
                                     {'>'} {section.heading}
                                 </h3>
                             )}
@@ -1342,7 +1341,7 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                     onClick={onCancel}
                     className="cursor-pointer"
                     style={{
-                        ...font,
+                        ...FONT,
                         fontSize: '8px',
                         padding: '12px 20px',
                         background: 'none',
@@ -1361,7 +1360,7 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                     onClick={() => setShowPreview(!showPreview)}
                     className="cursor-pointer"
                     style={{
-                        ...font,
+                        ...FONT,
                         fontSize: '8px',
                         padding: '12px 20px',
                         background: 'none',
@@ -1386,7 +1385,7 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                     disabled={!isValid}
                     className="cursor-pointer"
                     style={{
-                        ...font,
+                        ...FONT,
                         fontSize: '8px',
                         display: 'flex',
                         alignItems: 'center',

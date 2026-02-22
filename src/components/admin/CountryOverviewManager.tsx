@@ -3,11 +3,10 @@ import { motion } from 'framer-motion';
 import { Globe2, Save } from 'lucide-react';
 import { useBlogStore } from '@/store/store';
 import { getCountryDescription } from '@/data/countryDescriptions';
-
-const font = { fontFamily: "'Press Start 2P', monospace" } as const;
+import { FONT } from '@/lib/constants';
 
 const textareaStyle: React.CSSProperties = {
-    ...font,
+    ...FONT,
     fontSize: '9px',
     width: '100%',
     padding: '12px 14px',
@@ -22,7 +21,7 @@ const textareaStyle: React.CSSProperties = {
 };
 
 const labelStyle: React.CSSProperties = {
-    ...font,
+    ...FONT,
     fontSize: '7px',
     color: '#888',
     textTransform: 'uppercase',
@@ -67,8 +66,8 @@ export default function CountryOverviewManager() {
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                     <Globe2 className="w-4 h-4" style={{ color: 'var(--neon-cyan)' }} />
                     <div>
-                        <h2 style={{ ...font, fontSize: '11px', color: '#fff' }}>COUNTRY OVERVIEWS</h2>
-                        <p style={{ ...font, fontSize: '6px', color: '#555', marginTop: '4px', letterSpacing: '0.15em' }}>
+                        <h2 style={{ ...FONT, fontSize: '11px', color: '#fff' }}>COUNTRY OVERVIEWS</h2>
+                        <p style={{ ...FONT, fontSize: '6px', color: '#555', marginTop: '4px', letterSpacing: '0.15em' }}>
                             SHORT DESCRIPTIONS ABOVE STORIES
                         </p>
                     </div>
@@ -81,7 +80,7 @@ export default function CountryOverviewManager() {
                 transition={{ duration: 0.3 }}
             >
                 <div style={{ border: '1px solid #1a1a1a', padding: '24px', marginBottom: '24px' }}>
-                    <h3 style={{ ...font, fontSize: '9px', color: 'var(--neon-cyan)', marginBottom: '24px' }}>
+                    <h3 style={{ ...FONT, fontSize: '9px', color: 'var(--neon-cyan)', marginBottom: '24px' }}>
                         {'>'} OVERVIEW EDITOR
                     </h3>
 
@@ -93,7 +92,7 @@ export default function CountryOverviewManager() {
                             onChange={e => handleCountryChange(e.target.value)}
                             className="cursor-pointer"
                             style={{
-                                ...font,
+                                ...FONT,
                                 fontSize: '9px',
                                 width: '100%',
                                 padding: '10px 14px',
@@ -123,7 +122,7 @@ export default function CountryOverviewManager() {
                             placeholder="Write a short, vivid overview for this country..."
                             style={textareaStyle}
                         />
-                        <p style={{ ...font, fontSize: '6px', color: '#555', marginTop: '8px', letterSpacing: '0.12em', lineHeight: '1.8' }}>
+                        <p style={{ ...FONT, fontSize: '6px', color: '#555', marginTop: '8px', letterSpacing: '0.12em', lineHeight: '1.8' }}>
                             This text appears above the stories grid when a visitor clicks on a country on the map.
                         </p>
                     </div>
@@ -134,7 +133,7 @@ export default function CountryOverviewManager() {
                             onClick={handleSave}
                             className="cursor-pointer"
                             style={{
-                                ...font,
+                                ...FONT,
                                 fontSize: '7px',
                                 display: 'flex',
                                 alignItems: 'center',
@@ -156,7 +155,7 @@ export default function CountryOverviewManager() {
                                 initial={{ opacity: 0, x: -10 }}
                                 animate={{ opacity: 1, x: 0 }}
                                 exit={{ opacity: 0 }}
-                                style={{ ...font, fontSize: '7px', color: 'var(--brand)' }}
+                                style={{ ...FONT, fontSize: '7px', color: 'var(--brand)' }}
                             >
                                 ✓ SAVED
                             </motion.span>

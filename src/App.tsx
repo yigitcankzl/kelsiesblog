@@ -4,8 +4,7 @@ import Navbar from './components/Navbar';
 import MapPage from './pages/MapPage';
 import AdminPage from './pages/AdminPage';
 import { useBlogStore } from './store/store';
-
-const font = { fontFamily: "'Press Start 2P', monospace" } as const;
+import { FONT } from './lib/constants';
 
 function AppContent() {
   const location = useLocation();
@@ -27,7 +26,7 @@ function AppContent() {
         backgroundColor: '#000',
         gap: '20px',
       }}>
-        <div style={{ ...font, fontSize: '12px', color: 'var(--brand)', letterSpacing: '0.2em' }}
+        <div style={{ ...FONT, fontSize: '12px', color: 'var(--brand)', letterSpacing: '0.2em' }}
           className="neon-glow">
           LOADING...
         </div>
@@ -40,7 +39,7 @@ function AppContent() {
             width: '100%',
           }} />
         </div>
-        <p style={{ ...font, fontSize: '7px', color: '#444', letterSpacing: '0.15em' }}>
+        <p style={{ ...FONT, fontSize: '7px', color: '#444', letterSpacing: '0.15em' }}>
           CONNECTING TO DATABASE_
         </p>
       </div>

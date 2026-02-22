@@ -4,8 +4,9 @@ import { ArrowLeft, MapPin } from 'lucide-react';
 import { useBlogStore } from '@/store/store';
 import { estimateReadTime } from '@/types';
 import { getCountryDescription } from '@/data/countryDescriptions';
+import { CATEGORIES } from '@/lib/constants';
 
-const categories = ['Culture', 'History', 'Tourism', 'Transportation', 'Politic', 'Food and Drink', 'Personal Story'];
+const categories = CATEGORIES;
 
 export default function CountryPostsView() {
     const { selectedCountry, posts, setSelectedCountry, setSelectedPost, countryOverviews } = useBlogStore();
