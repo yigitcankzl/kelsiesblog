@@ -245,21 +245,33 @@ function runGlobeAnimation(
     }
 
     /*
-      Camera Z: fit the plane WIDTH into the viewport (height overflows).
-      This way the visible vertical portion ≈ what Leaflet shows at zoom 2.
-    */
-    const aspect = container.clientWidth / container.clientHeight;
-    const fovRad = (45 * Math.PI) / 180;
-    const zForWidth = (mapS / 2) / (aspect * Math.tan(fovRad / 2));
-    const zEnd = zForWidth * 1.05;
+      Match flat-plane size & position to the Leaflet map container.
 
-    /*
-      Leaflet is centered at lat 20 °N. Compute how far above the plane
-      center (equator) that latitude sits, then shift the globe down during
-      morph so 20 °N ends up at camera center.
+      Leaflet container:  maxWidth 1024 px − 48 px padding, centred.
+      Section has 100 px paddingTop, so the Leaflet map's vertical centre
+      is 50 px below the section's (= Three.js viewport's) centre.
     */
-    const leafletCenterV = 1 - mercY(20);                   // UV (1 = north)
-    const yOffset = (leafletCenterV - 0.5) * mapS;          // 3-D units above center
+    const aspect  = container.clientWidth / container.clientHeight;
+    const fovRad  = (45 * Math.PI) / 180;
+    const halfTan = Math.tan(fovRad / 2);
+
+    // Leaflet map width in px
+    const leafletW    = Math.min(container.clientWidth, 1024) - 48;
+    const widthRatio  = leafletW / container.clientWidth;           // fraction of viewport
+
+    // Camera Z so the flat plane appears the SAME width as the Leaflet map
+    const zEnd = (mapS / 2) / (widthRatio * aspect * halfTan);
+
+    // --- Y offsets (both applied during morph) ---
+    // 1) Latitude: Leaflet centred at 20 °N, plane centred at equator
+    const leafletCenterV = 1 - mercY(20);
+    const yLatOffset = (leafletCenterV - 0.5) * mapS;
+
+    // 2) Container: Leaflet map centre is 50 px below 3-D viewport centre
+    const visibleH = 2 * zEnd * halfTan;
+    const yContainerOffset = 50 * visibleH / container.clientHeight;
+
+    const yOffset = yLatOffset + yContainerOffset;
 
     /* Timeline */
     const SPIN = 1800, MORPH = 2200, FADE = 300;
