@@ -57,12 +57,8 @@ export default function PostReader() {
                             <>
                                 <span className="text-[#333] text-[10px]">|</span>
                                 {selectedPost.category.map(cat => (
-                                    <span key={cat} className="text-[8px] uppercase tracking-[0.14em] px-3 py-1.5"
-                                        style={{
-                                            backgroundColor: 'var(--neon-magenta)',
-                                            color: '#000',
-                                            boxShadow: '0 0 8px rgba(255, 0, 228, 0.25)',
-                                        }}>
+                                    <span key={cat} className="text-[8px] uppercase tracking-[0.14em] px-3 py-1.5 bg-[var(--neon-magenta)] text-black"
+                                        style={{ boxShadow: '0 0 8px rgba(255, 0, 228, 0.25)' }}>
                                         {cat}
                                     </span>
                                 ))}
@@ -174,7 +170,7 @@ export default function PostReader() {
                                                 </div>
                                             );
                                         }
-                                        return <div key={pIdx} style={{ marginBottom: '1.2em' }} dangerouslySetInnerHTML={{ __html: para }} />;
+                                        return <div key={pIdx} className="mb-[1.2em]" dangerouslySetInnerHTML={{ __html: para }} />;
                                     })
                                 )}
                             </div>

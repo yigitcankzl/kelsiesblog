@@ -134,15 +134,14 @@ export default function MapPage() {
     return (
         <>
             {/* Map hero section */}
-            <section className="relative w-full h-[75vh] min-h-[500px] bg-black flex flex-col items-center overflow-hidden scanlines" style={{ paddingTop: '100px' }}>
+            <section className="relative w-full h-[75vh] min-h-[500px] bg-black flex flex-col items-center overflow-hidden scanlines pt-[100px]">
 
                 {/* 3D Globe intro overlay — zooms into the map */}
                 {!globeDone && <GlobeIntro onFinished={() => setGlobeDone(true)} countriesWithPosts={countriesWithPosts} />}
 
                 {/* Map container — always rendered, globe overlays on top then dissolves */}
                 <div
-                    className="flex-1 relative"
-                    style={{ maxWidth: '1024px', width: '100%', paddingLeft: '24px', paddingRight: '24px' }}
+                    className="flex-1 relative max-w-screen-lg w-full px-6"
                 >
 
                     {/* Visited counter + XP bar */}
@@ -183,7 +182,7 @@ export default function MapPage() {
                         worldCopyJump={true}
                         maxBounds={[[-85, -Infinity], [85, Infinity]]}
                         maxBoundsViscosity={1.0}
-                        style={{ width: '100%', height: '100%' }}
+                        className="w-full h-full"
                     >
                         <TileLayer
                             attribution='&copy; <a href="https://carto.com/">CARTO</a>'

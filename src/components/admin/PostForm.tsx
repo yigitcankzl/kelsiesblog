@@ -240,8 +240,7 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                 <button
                     type="button"
                     onClick={onCancel}
-                    className="cursor-pointer transition-all duration-300"
-                    style={{ background: 'none', border: '1px solid #333', color: '#555', padding: '8px' }}
+                    className="cursor-pointer transition-all duration-300 bg-transparent border border-[#333] text-[#555] p-2"
                     onMouseEnter={e => { e.currentTarget.style.color = '#FF00E4'; e.currentTarget.style.borderColor = '#FF00E4'; }}
                     onMouseLeave={e => { e.currentTarget.style.color = '#555'; e.currentTarget.style.borderColor = '#333'; }}
                 >
@@ -355,7 +354,7 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                             onFocus={handleInputFocus} onBlur={handleInputBlur}>
                             {CONTENT_FONTS.map(f => <option key={f.value} value={f.value}>{f.label}</option>)}
                         </select>
-                        <div style={{ marginTop: '10px', padding: '14px', border: '1px solid #1a1a1a', backgroundColor: '#080808' }}>
+                        <div className="mt-2.5 p-3.5 border border-[#1a1a1a] bg-[#080808]">
                             <span style={{ fontFamily: getFontConfig(contentFont).family, fontSize: getFontConfig(contentFont).size, color: '#aaa', lineHeight: '2.2' }}>
                                 The quick brown fox jumps over the lazy dog.
                             </span>
@@ -370,14 +369,14 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                                 placeholder="HTTPS://... VEYA BILGISAYARDAN YÜKLE"
                                 style={{ ...inputStyle, flex: '1 1 200px' }}
                                 onFocus={handleInputFocus} onBlur={handleInputBlur} />
-                            <input ref={coverFileInputRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={handleCoverFileChange} />
+                            <input ref={coverFileInputRef} type="file" accept="image/*" className="hidden" onChange={handleCoverFileChange} />
                             <button type="button" onClick={() => coverFileInputRef.current?.click()} disabled={coverUploading} className="cursor-pointer"
                                 style={{
                                     ...FONT, fontSize: '7px', display: 'flex', alignItems: 'center', gap: '6px',
                                     padding: '10px 14px', border: '1px solid var(--neon-cyan)', color: 'var(--neon-cyan)',
                                     background: 'none', letterSpacing: '0.1em', transition: 'all 0.3s', flexShrink: 0,
                                 }}>
-                                {coverUploading ? <Loader style={{ width: '12px', height: '12px' }} className="animate-spin" /> : <UploadCloud style={{ width: '12px', height: '12px' }} />}
+                                {coverUploading ? <Loader className="w-3 h-3 animate-spin" /> : <UploadCloud className="w-3 h-3" />}
                                 {coverUploading ? 'YÜKLENİYOR...' : 'BILGISAYARDAN YÜKLE'}
                             </button>
                             <button type="button" onClick={() => setR2CoverOpen(true)} className="cursor-pointer"
@@ -388,13 +387,13 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                                 }}
                                 onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--neon-cyan)'; e.currentTarget.style.color = 'var(--neon-cyan)'; }}
                                 onMouseLeave={e => { e.currentTarget.style.borderColor = '#333'; e.currentTarget.style.color = '#aaa'; }}>
-                                <ImagePlus style={{ width: '12px', height: '12px' }} />
+                                <ImagePlus className="w-3 h-3" />
                                 R2 MEDIA
                             </button>
                         </div>
 
                         {r2CoverOpen && (
-                            <div style={{ marginTop: '10px' }}>
+                            <div className="mt-2.5">
                                 <R2MediaBrowser
                                     onClose={() => setR2CoverOpen(false)}
                                     onSelect={(urls) => { setCoverImage(urls[0]); setR2CoverOpen(false); }}
@@ -402,10 +401,12 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                             </div>
                         )}
                         {coverImage && (
-                            <div style={{ marginTop: '10px', border: '1px solid var(--brand)', overflow: 'hidden', position: 'relative', height: '140px' }}>
-                                <img src={coverImage} alt="Cover preview" style={{ width: '100%', height: '100%', objectFit: 'cover', filter: 'saturate(0.7) brightness(0.85)' }} />
-                                <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(0,0,0,0.5), transparent)' }} />
-                                <span style={{ ...FONT, fontSize: '6px', position: 'absolute', bottom: '8px', left: '10px', color: 'var(--brand)', letterSpacing: '0.1em' }}>PREVIEW</span>
+                            <div className="mt-2.5 border border-[var(--brand)] overflow-hidden relative h-[140px]">
+                                <img src={coverImage} alt="Cover preview" className="w-full h-full object-cover"
+                                    style={{ filter: 'saturate(0.7) brightness(0.85)' }} />
+                                <div className="absolute inset-0"
+                                    style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.5), transparent)' }} />
+                                <span className="absolute bottom-2 left-2.5" style={{ ...FONT, fontSize: '6px', color: 'var(--brand)', letterSpacing: '0.1em' }}>PREVIEW</span>
                             </div>
                         )}
                     </div>

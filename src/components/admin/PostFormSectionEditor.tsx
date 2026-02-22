@@ -203,7 +203,7 @@ export default function PostFormSectionEditor({
                             onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--brand)'; e.currentTarget.style.color = 'var(--brand)'; }}
                             onMouseLeave={e => { e.currentTarget.style.borderColor = '#333'; e.currentTarget.style.color = '#555'; }}
                         >
-                            <Plus style={{ width: '10px', height: '10px' }} />
+                            <Plus className="w-2.5 h-2.5" />
                             ADD IMAGE
                         </button>
                         <button
@@ -219,7 +219,7 @@ export default function PostFormSectionEditor({
                             onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--neon-cyan)'; }}
                             onMouseLeave={e => { e.currentTarget.style.borderColor = '#333'; }}
                         >
-                            {uploading ? <Loader style={{ width: '10px', height: '10px' }} className="animate-spin" /> : <UploadCloud style={{ width: '10px', height: '10px' }} />}
+                            {uploading ? <Loader className="w-2.5 h-2.5 animate-spin" /> : <UploadCloud className="w-2.5 h-2.5" />}
                             BILGISAYARDAN YÜKLE
                         </button>
                         <button
@@ -234,7 +234,7 @@ export default function PostFormSectionEditor({
                             onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--neon-cyan)'; e.currentTarget.style.color = 'var(--neon-cyan)'; }}
                             onMouseLeave={e => { e.currentTarget.style.borderColor = '#333'; e.currentTarget.style.color = '#aaa'; }}
                         >
-                            <ImagePlus style={{ width: '10px', height: '10px' }} />
+                            <ImagePlus className="w-2.5 h-2.5" />
                             STORAGE MEDIA
                         </button>
                         <button
@@ -251,7 +251,7 @@ export default function PostFormSectionEditor({
                             onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--brand)'; e.currentTarget.style.color = 'var(--brand)'; }}
                             onMouseLeave={e => { if (!driveOpen) { e.currentTarget.style.borderColor = '#333'; e.currentTarget.style.color = '#555'; } }}
                         >
-                            <UploadCloud style={{ width: '10px', height: '10px' }} />
+                            <UploadCloud className="w-2.5 h-2.5" />
                             IMPORT DRIVE
                         </button>
                     </div>
@@ -290,7 +290,7 @@ export default function PostFormSectionEditor({
                                         cursor: driveUrl.trim() ? 'pointer' : 'not-allowed', flexShrink: 0,
                                     }}
                                 >
-                                    {driveLoading ? <Loader style={{ width: '10px', height: '10px' }} className="animate-spin" /> : <UploadCloud style={{ width: '10px', height: '10px' }} />}
+                                    {driveLoading ? <Loader className="w-2.5 h-2.5 animate-spin" /> : <UploadCloud className="w-2.5 h-2.5" />}
                                     {driveLoading ? 'LOADING' : 'FETCH'}
                                 </button>
                             </div>
