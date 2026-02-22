@@ -85,71 +85,49 @@ export default function PostFormSectionEditor({
         <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            style={{
-                border: '1px solid #1a1a1a',
-                padding: '20px',
-                position: 'relative',
-                backgroundColor: '#080808',
-                transition: 'border-color 0.3s',
-            }}
+            className="relative p-5 border border-[#1a1a1a] bg-[#080808] transition-[border-color] duration-300"
             onMouseEnter={e => { e.currentTarget.style.borderColor = '#333'; }}
             onMouseLeave={e => { e.currentTarget.style.borderColor = '#1a1a1a'; }}
         >
             {/* Section header */}
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
+            <div className="flex items-center justify-between mb-4">
                 <span style={{ ...FONT, fontSize: '7px', color: 'var(--brand)' }}>
                     SEC_{String(index + 1).padStart(2, '0')}
                 </span>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                <div className="flex items-center gap-1">
                     <button
                         type="button"
                         onClick={onMoveUp}
                         disabled={index === 0}
-                        className="cursor-pointer"
-                        style={{
-                            width: '24px', height: '24px',
-                            display: 'flex', alignItems: 'center', justifyContent: 'center',
-                            background: 'none', border: '1px solid #333', color: '#555',
-                            opacity: index === 0 ? 0.3 : 1,
-                        }}
+                        className="cursor-pointer w-6 h-6 flex items-center justify-center bg-transparent border border-[#333] text-[#555]"
+                        style={{ opacity: index === 0 ? 0.3 : 1 }}
                     >
-                        <ChevronUp style={{ width: '12px', height: '12px' }} />
+                        <ChevronUp className="w-3 h-3" />
                     </button>
                     <button
                         type="button"
                         onClick={onMoveDown}
                         disabled={index === totalSections - 1}
-                        className="cursor-pointer"
-                        style={{
-                            width: '24px', height: '24px',
-                            display: 'flex', alignItems: 'center', justifyContent: 'center',
-                            background: 'none', border: '1px solid #333', color: '#555',
-                            opacity: index === totalSections - 1 ? 0.3 : 1,
-                        }}
+                        className="cursor-pointer w-6 h-6 flex items-center justify-center bg-transparent border border-[#333] text-[#555]"
+                        style={{ opacity: index === totalSections - 1 ? 0.3 : 1 }}
                     >
-                        <ChevronDown style={{ width: '12px', height: '12px' }} />
+                        <ChevronDown className="w-3 h-3" />
                     </button>
                     <button
                         type="button"
                         onClick={onRemove}
                         disabled={totalSections <= 1}
-                        className="cursor-pointer"
-                        style={{
-                            width: '24px', height: '24px',
-                            display: 'flex', alignItems: 'center', justifyContent: 'center',
-                            background: 'none', border: '1px solid #333', color: '#555',
-                            opacity: totalSections <= 1 ? 0.3 : 1,
-                            transition: 'all 0.3s',
-                        }}
+                        className="cursor-pointer w-6 h-6 flex items-center justify-center bg-transparent border border-[#333] text-[#555] transition-all duration-300"
+                        style={{ opacity: totalSections <= 1 ? 0.3 : 1 }}
                         onMouseEnter={e => { if (totalSections > 1) { e.currentTarget.style.color = '#FF00E4'; e.currentTarget.style.borderColor = '#FF00E4'; } }}
                         onMouseLeave={e => { e.currentTarget.style.color = '#555'; e.currentTarget.style.borderColor = '#333'; }}
                     >
-                        <Trash2 style={{ width: '12px', height: '12px' }} />
+                        <Trash2 className="w-3 h-3" />
                     </button>
                 </div>
             </div>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            <div className="flex flex-col gap-3">
                 <input
                     type="text"
                     value={section.heading}
@@ -160,9 +138,9 @@ export default function PostFormSectionEditor({
                     onBlur={handleInputBlur}
                 />
 
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                <div className="flex flex-col gap-1.5">
                     <label style={{ ...labelStyle, marginBottom: '4px' }}>
-                        <AlignLeft style={{ width: '10px', height: '10px' }} />
+                        <AlignLeft className="w-2.5 h-2.5" />
                         CONTENT
                     </label>
                     <RichTextEditor
@@ -172,9 +150,9 @@ export default function PostFormSectionEditor({
                 </div>
 
                 {/* Images Manager */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginTop: '12px' }}>
+                <div className="flex flex-col gap-1.5 mt-3">
                     <label style={{ ...labelStyle, marginBottom: '4px' }}>
-                        <ImagePlus style={{ width: '10px', height: '10px' }} />
+                        <ImagePlus className="w-2.5 h-2.5" />
                         IMAGES
                         {(section.images?.length || 0) > 0 && (
                             <span style={{ color: 'var(--neon-cyan)' }}>[ {section.images!.length} ]</span>
@@ -182,7 +160,7 @@ export default function PostFormSectionEditor({
                     </label>
 
                     {(section.images || []).map((imgUrl, imgIdx) => (
-                        <div key={imgIdx} style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+                        <div key={imgIdx} className="flex gap-1.5 items-center">
                             <input
                                 type="url"
                                 value={imgUrl}
@@ -195,17 +173,11 @@ export default function PostFormSectionEditor({
                             <button
                                 type="button"
                                 onClick={() => onRemoveImage(imgIdx)}
-                                className="cursor-pointer"
-                                style={{
-                                    width: '28px', height: '28px',
-                                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                    background: 'none', border: '1px solid #333', color: '#555',
-                                    flexShrink: 0, transition: 'all 0.3s',
-                                }}
+                                className="cursor-pointer w-7 h-7 flex items-center justify-center bg-transparent border border-[#333] text-[#555] shrink-0 transition-all duration-300"
                                 onMouseEnter={e => { e.currentTarget.style.color = '#FF00E4'; e.currentTarget.style.borderColor = '#FF00E4'; }}
                                 onMouseLeave={e => { e.currentTarget.style.color = '#555'; e.currentTarget.style.borderColor = '#333'; }}
                             >
-                                <X style={{ width: '12px', height: '12px' }} />
+                                <X className="w-3 h-3" />
                             </button>
                         </div>
                     ))}
@@ -214,11 +186,11 @@ export default function PostFormSectionEditor({
                         ref={fileInputRef}
                         type="file"
                         accept="image/*"
-                        style={{ display: 'none' }}
+                        className="hidden"
                         onChange={handleFileChange}
                     />
 
-                    <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                    <div className="flex gap-2 flex-wrap">
                         <button
                             type="button"
                             onClick={onAddImage}
@@ -294,8 +266,8 @@ export default function PostFormSectionEditor({
 
                     {/* Drive import inline */}
                     {driveOpen && (
-                        <div style={{ border: '1px solid var(--brand)', padding: '12px', backgroundColor: '#050505', marginTop: '6px' }}>
-                            <div style={{ display: 'flex', gap: '6px', marginBottom: driveError ? '8px' : '0' }}>
+                        <div className="border border-[var(--brand)] p-3 bg-[#050505] mt-1.5">
+                            <div className="flex gap-1.5" style={{ marginBottom: driveError ? '8px' : '0' }}>
                                 <input
                                     type="text"
                                     value={driveUrl}

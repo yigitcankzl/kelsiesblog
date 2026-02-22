@@ -13,8 +13,8 @@ export default function PostList({ onEdit }: PostListProps) {
 
     if (posts.length === 0) {
         return (
-            <div style={{ textAlign: 'center', padding: '80px 0' }}>
-                <FileText style={{ width: '48px', height: '48px', color: '#333', margin: '0 auto 16px' }} />
+            <div className="text-center py-20">
+                <FileText className="w-12 h-12 text-[#333] mx-auto mb-4" />
                 <h3 style={{ ...FONT, fontSize: '14px', color: '#555', marginBottom: '8px' }}>
                     NO DATA FOUND
                 </h3>
@@ -32,8 +32,8 @@ export default function PostList({ onEdit }: PostListProps) {
     }, {});
 
     return (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <div className="flex flex-col gap-8">
+            <div className="flex items-center justify-between">
                 <h2 style={{ ...FONT, fontSize: '14px', color: '#fff' }}>
                     ALL POSTS <span style={{ color: 'var(--neon-cyan)' }}>[ {posts.length} ]</span>
                 </h2>
@@ -41,18 +41,18 @@ export default function PostList({ onEdit }: PostListProps) {
 
             {Object.entries(grouped).map(([country, countryPosts]) => (
                 <div key={country}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px' }}>
-                        <MapPin style={{ width: '12px', height: '12px', color: 'var(--brand)' }} />
+                    <div className="flex items-center gap-2.5 mb-4">
+                        <MapPin className="w-3 h-3 text-[var(--brand)]" />
                         <h3 style={{ ...FONT, fontSize: '11px', color: 'var(--neon-amber)', textTransform: 'uppercase', letterSpacing: '0.15em' }}>
                             {country}
                         </h3>
-                        <div style={{ flex: 1, height: '1px', background: 'linear-gradient(to right, #333, transparent)' }} />
+                        <div className="flex-1 h-px bg-gradient-to-r from-[#333] to-transparent" />
                         <span style={{ ...FONT, fontSize: '8px', color: '#444' }}>
                             {countryPosts.length} {countryPosts.length === 1 ? 'ENTRY' : 'ENTRIES'}
                         </span>
                     </div>
 
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    <div className="flex flex-col gap-2">
                         {countryPosts.map((post, index) => (
                             <motion.div
                                 key={post.id}
@@ -74,19 +74,20 @@ export default function PostList({ onEdit }: PostListProps) {
                                     e.currentTarget.style.boxShadow = 'none';
                                 }}
                             >
-                                <div style={{ display: 'flex', alignItems: 'stretch' }}>
+                                <div className="flex items-stretch">
                                     {/* Image */}
-                                    <div style={{ width: '120px', height: '110px', flexShrink: 0, overflow: 'hidden', position: 'relative' }}>
+                                    <div className="w-[120px] h-[110px] shrink-0 overflow-hidden relative">
                                         <img
                                             src={post.coverImage}
                                             alt={post.title}
-                                            style={{ width: '100%', height: '100%', objectFit: 'cover', filter: 'saturate(0.6) brightness(0.8)' }}
+                                            className="w-full h-full object-cover"
+                                            style={{ filter: 'saturate(0.6) brightness(0.8)' }}
                                         />
-                                        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, transparent 70%, #080808)' }} />
+                                        <div className="absolute inset-0" style={{ background: 'linear-gradient(to right, transparent 70%, #080808)' }} />
                                     </div>
 
                                     {/* Info */}
-                                    <div style={{ flex: 1, padding: '16px 20px', display: 'flex', flexDirection: 'column', justifyContent: 'center', minWidth: 0 }}>
+                                    <div className="flex-1 px-5 py-4 flex flex-col justify-center min-w-0">
                                         <h4 style={{ ...FONT, fontSize: '12px', color: '#fff', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                                             {post.title}
                                         </h4>
@@ -99,21 +100,10 @@ export default function PostList({ onEdit }: PostListProps) {
                                     </div>
 
                                     {/* Actions */}
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '0 20px' }}>
+                                    <div className="flex items-center gap-2 px-5">
                                         <button
                                             onClick={() => onEdit(post)}
-                                            className="cursor-pointer"
-                                            style={{
-                                                width: '36px',
-                                                height: '36px',
-                                                display: 'flex',
-                                                alignItems: 'center',
-                                                justifyContent: 'center',
-                                                backgroundColor: 'transparent',
-                                                border: '1px solid #333',
-                                                color: '#555',
-                                                transition: 'all 0.3s',
-                                            }}
+                                            className="cursor-pointer w-9 h-9 flex items-center justify-center bg-transparent border border-[#333] text-[#555] transition-all duration-300"
                                             onMouseEnter={e => {
                                                 e.currentTarget.style.color = 'var(--neon-cyan)';
                                                 e.currentTarget.style.borderColor = 'var(--neon-cyan)';
@@ -125,24 +115,13 @@ export default function PostList({ onEdit }: PostListProps) {
                                                 e.currentTarget.style.boxShadow = 'none';
                                             }}
                                         >
-                                            <Edit2 style={{ width: '14px', height: '14px' }} />
+                                            <Edit2 className="w-3.5 h-3.5" />
                                         </button>
                                         <button
                                             onClick={() => {
                                                 if (confirm('Delete this post?')) deletePost(post.id);
                                             }}
-                                            className="cursor-pointer"
-                                            style={{
-                                                width: '36px',
-                                                height: '36px',
-                                                display: 'flex',
-                                                alignItems: 'center',
-                                                justifyContent: 'center',
-                                                backgroundColor: 'transparent',
-                                                border: '1px solid #333',
-                                                color: '#555',
-                                                transition: 'all 0.3s',
-                                            }}
+                                            className="cursor-pointer w-9 h-9 flex items-center justify-center bg-transparent border border-[#333] text-[#555] transition-all duration-300"
                                             onMouseEnter={e => {
                                                 e.currentTarget.style.color = '#FF00E4';
                                                 e.currentTarget.style.borderColor = '#FF00E4';
@@ -154,7 +133,7 @@ export default function PostList({ onEdit }: PostListProps) {
                                                 e.currentTarget.style.boxShadow = 'none';
                                             }}
                                         >
-                                            <Trash2 style={{ width: '14px', height: '14px' }} />
+                                            <Trash2 className="w-3.5 h-3.5" />
                                         </button>
                                     </div>
                                 </div>
