@@ -1,20 +1,13 @@
-import { useState, useMemo, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Trash2, Edit2, Save, X, Image, UploadCloud, Loader } from 'lucide-react';
+import { useState, useMemo } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { Plus, Image, UploadCloud } from 'lucide-react';
 import { useBlogStore } from '@/store/store';
 import type { GalleryItem } from '@/types';
-import { uploadImageToR2 } from '@/lib/r2Api';
 import R2MediaBrowser from './R2MediaBrowser';
 import DriveImportPanel from './DriveImportPanel';
+import GalleryForm, { type GalleryFormData } from './GalleryForm';
+import GalleryGrid from './GalleryGrid';
 import { FONT } from '@/lib/constants';
-import { inputStyle, labelStyle } from '@/lib/adminStyles';
-
-interface GalleryFormData {
-    src: string;
-    caption: string;
-    city: string;
-    country: string;
-}
 
 const emptyForm: GalleryFormData = { src: '', caption: '', city: '', country: '' };
 
@@ -23,35 +16,10 @@ export default function GalleryManager() {
     const [editingId, setEditingId] = useState<string | null>(null);
     const [isAdding, setIsAdding] = useState(false);
     const [form, setForm] = useState<GalleryFormData>(emptyForm);
-    const [previewError, setPreviewError] = useState(false);
 
-    // Drive import
     const [showDriveImport, setShowDriveImport] = useState(false);
-
-    // R2 media browser
     const [showR2Browser, setShowR2Browser] = useState(false);
 
-    const galleryFileInputRef = useRef<HTMLInputElement>(null);
-    const [galleryUploading, setGalleryUploading] = useState(false);
-
-    const handleGalleryFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        if (!file || !file.type.startsWith('image/')) return;
-        setGalleryUploading(true);
-        try {
-            const result = await uploadImageToR2(file);
-            setForm(prev => ({ ...prev, src: result.url }));
-            setPreviewError(false);
-        } catch (err: unknown) {
-            console.error('Gallery image upload failed:', err);
-            alert(err instanceof Error ? err.message : 'Upload failed');
-        } finally {
-            setGalleryUploading(false);
-            e.target.value = '';
-        }
-    };
-
-    // Derive unique countries and cities for datalists
     const uniqueCountries = useMemo(() => {
         const countries = new Set(posts.map(p => p.country));
         galleryItems.forEach(item => countries.add(item.country));
@@ -69,14 +37,12 @@ export default function GalleryManager() {
         setEditingId(item.id);
         setForm({ src: item.src, caption: item.caption, city: item.city, country: item.country });
         setIsAdding(false);
-        setPreviewError(false);
     };
 
     const startAdd = () => {
         setIsAdding(true);
         setEditingId(null);
         setForm(emptyForm);
-        setPreviewError(false);
     };
 
     const cancel = () => {
@@ -87,14 +53,10 @@ export default function GalleryManager() {
 
     const handleSave = () => {
         if (!form.src.trim()) return;
-
         if (editingId) {
             updateGalleryItem(editingId, form);
         } else {
-            addGalleryItem({
-                id: `gallery-${Date.now()}`,
-                ...form,
-            });
+            addGalleryItem({ id: `gallery-${Date.now()}`, ...form });
         }
         cancel();
     };
@@ -130,347 +92,43 @@ export default function GalleryManager() {
                 </div>
                 {!showForm && (
                     <div style={{ display: 'flex', gap: '12px' }}>
-                        <button
-                            onClick={() => setShowR2Browser(true)}
-                            className="cursor-pointer"
-                            style={{
-                                ...FONT,
-                                fontSize: '7px',
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '8px',
-                                backgroundColor: 'transparent',
-                                color: 'var(--neon-cyan)',
-                                border: '1px solid var(--neon-cyan)',
-                                padding: '10px 16px',
-                                letterSpacing: '0.1em',
-                                transition: 'all 0.3s',
-                            }}
-                        >
-                            <Image className="w-3 h-3" />
-                            R2 MEDIA
+                        <button onClick={() => setShowR2Browser(true)} className="cursor-pointer"
+                            style={{ ...FONT, fontSize: '7px', display: 'flex', alignItems: 'center', gap: '8px', backgroundColor: 'transparent', color: 'var(--neon-cyan)', border: '1px solid var(--neon-cyan)', padding: '10px 16px', letterSpacing: '0.1em', transition: 'all 0.3s' }}>
+                            <Image className="w-3 h-3" /> R2 MEDIA
                         </button>
-                        <button
-                            onClick={() => setShowDriveImport(true)}
-                            className="cursor-pointer"
-                            style={{
-                                ...FONT,
-                                fontSize: '7px',
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '8px',
-                                backgroundColor: 'transparent',
-                                color: 'var(--brand)',
-                                border: '1px solid var(--brand)',
-                                padding: '10px 16px',
-                                letterSpacing: '0.1em',
-                                transition: 'all 0.3s',
-                            }}
-                        >
-                            <UploadCloud className="w-3 h-3" />
-                            IMPORT DRIVE
+                        <button onClick={() => setShowDriveImport(true)} className="cursor-pointer"
+                            style={{ ...FONT, fontSize: '7px', display: 'flex', alignItems: 'center', gap: '8px', backgroundColor: 'transparent', color: 'var(--brand)', border: '1px solid var(--brand)', padding: '10px 16px', letterSpacing: '0.1em', transition: 'all 0.3s' }}>
+                            <UploadCloud className="w-3 h-3" /> IMPORT DRIVE
                         </button>
-                        <button
-                            onClick={startAdd}
-                            className="cursor-pointer"
-                            style={{
-                                ...FONT,
-                                fontSize: '7px',
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '8px',
-                                backgroundColor: 'var(--neon-cyan)',
-                                color: '#000',
-                                border: 'none',
-                                padding: '10px 16px',
-                                letterSpacing: '0.1em',
-                                boxShadow: '0 0 12px rgba(0, 255, 255, 0.3)',
-                                transition: 'all 0.3s',
-                            }}
-                        >
-                            <Plus className="w-3 h-3" />
-                            ADD IMAGE
+                        <button onClick={startAdd} className="cursor-pointer"
+                            style={{ ...FONT, fontSize: '7px', display: 'flex', alignItems: 'center', gap: '8px', backgroundColor: 'var(--neon-cyan)', color: '#000', border: 'none', padding: '10px 16px', letterSpacing: '0.1em', boxShadow: '0 0 12px rgba(0, 255, 255, 0.3)', transition: 'all 0.3s' }}>
+                            <Plus className="w-3 h-3" /> ADD IMAGE
                         </button>
                     </div>
                 )}
             </div>
 
-            {/* R2 Browser */}
-            {showR2Browser && (
-                <R2MediaBrowser onClose={() => setShowR2Browser(false)} />
-            )}
-
-            {/* Drive Import Dialog */}
-            {showDriveImport && (
-                <DriveImportPanel
-                    onImport={handleDriveImport}
-                    onClose={() => setShowDriveImport(false)}
-                />
-            )}
+            {showR2Browser && <R2MediaBrowser onClose={() => setShowR2Browser(false)} />}
+            {showDriveImport && <DriveImportPanel onImport={handleDriveImport} onClose={() => setShowDriveImport(false)} />}
 
             <AnimatePresence mode="wait">
                 {showForm ? (
-                    <motion.div
-                        key="gallery-form"
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -20 }}
-                        transition={{ duration: 0.3 }}
-                    >
-                        <div style={{ border: '1px solid #1a1a1a', padding: '24px', marginBottom: '24px' }}>
-                            <h3 style={{ ...FONT, fontSize: '9px', color: 'var(--neon-cyan)', marginBottom: '24px' }}>
-                                {editingId ? '> EDIT IMAGE' : '> NEW IMAGE'}
-                            </h3>
-
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
-                                <div style={{ gridColumn: '1 / -1' }}>
-                                    <label style={labelStyle}>Image URL</label>
-                                    <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
-                                        <input
-                                            type="text"
-                                            value={form.src}
-                                            onChange={e => { setForm({ ...form, src: e.target.value }); setPreviewError(false); }}
-                                            placeholder="https://... veya bilgisayardan yükle"
-                                            style={{ ...inputStyle, flex: '1 1 200px' }}
-                                        />
-                                        <input
-                                            ref={galleryFileInputRef}
-                                            type="file"
-                                            accept="image/*"
-                                            style={{ display: 'none' }}
-                                            onChange={handleGalleryFileChange}
-                                        />
-                                        <button
-                                            type="button"
-                                            onClick={() => galleryFileInputRef.current?.click()}
-                                            disabled={galleryUploading}
-                                            className="cursor-pointer"
-                                            style={{
-                                                ...FONT,
-                                                fontSize: '7px',
-                                                display: 'flex',
-                                                alignItems: 'center',
-                                                gap: '6px',
-                                                padding: '10px 14px',
-                                                border: '1px solid var(--neon-cyan)',
-                                                color: 'var(--neon-cyan)',
-                                                background: 'none',
-                                                letterSpacing: '0.1em',
-                                                transition: 'all 0.3s',
-                                                flexShrink: 0,
-                                            }}
-                                        >
-                                            {galleryUploading ? <Loader className="w-3 h-3 animate-spin" /> : <UploadCloud className="w-3 h-3" />}
-                                            {galleryUploading ? 'YÜKLENİYOR...' : 'BILGISAYARDAN YÜKLE'}
-                                        </button>
-                                    </div>
-                                </div>
-                                <div style={{ gridColumn: '1 / -1' }}>
-                                    <label style={labelStyle}>Caption</label>
-                                    <input
-                                        type="text"
-                                        value={form.caption}
-                                        onChange={e => setForm({ ...form, caption: e.target.value })}
-                                        placeholder="Photo description..."
-                                        style={inputStyle}
-                                    />
-                                </div>
-                                <div>
-                                    <label style={labelStyle}>Country</label>
-                                    <input
-                                        type="text"
-                                        list="country-list"
-                                        value={form.country}
-                                        onChange={e => setForm({ ...form, country: e.target.value })}
-                                        placeholder="e.g. Japan"
-                                        style={inputStyle}
-                                    />
-                                    <datalist id="country-list">
-                                        {uniqueCountries.map(country => (
-                                            <option key={country} value={country} />
-                                        ))}
-                                    </datalist>
-                                </div>
-                                <div>
-                                    <label style={labelStyle}>City</label>
-                                    <input
-                                        type="text"
-                                        list="city-list"
-                                        value={form.city}
-                                        onChange={e => setForm({ ...form, city: e.target.value })}
-                                        placeholder="e.g. Tokyo"
-                                        style={inputStyle}
-                                        disabled={!form.country}
-                                    />
-                                    <datalist id="city-list">
-                                        {availableCities.map(city => (
-                                            <option key={city} value={city} />
-                                        ))}
-                                    </datalist>
-                                </div>
-                            </div>
-
-                            {/* Preview */}
-                            {form.src && !previewError && (
-                                <div style={{ marginBottom: '16px' }}>
-                                    <label style={labelStyle}>Preview</label>
-                                    <div style={{
-                                        width: '200px',
-                                        height: '140px',
-                                        overflow: 'hidden',
-                                        border: '1px solid #222',
-                                    }}>
-                                        <img
-                                            src={form.src}
-                                            alt="preview"
-                                            referrerPolicy="no-referrer"
-                                            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                                            onError={() => setPreviewError(true)}
-                                        />
-                                    </div>
-                                </div>
-                            )}
-
-                            {/* Actions */}
-                            <div style={{ display: 'flex', gap: '12px', marginTop: '20px' }}>
-                                <button
-                                    onClick={handleSave}
-                                    className="cursor-pointer"
-                                    style={{
-                                        ...FONT,
-                                        fontSize: '7px',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        gap: '8px',
-                                        backgroundColor: 'var(--brand)',
-                                        color: '#000',
-                                        border: 'none',
-                                        padding: '10px 16px',
-                                        letterSpacing: '0.1em',
-                                        boxShadow: '0 0 12px rgba(0, 255, 65, 0.3)',
-                                    }}
-                                >
-                                    <Save className="w-3 h-3" />
-                                    {editingId ? 'UPDATE' : 'ADD'}
-                                </button>
-                                <button
-                                    onClick={cancel}
-                                    className="cursor-pointer"
-                                    style={{
-                                        ...FONT,
-                                        fontSize: '7px',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        gap: '8px',
-                                        background: 'none',
-                                        border: '1px solid #333',
-                                        color: '#555',
-                                        padding: '10px 16px',
-                                    }}
-                                >
-                                    <X className="w-3 h-3" />
-                                    CANCEL
-                                </button>
-                            </div>
-                        </div>
+                    <motion.div key="gallery-form" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }} transition={{ duration: 0.3 }}>
+                        <GalleryForm
+                            form={form}
+                            onFormChange={setForm}
+                            onSave={handleSave}
+                            onCancel={cancel}
+                            isEditing={editingId !== null}
+                            uniqueCountries={uniqueCountries}
+                            availableCities={availableCities}
+                        />
                     </motion.div>
                 ) : (
-                    <motion.div
-                        key="gallery-list"
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -20 }}
-                        transition={{ duration: 0.3 }}
-                    >
-                        {galleryItems.length === 0 ? (
-                            <div style={{ textAlign: 'center', padding: '60px 0' }}>
-                                <Image className="w-8 h-8 mx-auto" style={{ color: '#333', marginBottom: '16px' }} />
-                                <p style={{ ...FONT, fontSize: '9px', color: '#444', lineHeight: '2' }}>
-                                    NO GALLERY IMAGES YET
-                                </p>
-                                <p style={{ ...FONT, fontSize: '7px', color: '#333', marginTop: '8px' }}>
-                                    {'>'} ADD YOUR FIRST IMAGE_
-                                </p>
-                            </div>
-                        ) : (
-                            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                                {galleryItems.map((item, index) => (
-                                    <motion.div
-                                        key={item.id}
-                                        initial={{ opacity: 0, y: 12 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        transition={{ delay: index * 0.04, duration: 0.3 }}
-                                        style={{
-                                            border: '1px solid #1a1a1a',
-                                            overflow: 'hidden',
-                                            position: 'relative',
-                                        }}
-                                    >
-                                        <div style={{ aspectRatio: '4/3', overflow: 'hidden' }}>
-                                            <img
-                                                src={item.src}
-                                                alt={item.caption}
-                                                referrerPolicy="no-referrer"
-                                                style={{
-                                                    width: '100%',
-                                                    height: '100%',
-                                                    objectFit: 'cover',
-                                                    filter: 'brightness(0.8)',
-                                                }}
-                                            />
-                                        </div>
-                                        <div style={{ padding: '12px' }}>
-                                            <p style={{ ...FONT, fontSize: '7px', color: '#ccc', marginBottom: '4px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                                                {item.caption || 'Untitled'}
-                                            </p>
-                                            <p style={{ ...FONT, fontSize: '6px', color: 'var(--brand)', letterSpacing: '0.1em' }}>
-                                                {item.city}{item.city && item.country ? ', ' : ''}{item.country}
-                                            </p>
-                                            <div style={{ display: 'flex', gap: '8px', marginTop: '10px' }}>
-                                                <button
-                                                    onClick={() => startEdit(item)}
-                                                    className="cursor-pointer"
-                                                    style={{
-                                                        ...FONT,
-                                                        fontSize: '6px',
-                                                        display: 'flex',
-                                                        alignItems: 'center',
-                                                        gap: '4px',
-                                                        background: 'none',
-                                                        border: '1px solid #333',
-                                                        color: 'var(--neon-cyan)',
-                                                        padding: '6px 10px',
-                                                        transition: 'all 0.3s',
-                                                    }}
-                                                >
-                                                    <Edit2 className="w-2.5 h-2.5" />
-                                                    EDIT
-                                                </button>
-                                                <button
-                                                    onClick={() => deleteGalleryItem(item.id)}
-                                                    className="cursor-pointer"
-                                                    style={{
-                                                        ...FONT,
-                                                        fontSize: '6px',
-                                                        display: 'flex',
-                                                        alignItems: 'center',
-                                                        gap: '4px',
-                                                        background: 'none',
-                                                        border: '1px solid #333',
-                                                        color: 'var(--neon-magenta)',
-                                                        padding: '6px 10px',
-                                                        transition: 'all 0.3s',
-                                                    }}
-                                                >
-                                                    <Trash2 className="w-2.5 h-2.5" />
-                                                    DEL
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </motion.div>
-                                ))}
-                            </div>
-                        )}
+                    <motion.div key="gallery-list" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }} transition={{ duration: 0.3 }}>
+                        <GalleryGrid items={galleryItems} onEdit={startEdit} onDelete={deleteGalleryItem} />
                     </motion.div>
                 )}
             </AnimatePresence>
