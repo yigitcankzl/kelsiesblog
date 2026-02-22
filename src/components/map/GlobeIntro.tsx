@@ -305,8 +305,8 @@ function runGlobeAnimation(
 
             // Rotation: stop adding speed early, decay cubically so it
             // reaches ≈ 0 well before the plane is fully flat.
-            if (t < 0.3) rotY += 0.025 * (1 - t);
-            const rotDecay = Math.pow(1 - t, 3);     // cubic → fast decay
+            if (t < 0.4) rotY += 0.025 * (1 - t);
+            const rotDecay = Math.pow(1 - t, 1.5);   // gentle decay → slower unwind
             globe.rotation.y = rotY * rotDecay;
             atmosphere.rotation.y = globe.rotation.y;
             camera.position.z = zStart + (zEnd - zStart) * t;
