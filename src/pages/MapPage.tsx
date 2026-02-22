@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import { MapContainer, TileLayer, GeoJSON, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -8,6 +8,7 @@ import { useBlogStore } from '@/store/store';
 import { countryBounds } from '@/data/countryBounds';
 import countriesGeoJson from '@/data/countries.geo.json';
 import CountryView from '@/components/map/CountryView';
+import GlobeIntro from '@/components/map/GlobeIntro';
 import ContentArea from '@/components/content/ContentArea';
 import AllStoriesPage from '@/pages/AllStoriesPage';
 import GalleryPage from '@/pages/GalleryPage';
@@ -55,6 +56,7 @@ export default function MapPage() {
     const { activePage, selectedCountry, setSelectedCountry, setSelectedPost, getCountriesWithPosts } = useBlogStore();
     const countriesWithPosts = getCountriesWithPosts();
     const hoveredLayerRef = useRef<L.Layer | null>(null);
+    const [globeDone, setGlobeDone] = useState(false);
 
     const getBaseStyle = useCallback((geoJsonName: string) => {
         const postName = toPostName(geoJsonName);
@@ -134,8 +136,14 @@ export default function MapPage() {
             {/* Map hero section */}
             <section className="relative w-full h-[75vh] min-h-[500px] bg-black flex flex-col items-center overflow-hidden scanlines" style={{ paddingTop: '100px' }}>
 
-                {/* Map container */}
-                <div className="flex-1 relative" style={{ maxWidth: '1024px', width: '100%', paddingLeft: '24px', paddingRight: '24px' }}>
+                {/* 3D Globe intro overlay — zooms into the map */}
+                {!globeDone && <GlobeIntro onFinished={() => setGlobeDone(true)} />}
+
+                {/* Map container — always rendered, globe overlays on top then dissolves */}
+                <div
+                    className="flex-1 relative"
+                    style={{ maxWidth: '1024px', width: '100%', paddingLeft: '24px', paddingRight: '24px' }}
+                >
 
                     {/* Visited counter + XP bar */}
                     <div className="absolute bottom-10 left-8 z-[600] hidden md:flex items-end gap-5">
