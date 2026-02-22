@@ -127,9 +127,6 @@ export default function PostReader() {
                                         <div
                                             dangerouslySetInnerHTML={{ __html: section.content }}
                                             className="rte-content"
-                                            style={{
-                                                ['--image-width' as any]: 'auto' // Placeholder if we want to use CSS vars, but HTML attributes should work
-                                            }}
                                         />
                                         <style>{`
                                             .rte-content img {

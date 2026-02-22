@@ -287,8 +287,8 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
             }));
             setDriveImportIdx(null);
             setDriveUrl('');
-        } catch (err: any) {
-            setDriveError(err.message || 'FAILED TO FETCH');
+        } catch (err: unknown) {
+            setDriveError(err instanceof Error ? err.message : 'FAILED TO FETCH');
         } finally {
             setDriveLoading(false);
         }
@@ -490,8 +490,8 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                                 value={country}
                                 onChange={(e) => { setCountry(e.target.value); setCity(''); }}
                                 style={{ ...inputStyle, cursor: 'pointer', appearance: 'none' }}
-                                onFocus={handleInputFocus as any}
-                                onBlur={handleInputBlur as any}
+                                onFocus={handleInputFocus}
+                                onBlur={handleInputBlur}
                                 required
                             >
                                 <option value="">SELECT...</option>
@@ -508,8 +508,8 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                                 value={city}
                                 onChange={(e) => setCity(e.target.value)}
                                 style={{ ...inputStyle, cursor: 'pointer', appearance: 'none', opacity: country ? 1 : 0.4 }}
-                                onFocus={handleInputFocus as any}
-                                onBlur={handleInputBlur as any}
+                                onFocus={handleInputFocus}
+                                onBlur={handleInputBlur}
                                 required
                                 disabled={!country}
                             >
@@ -590,8 +590,8 @@ export default function PostForm({ post, onSave, onCancel }: PostFormProps) {
                             value={contentFont}
                             onChange={(e) => setContentFont(e.target.value)}
                             style={{ ...inputStyle, cursor: 'pointer', appearance: 'none' }}
-                            onFocus={handleInputFocus as any}
-                            onBlur={handleInputBlur as any}
+                            onFocus={handleInputFocus}
+                            onBlur={handleInputBlur}
                         >
                             {CONTENT_FONTS.map((f) => (
                                 <option key={f.value} value={f.value}>
