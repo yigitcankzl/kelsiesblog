@@ -83,12 +83,12 @@ export default function MapPage() {
         };
     }, [countriesWithPosts, selectedCountry]);
 
-    const geoJsonStyle = useCallback((feature: any) => {
+    const geoJsonStyle = useCallback((feature?: GeoJSON.Feature) => {
         const geoName = feature?.properties?.ADMIN || feature?.properties?.name || '';
         return getBaseStyle(geoName);
     }, [getBaseStyle]);
 
-    const onEachCountry = useCallback((feature: any, layer: L.Layer) => {
+    const onEachCountry = useCallback((feature: GeoJSON.Feature, layer: L.Layer) => {
         const geoName = feature?.properties?.ADMIN || feature?.properties?.name || '';
         const postName = toPostName(geoName);
         const has = countriesWithPosts.includes(postName);
@@ -96,14 +96,14 @@ export default function MapPage() {
         layer.on({
             mouseover: () => {
                 hoveredLayerRef.current = layer;
-                (layer as any).setStyle({
+                (layer as L.Path).setStyle({
                     fillColor: has ? '#00FF41' : '#333333',
                     fillOpacity: has ? 0.7 : 0.4,
                 });
             },
             mouseout: () => {
                 hoveredLayerRef.current = null;
-                (layer as any).setStyle(getBaseStyle(geoName));
+                (layer as L.Path).setStyle(getBaseStyle(geoName));
             },
             click: () => {
                 if (has) { setSelectedPost(null); setSelectedCountry(postName); }
@@ -189,7 +189,7 @@ export default function MapPage() {
                             attribution='&copy; <a href="https://carto.com/">CARTO</a>'
                             url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
                         />
-                        <GeoJSON key={geoJsonKey} data={countriesGeoJson as any} style={geoJsonStyle} onEachFeature={onEachCountry} />
+                        <GeoJSON key={geoJsonKey} data={countriesGeoJson as GeoJSON.FeatureCollection} style={geoJsonStyle} onEachFeature={onEachCountry} />
                         <FlyToCountry country={selectedCountry} />
                         {selectedCountry && <CountryView country={selectedCountry} />}
                     </MapContainer>

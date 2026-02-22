@@ -13,12 +13,12 @@ const pending = new Map<string, Promise<GeoJSON.Feature | null>>();
  * Find the country land polygon from countries.geo.json to use for clipping.
  */
 function getCountryPolygon(country: string): GeoJSON.Feature<GeoJSON.Polygon | GeoJSON.MultiPolygon> | null {
-    const feature = (countriesGeoJson as any).features.find(
-        (f: any) => (f.properties?.ADMIN === country || f.properties?.name === country)
+    const feature = countriesGeoJson.features.find(
+        f => (f.properties?.ADMIN === country || f.properties?.name === country)
     );
     if (!feature) return null;
     if (feature.geometry.type === 'Polygon' || feature.geometry.type === 'MultiPolygon') {
-        return feature;
+        return feature as GeoJSON.Feature<GeoJSON.Polygon | GeoJSON.MultiPolygon>;
     }
     return null;
 }

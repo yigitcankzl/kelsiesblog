@@ -1,4 +1,5 @@
 declare module '*.geo.json' {
-    const value: any;
+    import type { CountriesGeoJSON } from './types';
+    const value: CountriesGeoJSON;
     export default value;
 }

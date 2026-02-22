@@ -56,8 +56,8 @@ export default function CountryView({ country }: CountryViewProps) {
         fillOpacity: 0.5,
     }), []);
 
-    const onEachGreenCity = useCallback((feature: any, layer: L.Layer) => {
-        const cityName = feature.properties.name;
+    const onEachGreenCity = useCallback((feature: GeoJSON.Feature, layer: L.Layer) => {
+        const cityName = feature.properties?.name ?? '';
         layer.bindTooltip(cityName, {
             sticky: true,
             direction: 'auto',
@@ -65,10 +65,10 @@ export default function CountryView({ country }: CountryViewProps) {
         });
         layer.on({
             mouseover: () => {
-                (layer as any).setStyle({ fillOpacity: 0.7, weight: 2.5 });
+                (layer as L.Path).setStyle({ fillOpacity: 0.7, weight: 2.5 });
             },
             mouseout: () => {
-                (layer as any).setStyle({ fillOpacity: 0.5, weight: 1.5 });
+                (layer as L.Path).setStyle({ fillOpacity: 0.5, weight: 1.5 });
             },
             click: () => {
                 const posts = getPostsForCity(country, cityName);
@@ -104,7 +104,7 @@ export default function CountryView({ country }: CountryViewProps) {
             {greenGeoJson.features.length > 0 && (
                 <GeoJSON
                     key={`green-${geoKey}`}
-                    data={greenGeoJson as any}
+                    data={greenGeoJson as GeoJSON.FeatureCollection}
                     style={greenStyle}
                     onEachFeature={onEachGreenCity}
                 />

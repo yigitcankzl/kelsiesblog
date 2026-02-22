@@ -81,7 +81,7 @@ function drawMapContent(
     const toX = (lon: number) => ((lon + 180) / 360) * w;
     const toMY = (lat: number) => mercY(lat) * h;
 
-    for (const feature of ((countriesGeoJson as any).features || [])) {
+    for (const feature of countriesGeoJson.features) {
         const geoName = feature.properties?.ADMIN || feature.properties?.name || '';
         const has = countriesWithPosts.includes(toPostName(geoName));
 
@@ -98,7 +98,7 @@ function drawMapContent(
         ctx.strokeStyle = sc;
         ctx.lineWidth = sw;
 
-        const geom = feature.geometry;
+        const geom = feature.geometry as GeoJSON.Geometry | null;
         if (!geom) continue;
 
         let polys: number[][][][] = [];

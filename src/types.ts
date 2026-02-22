@@ -83,3 +83,20 @@ export interface AboutContent {
     quests: { title: string; desc: string }[];
     socials: SocialLink[];
 }
+
+export interface CountryProperties {
+    ADMIN: string;
+    name: string;
+    [key: string]: unknown;
+}
+
+export interface CountryFeature {
+    type: 'Feature';
+    properties: CountryProperties;
+    geometry: GeoJSON.Polygon | GeoJSON.MultiPolygon;
+}
+
+export interface CountriesGeoJSON {
+    type: 'FeatureCollection';
+    features: CountryFeature[];
+}
