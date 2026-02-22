@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { MapPin, Globe, Camera, Plane, Instagram, Twitter, Mail, Github, Linkedin, Youtube, ExternalLink } from 'lucide-react';
-import BackButton from '@/components/shared/BackButton';
+import PageHeader from '@/components/shared/PageHeader';
 import { useBlogStore } from '@/store/store';
 import { FONT } from '@/lib/constants';
 
@@ -22,27 +22,14 @@ export default function AboutPage() {
         <section className="bg-black min-h-screen pb-16" style={{ paddingTop: '100px' }}>
             <div style={{ maxWidth: '1024px', margin: '0 auto', paddingLeft: '24px', paddingRight: '24px' }}>
                 {/* Header */}
-                <motion.div
-                    className="flex items-end gap-6 mb-10"
-                    initial={{ opacity: 0, x: -12 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.3 }}
-                >
-                    <BackButton onClick={() => setActivePage('map')} />
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                        <div style={{ width: '1px', height: '40px', backgroundColor: 'var(--brand)', opacity: 0.3 }} />
-                        <div>
-                            <h1 className="text-glitch" style={{ ...FONT, fontSize: '24px', color: '#fff', lineHeight: 1.4 }}
-                                data-text="ABOUT ME">
-                                ABOUT ME
-                            </h1>
-                            <p style={{ ...FONT, fontSize: '9px', marginTop: '8px', textTransform: 'uppercase', letterSpacing: '0.15em' }}>
-                                <span style={{ color: 'var(--neon-cyan)' }}>PLAYER PROFILE</span>
-                                <span style={{ color: '#555' }}> // LOADED</span>
-                            </p>
-                        </div>
-                    </div>
-                </motion.div>
+                <PageHeader
+                    onBack={() => setActivePage('map')}
+                    title="ABOUT ME"
+                    subtitle={<>
+                        <span style={{ color: 'var(--neon-cyan)' }}>PLAYER PROFILE</span>
+                        <span style={{ color: '#555' }}> // LOADED</span>
+                    </>}
+                />
 
                 {/* Main content */}
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '32px' }}>

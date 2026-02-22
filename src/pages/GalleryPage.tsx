@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { MapPin, X } from 'lucide-react';
-import BackButton from '@/components/shared/BackButton';
+import PageHeader from '@/components/shared/PageHeader';
 import { useBlogStore } from '@/store/store';
 import { FONT } from '@/lib/constants';
 
@@ -34,27 +34,14 @@ export default function GalleryPage() {
         <section className="bg-black min-h-screen pb-16" style={{ paddingTop: '100px' }}>
             <div style={{ maxWidth: '1024px', margin: '0 auto', paddingLeft: '24px', paddingRight: '24px' }}>
                 {/* Header */}
-                <motion.div
-                    className="flex items-end gap-6 mb-10"
-                    initial={{ opacity: 0, x: -12 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.3 }}
-                >
-                    <BackButton onClick={() => setActivePage('map')} />
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                        <div style={{ width: '1px', height: '40px', backgroundColor: 'var(--brand)', opacity: 0.3 }} />
-                        <div>
-                            <h1 className="text-glitch" style={{ ...FONT, fontSize: '18px', color: '#fff', lineHeight: 1.4 }}
-                                data-text="GALLERY">
-                                GALLERY
-                            </h1>
-                            <p style={{ ...FONT, fontSize: '6px', marginTop: '8px', textTransform: 'uppercase', letterSpacing: '0.15em' }}>
-                                <span style={{ color: 'var(--neon-cyan)' }}>{allImages.length}</span>
-                                <span style={{ color: '#555' }}> IMAGES CAPTURED</span>
-                            </p>
-                        </div>
-                    </div>
-                </motion.div>
+                <PageHeader
+                    onBack={() => setActivePage('map')}
+                    title="GALLERY"
+                    subtitle={<>
+                        <span style={{ color: 'var(--neon-cyan)' }}>{allImages.length}</span>
+                        <span style={{ color: '#555' }}> IMAGES CAPTURED</span>
+                    </>}
+                />
 
                 {/* Image grid */}
                 <motion.div

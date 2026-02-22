@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { MapPin, Clock } from 'lucide-react';
-import BackButton from '@/components/shared/BackButton';
+import PageHeader from '@/components/shared/PageHeader';
 import { useBlogStore } from '@/store/store';
 import { estimateReadTime, type BlogPost } from '@/types';
 import { FONT } from '@/lib/constants';
@@ -39,17 +39,14 @@ export default function AllStoriesPage() {
         <section className="bg-black min-h-screen pb-16" style={{ paddingTop: '100px' }}>
             <div style={{ maxWidth: '1024px', margin: '0 auto', paddingLeft: '24px', paddingRight: '24px' }}>
                 {/* Header row */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '20px' }}>
-                    <BackButton onClick={() => setActivePage('map')} />
-                    <div style={{ width: '1px', height: '32px', backgroundColor: 'var(--brand)', opacity: 0.3 }} />
-                    <h1 className="text-glitch" style={{ ...FONT, fontSize: '16px', color: '#fff', lineHeight: 1.4 }}
-                        data-text="ALL STORIES">
-                        ALL STORIES
-                    </h1>
-                    <span style={{ ...FONT, fontSize: '6px', color: 'var(--neon-cyan)', textTransform: 'uppercase', letterSpacing: '0.15em' }}>
-                        {filteredPosts.length} {filteredPosts.length === 1 ? 'STORY' : 'STORIES'}
-                    </span>
-                </div>
+                <PageHeader
+                    onBack={() => setActivePage('map')}
+                    title="ALL STORIES"
+                    subtitle={<>
+                        <span style={{ color: 'var(--neon-cyan)' }}>{filteredPosts.length}</span>
+                        <span style={{ color: '#555' }}> {filteredPosts.length === 1 ? 'STORY' : 'STORIES'}</span>
+                    </>}
+                />
 
                 {/* Category filters */}
                 <div style={{ marginBottom: '32px' }}>

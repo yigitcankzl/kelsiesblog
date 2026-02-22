@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { MapPin } from 'lucide-react';
-import BackButton from '@/components/shared/BackButton';
+import PageHeader from '@/components/shared/PageHeader';
 import CategoryFilter from '@/components/shared/CategoryFilter';
 import { useBlogStore } from '@/store/store';
 import { estimateReadTime } from '@/types';
@@ -26,29 +26,14 @@ export default function CountryPostsView() {
         <section className="py-20 sm:py-24 bg-black">
             <div style={{ maxWidth: '1024px', margin: '0 auto', paddingLeft: '24px', paddingRight: '24px' }} className="space-y-16">
                 {/* Header */}
-                <motion.div
-                    className="flex items-end gap-8 sm:gap-10 mb-4"
-                    initial={{ opacity: 0, x: -12 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.3 }}
-                >
-                    <BackButton onClick={() => setSelectedCountry(null)} />
-                    <div className="flex items-center gap-4">
-                        <div className="w-px h-10 bg-[var(--brand)]" style={{ opacity: 0.3 }} />
-                        <div>
-                            <h2 className="text-base sm:text-xl font-medium text-white leading-tight relative text-glitch"
-                                style={{ fontFamily: "'Press Start 2P', monospace" }}
-                                data-text={selectedCountry}>
-                                {selectedCountry}
-                            </h2>
-                            <p className="text-[6px] mt-2 uppercase tracking-wider font-medium"
-                                style={{ fontFamily: "'Press Start 2P', monospace" }}>
-                                <span className="text-[var(--neon-cyan)]">{filteredPosts.length}</span>
-                                <span className="text-gray-500"> {filteredPosts.length === 1 ? 'STORY' : 'STORIES'} FOUND</span>
-                            </p>
-                        </div>
-                    </div>
-                </motion.div>
+                <PageHeader
+                    onBack={() => setSelectedCountry(null)}
+                    title={selectedCountry || ''}
+                    subtitle={<>
+                        <span style={{ color: 'var(--neon-cyan)' }}>{filteredPosts.length}</span>
+                        <span style={{ color: '#555' }}> {filteredPosts.length === 1 ? 'STORY' : 'STORIES'} FOUND</span>
+                    </>}
+                />
 
                 {/* Country description above stories */}
                 {countryDescription && (
