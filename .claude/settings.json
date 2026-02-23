@@ -1,0 +1,33 @@
+{
+  "permissions": {
+    "allow": [
+      "Edit(*)",
+      "Write(*)",
+      "NotebookEdit(*)",
+      "Bash",
+      "WebFetch(domain:*)",
+      "WebSearch"
+    ],
+    "deny": [],
+    "ask": [
+      "Bash(rm *)",
+      "Bash(rmdir *)",
+      "Bash(shred *)",
+      "Bash(unlink *)",
+      "Bash(chmod *)",
+      "Bash(chown *)",
+      "Bash(git *)",
+      "Bash(gh *)",
+      "Bash(npm *)",
+      "Bash(npx *)",
+      "Bash(curl *)",
+      "Bash(wget *)",
+      "Bash(kill *)",
+      "Bash(killall *)",
+      "Bash(pkill *)",
+      "Bash(docker *)",
+      "Bash(vercel *)",
+      "Bash(firebase *)"
+    ]
+  }
+}
