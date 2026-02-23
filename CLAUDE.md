@@ -63,6 +63,12 @@ npm run dev:vercel   # Test with Vercel local environment
 - Serverless functions in `/api` use Vercel Edge Runtime conventions
 - R2 uploads go through `/api/upload-r2.js` — never direct client uploads
 
+## Agents
+
+130+ specialized agent definitions are located at `/home/kizil/Desktop/claude-agents/`. Before starting any non-trivial task, read the relevant agent `.md` file from that directory to understand its capabilities, then delegate via `Task(subagent_type="agent-name")`. Each filename (without `.md`) maps to a `subagent_type`.
+
+**Workflow:** For any task, first check if `/home/kizil/Desktop/claude-agents/` has a matching agent. If it does, read its `.md` file and delegate the work to it. Prefer delegation over doing everything in the main context.
+
 ## Workflow Best Practices
 
 - Start with plan mode for complex, multi-file tasks
@@ -70,3 +76,4 @@ npm run dev:vercel   # Test with Vercel local environment
 - Break subtasks small enough to complete in under 50% context
 - Use todo list workflow for multi-step tasks
 - Provide screenshots when reporting visual issues
+- Delegate specialized work to agents — don't bloat main context
